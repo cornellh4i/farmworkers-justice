@@ -1,3 +1,4 @@
+import Express from "express";
 /**** Node.js libraries *****/
 const path = require('path');
 
@@ -23,7 +24,7 @@ function createServer() {
   app.use("/api", routes);
 
   // "Redirect" all non-API GET requests to React's entry point (index.html)
-  app.get('*', (req, res) =>
+  app.get('*', (req: Express.Request, res: Express.Response) =>
     res.sendFile(path.resolve('..', 'client', 'build', 'index.html'))
   );
   

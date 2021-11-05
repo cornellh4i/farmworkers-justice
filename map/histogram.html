@@ -1,0 +1,136 @@
+<html><head>  
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <style>
+    
+    .gridlines .domain {
+      display: none;
+    }
+    
+    .gridlines line {
+      stroke: #444;
+    }
+      
+  
+    </style>
+  
+  </head>
+  <body>
+    <div class="container larger">
+  
+    <svg id="barchart" height="500" width="800" style="margin-top:50px" >
+    </svg>
+    <div id="button-bar"></div>
+  
+
+    <script id="histogram">
+  
+    const svg = d3.select("svg#barchart");
+    const width = svg.attr("width");
+    const height = svg.attr("height");
+    const margin = {top: 10, right: 10, bottom: 50, left: 50};
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
+  
+    let annotations = svg.append("g").attr("id","annotations");
+    let chartArea = svg.append("g").attr("id","points")
+                    .attr("transform",`translate(${margin.left},${margin.top})`);
+  
+    d3.csv("train.csv", d3.autoType)
+      .then( (data) => {
+    
+        
+    data = data.filter(d => (d['Age'] != null));
+    const ageExtent = d3.extent(data , d => d['Age']);
+    const ageScale = d3.scaleLinear().domain([0, ageExtent[1]]).range([0, chartWidth]);
+    let total = []
+
+    for (i = 0; i<  ageExtent[1]; i+=10){
+      total[i] = 0;
+    }
+    data.forEach( d => {
+      let age = d['Age'];
+      const keys = Object.keys(total);
+      
+      Object.keys(total).forEach (key => {
+        if (age <= key && age >key-10)
+          total[key] = total[key] +1;
+      });
+      
+    }
+    );
+    console.log(total);
+
+    // let leftAxis = d3.axisLeft(populationScale);
+    // let leftGridlines = d3.axisLeft(populationScale)
+    //                       .tickSize(-chartWidth-10)
+    //                       .tickFormat("")
+    // annotations.append("g")
+    //            .attr("class", "y axis")
+    //            .attr("transform",`translate(${margin.left-10},${margin.top})`)
+    //            .call(leftAxis)
+    // annotations.append("g")
+    //            .attr("class", "y gridlines")
+    //            .attr("transform",`translate(${margin.left-10},${margin.top})`)
+    //            .call(leftGridlines);
+    
+    // let bottomAxis = d3.axisBottom()
+    // let bottomAxisG = annotations.append("g")
+    //                          .attr("class", "x axis")
+    //                          .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
+
+    // function updateBarsAnimated(yearKey) {
+      
+    //   const data = yearData[yearKey]
+    //   console.log(data)
+      
+    //   const genres = d3.map(data, d => d.genre) 
+    //   const genreScale = d3.scaleBand().domain(genres).range([0, chartWidth])
+    //                                    .padding(0.05);
+      
+    //   bottomAxis.scale(genreScale)
+    //   bottomAxisG.transition().call(bottomAxis);
+      
+    //   chartArea.selectAll('rect.bar').data( data, d => d.genre )
+    //            .join( enter => enter.append('rect')
+    //                                 .attr('class','bar')
+    //                                 .attr("fill", "steelblue")
+    //                                 .attr("x", d => genreScale(d.genre))
+    //                                 .attr("y", d => populationScale(d.percentpass))
+    //                                 .attr("height", d => populationScale(0) - populationScale(d.percentpass))
+    //                                 .attr("width", genreScale.bandwidth())
+    //                                 .attr("opacity", 0) // Set opacity low, then animate to 1 to make them fade in
+    //                                 .call( enter => enter.transition().attr('opacity',1) ),
+    //                   update => update.call( update => update.transition()  // Animate resizing and movement
+    //                                                          .attr("fill", "steelblue")
+    //                                                          .attr("x", d => genreScale(d.genre))
+    //                                                          .attr("y", d => populationScale(d.percentpass))
+    //                                                          .attr("height", d => populationScale(0) - populationScale(d.percentpass))
+    //                                                          .attr("width", genreScale.bandwidth()) ),
+    //                   exit => exit.call( exit => exit.transition().attr('opacity',0).remove() ) ); // Animate opacity to fade out
+    // }   
+    
+    
+    // const allKeys = Object.keys(yearData).sort();
+    // allKeys.forEach( d => {
+    //   d3.select("div#button-bar")
+    //     .append("button")
+    //     .text( d )
+    //     .on("click", function() {
+    //       updateBarsAnimated( d );
+    //     })
+    // });
+    
+    
+    // updateBarsAnimated('All Years');
+
+    
+    });  
+    
+    </script>
+  
+  
+    </div>
+  </body>
+  </html>
+  

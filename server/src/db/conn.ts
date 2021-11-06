@@ -19,6 +19,47 @@ function pre_process(db: Db) {
     })
 }
 
+function query_val(filter_key: string, filter_value: string | number, variable: string, db: Db) {
+  var query = {}
+
+  // Keeping multiple if statements to add asserts later 
+  if (filter_key == "GENDER") {
+    query = { GENDER: filter_value }
+  }
+  else if (filter_key == "FLC") {
+    query = { FLC: filter_value }
+  }
+  else if (filter_key == "REGION6") {
+    query = { REGION6: filter_value }
+  }
+  else if (filter_key == "CURRSTAT") {
+    query = { CURRSTAT: filter_value }
+  }
+  else {
+    query = {}
+  }
+  db.collection('main').find(query).toArray(function (err, result) {
+    if (err) throw err;
+    // var result = result
+    let filtered_array: any[] = []
+    function iterateFunc(doc: any) {
+      let lst = [doc.FY, doc[variable]]
+      // filtered_array.push(lst)
+      console.log(lst)
+    }
+    function errorFunc(error: any) {
+      console.log(error);
+    }
+    if (result != undefined) {
+      result.forEach(iterateFunc, errorFunc);
+    }
+    return filtered_array
+    // EXAMPLE OF OUTPUT: [["2010", 2], ["2010", 2]],
+  });
+
+}
+
+
 module.exports = {
   connectToServer: function (callback: Callback) {
     client.connect(function (err: MongoError, db: MC) {
@@ -26,7 +67,7 @@ module.exports = {
       if (db) {
         _db = db.db("naws");
         console.log("Successfully connected to MongoDB.");
-        pre_process(_db);
+        query_val("REGION6", 3, "FY", _db);
       }
       return callback(err, "Error in connecting to MongoDB");
     });

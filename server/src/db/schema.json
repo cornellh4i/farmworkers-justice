@@ -1,6 +1,6 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "https://example.com/employee.schema.json",
+  "$schema": "",
+  "$id": "",
   "title": "Farmer Interview",
   "description": "This document records the details of a farmer",
   "type": "object",

@@ -1,3 +1,4 @@
+import e from "express";
 import { Db, MongoClient as MC, MongoError } from "mongodb";
 import { Callback } from "mongoose";
 import { cursorTo } from "readline";
@@ -19,33 +20,17 @@ function pre_process(db: Db) {
     })
 }
 
+// EXAMPLE OF OUTPUT: [["2010", 2], ["2010", 2]],
 function query_val(filter_key: string, filter_value: string | number, variable: string, db: Db) {
   var query = {}
+  query = { [filter_key]: filter_value }
 
-  // Keeping multiple if statements to add asserts later 
-  if (filter_key == "GENDER") {
-    query = { GENDER: filter_value }
-  }
-  else if (filter_key == "FLC") {
-    query = { FLC: filter_value }
-  }
-  else if (filter_key == "REGION6") {
-    query = { REGION6: filter_value }
-  }
-  else if (filter_key == "CURRSTAT") {
-    query = { CURRSTAT: filter_value }
-  }
-  else {
-    query = {}
-  }
   db.collection('main').find(query).toArray(function (err, result) {
     if (err) throw err;
-    // var result = result
     let filtered_array: any[] = []
     function iterateFunc(doc: any) {
-      let lst = [doc.FY, doc[variable]]
-      // filtered_array.push(lst)
-      console.log(lst)
+      let lst = [doc.FY, doc[variable]];
+      filtered_array.push(lst)
     }
     function errorFunc(error: any) {
       console.log(error);
@@ -53,12 +38,21 @@ function query_val(filter_key: string, filter_value: string | number, variable: 
     if (result != undefined) {
       result.forEach(iterateFunc, errorFunc);
     }
+    filtered_array.forEach(iterateFunc, errorFunc)
+    // console.log(filtered_array)
     return filtered_array
-    // EXAMPLE OF OUTPUT: [["2010", 2], ["2010", 2]],
-  });
 
+  });
 }
 
+// CODE FOR AGGREGATING: INCOMPLETE
+// let x: [string, number]
+// let final_result: Array<typeof x> = [filtered_array[0][0], 0];
+// for (let [FY, val] of filtered_array) {
+//   if (final_result.find(elem => elem[0] == FY)) {
+//     let felem[1] =
+//   }
+// }
 
 module.exports = {
   connectToServer: function (callback: Callback) {
@@ -67,7 +61,8 @@ module.exports = {
       if (db) {
         _db = db.db("naws");
         console.log("Successfully connected to MongoDB.");
-        query_val("REGION6", 3, "FY", _db);
+        // SAMPLE QUERY 
+        query_val("GENDER", 0, "REGION6", _db);
       }
       return callback(err, "Error in connecting to MongoDB");
     });

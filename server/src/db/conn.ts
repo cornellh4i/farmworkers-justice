@@ -21,38 +21,52 @@ function pre_process(db: Db) {
 }
 
 // EXAMPLE OF OUTPUT: [["2010", 2], ["2010", 2]],
-function query_val(filter_key: string, filter_value: string | number, variable: string, db: Db) {
+async function query_val(filter_key: string, filter_value: string | number, variable: string, db: Db) {
   var query = {}
   query = { [filter_key]: filter_value }
-
-  db.collection('main').find(query).toArray(function (err, result) {
-    if (err) throw err;
-    let filtered_array: any[] = []
-    function iterateFunc(doc: any) {
-      let lst = [doc.FY, doc[variable]];
-      filtered_array.push(lst)
-    }
-    function errorFunc(error: any) {
-      console.log(error);
-    }
-    if (result != undefined) {
-      result.forEach(iterateFunc, errorFunc);
-    }
-    filtered_array.forEach(iterateFunc, errorFunc)
-    // console.log(filtered_array)
-    return filtered_array
-
-  });
+  var filtered_array: any[] = []
+  var result = await db.collection('main').find(query).toArray();
+  function iterateFunc(doc: any) {
+    let lst = [doc.FY, doc[variable]];
+    filtered_array.push(lst)
+  }
+  function errorFunc(error: any) {
+    console.log(error);
+  }
+  result.forEach(iterateFunc, errorFunc);
+  return filtered_array
 }
 
-// CODE FOR AGGREGATING: INCOMPLETE
-// let x: [string, number]
-// let final_result: Array<typeof x> = [filtered_array[0][0], 0];
-// for (let [FY, val] of filtered_array) {
-//   if (final_result.find(elem => elem[0] == FY)) {
-//     let felem[1] =
-//   }
-// }
+function aggregate_data(arr: [string, number][], filter_value: number) {
+  let a_dict = new Map<string, number>();
+  let total_each_year = new Map<string, number>();
+  // Initializing map to have all 0s
+  function get_fy(v: [string, number]) {
+    let yr: string
+    yr = v[0]
+    a_dict.set(yr, 0)
+    total_each_year.set(yr, 0)
+  }
+
+  arr.forEach(get_fy, errorFunc)
+
+  function iterateFunc(v: [string, number]) {
+    let yr: string
+    yr = v[0]
+    if (v[1] === filter_value && a_dict.get(yr) != undefined) {
+      a_dict.set(yr, a_dict.get(yr)! + 1)
+    }
+    if (total_each_year.get(yr) != undefined) {
+      total_each_year.set(yr, total_each_year.get(yr)! + 1)
+    }
+  }
+  function errorFunc(error: any) {
+    console.log(error);
+  }
+  arr.forEach(iterateFunc, errorFunc)
+  a_dict.forEach((data, yr) => a_dict.set(yr, data / total_each_year.get(yr)!))
+  return a_dict
+}
 
 module.exports = {
   connectToServer: function (callback: Callback) {
@@ -61,8 +75,10 @@ module.exports = {
       if (db) {
         _db = db.db("naws");
         console.log("Successfully connected to MongoDB.");
-        // SAMPLE QUERY 
-        query_val("GENDER", 0, "REGION6", _db);
+        // SAMPLE QUERY: need .then since it is an ASYNC function
+        query_val("GENDER", 0, "REGION6", _db).then(data => {
+          console.log(aggregate_data(data, 1))
+        });
       }
       return callback(err, "Error in connecting to MongoDB");
     });

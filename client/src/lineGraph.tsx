@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from "d3";
 
-function LineGraph(props) {
+function LineGraph(props: any) {
   const [data] = useState(props.data);
   const svgRef = useRef();
   useEffect(() => {
@@ -22,12 +22,12 @@ function LineGraph(props) {
       .range([h, 0])
     const generatedScaleLine = d3.line()
       .x((d, i) => xScale(i))
-      .y(yScale)
+      .y((d, i) => yScale((d, i)))
       .curve(d3.curveCardinal)
 
     const xAxis = d3.axisBottom(xScale)
       .ticks(data.length)
-      .tickFormat(i => i + 2008)
+      .tickFormat(i => String(i))
     const yAxis = d3.axisLeft(yScale)
       .ticks(5);
     svg.append('g')

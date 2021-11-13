@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+import * as d3 from "d3";
 import Line from './lineGraph'
 import Donut from './donutChart'
 const API_URL = process.env.REACT_APP_API;
 
 function App() {
-  const [data, setData] = useState("No data :(");
+  const [data, setData1] = useState("No data :(");
 
   useEffect(() => {
     async function getData() {
       const url = `${API_URL}/hello`;
       const response = await fetch(url);
       const data = await response.json();
-      setData(data.msg);
+      setData1(data.msg);
     }
     getData();
   }, []);
@@ -22,7 +23,7 @@ function App() {
       value: item === null || item === undefined ? Math.random() * 100 : item
     }));
 
-  const [data1, setData] = useState(generateData());
+  const [data1, setData2] = useState(generateData());
 
   return (
     <>

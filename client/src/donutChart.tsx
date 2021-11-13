@@ -5,12 +5,12 @@ function DonutChart(props: any) {
   const ref: React.MutableRefObject<null> = useRef(null);
   const createPie = d3
     .pie()
-    .value(d => d.value)
+    .value(d => d.valueOf())
     .sort(null);
-  const createArc = d3
+  const createArc: d3.Arc<any, any> = d3
     .arc()
-    .innerRadius(props.innerRadius - 50)
-    .outerRadius(props.outerRadius - 50);
+    .innerRadius(props.innerRadius)
+    .outerRadius(props.outerRadius);
   const colors = d3.scaleOrdinal(d3.schemeCategory10);
   const format = d3.format(".2f");
 
@@ -34,7 +34,7 @@ function DonutChart(props: any) {
       path
         .attr("class", "arc")
         .attr("d", createArc)
-        .attr("fill", (d, i) => colors(i));
+        .attr("fill", (d, i) => colors("i"));
 
       const text = groupWithUpdate
         .append("text")
@@ -52,6 +52,9 @@ function DonutChart(props: any) {
         }
         if (x === 3) {
           return "Speaks English Well";
+        }
+        else {
+          return "hello";
         }
       }
       text

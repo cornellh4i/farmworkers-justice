@@ -3,7 +3,7 @@ import * as d3 from "d3";
 
 function LineGraph(props: any) {
   const [data] = useState(props.data);
-  const svgRef = useRef();
+  const svgRef = useRef(null);
   useEffect(() => {
     const w = props.width;
     const h = props.height;

@@ -1,6 +1,5 @@
 import Express from "express";
 import { Db } from "mongodb";
-// const dbo = require("./db/conn");
 
 // EXAMPLE OF OUTPUT: [["2010", 2], ["2010", 2]],
 async function query_val(variable: string, db: Db, filter_key?: string, filter_value?: string | number) {
@@ -21,7 +20,7 @@ async function query_val(variable: string, db: Db, filter_key?: string, filter_v
   return filtered_array
 }
 
-function aggregate_data(arr: [string, number][], filter_value: number) {
+function aggregate_time_series_data(arr: [string, number][], filter_value: number) {
   // TODO: EITHER FIX VALUE TYPES IN THE DATASET OR CONVERT VALUES TO INT HERE
   let a_dict = new Map<string, number>();
   let total_each_year = new Map<string, number>();
@@ -53,6 +52,26 @@ function aggregate_data(arr: [string, number][], filter_value: number) {
   return a_dict
 }
 
+const RECENT_YEAR = "2018";
+
+function aggregate_histogram_data(arr: [string, number][]) {
+  let recent_vals: Array<number> = [];
+
+  function iterateFunc(v: [string, number]) {
+    let year = v[0]
+    if (year == RECENT_YEAR) {
+      recent_vals.push(v[1])
+    }
+  }
+
+  function errorFunc(error: any) {
+    console.log(error);
+  }
+
+  arr.forEach(iterateFunc, errorFunc)
+  return recent_vals
+}
+
 
 module.exports = () => {
   const express = require("express");
@@ -67,22 +86,31 @@ module.exports = () => {
     res.json({msg: `Hello, ${req.params.name}`});
   });
 
-  router.get('/data/:variable', async (req: Express.Request, res: Express.Response) => {
+  router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const query_result = await query_val(req.params.variable, dbo.getDb())
     console.log("query result: ", query_result);
-    const output = await aggregate_data(query_result, 1);
+    const output = await aggregate_time_series_data(query_result, 1);
     console.log("aggregated result: ", Object.fromEntries(output));
     res.json({msg: Object.fromEntries(output)});
   });
 
-  router.get('/data/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn"); 
+  router.get('/timeSeries/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
     const query_result = await query_val(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal);
     console.log("query result: ", query_result);
-    const output = await aggregate_data(query_result, 1);
+    const output = await aggregate_time_series_data(query_result, 1);
     console.log("aggregated result: ", Object.fromEntries(output));
     res.json({msg: Object.fromEntries(output)});
+  });
+
+  router.get('/histogram/:variable', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const query_result = await query_val(req.params.variable, dbo.getDb())
+    console.log("query result: ", query_result);
+    const output = await aggregate_histogram_data(query_result);
+    console.log("aggregated result: ", output);
+    res.json({msg: output});
   });
 
   return router;

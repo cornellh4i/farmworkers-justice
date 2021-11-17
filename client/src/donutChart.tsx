@@ -1,9 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-function DonutChart(props: any) {
+interface dataProps {
+  date: number,
+  value: number
+}
+
+interface DonutChartProps {
+  innerRadius: number,
+  outerRadius: number, 
+  data: any,
+  height: number,
+  width: number
+}
+
+function DonutChart(props: DonutChartProps) {
   const ref: React.MutableRefObject<null> = useRef(null);
-  const createPie = d3
+  const createPie  =  d3
     .pie()
     .value(d => d.valueOf())
     .sort(null);
@@ -40,7 +53,7 @@ function DonutChart(props: any) {
         .append("text")
         .merge(groupWithData.select("text"));
 
-      function formatText(x: any) {
+      function formatText(x: number) {
         if (x === 0) {
           return "Doesn't Speak Any English";
         }

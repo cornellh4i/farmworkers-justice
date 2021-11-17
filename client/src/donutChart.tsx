@@ -9,8 +9,8 @@ function DonutChart(props: any) {
     .sort(null);
   const createArc: d3.Arc<any, any> = d3
     .arc()
-    .innerRadius(props.innerRadius)
-    .outerRadius(props.outerRadius);
+    .innerRadius(props.innerRadius - 50)
+    .outerRadius(props.outerRadius - 50);
   const colors = d3.scaleOrdinal(d3.schemeCategory10);
   const format = d3.format(".2f");
 

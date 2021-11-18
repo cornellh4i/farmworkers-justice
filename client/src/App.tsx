@@ -2,22 +2,28 @@ import {useEffect, useState} from "react";
 import DataTable from 'react-data-table-component';
 //import ReactDOM from "react-dom"
 
+interface rowProp {
+  id: number,
+  ethnicity: string,
+  percentage: string
+}
 
 const API_URL = process.env.REACT_APP_API;
 const columns = [
   {
       name: "Ethnicity",
-      //selector: (row: { title: any; }) => row.title,
+      selector: (row: rowProp) => row.ethnicity,
   },
   {
       name: "Percentage",
-      //selector: (row: { year: any; }) => row.year,
+      selector: (row: rowProp) => row.percentage,
   },
 ];
+
 const table = [
   {
       id: 1,
-      ethnicity: 'Mexican\American',
+      ethnicity: 'Mexican\\American',
       percentage: "72% (182)",
   },
   {
@@ -72,7 +78,7 @@ function App() {
     <>
       <h1>MERN App!</h1>
       <p>Data from server: {data} </p>
-      
+        
         <DataTable
           title="Ethnicity"
           columns= {columns}

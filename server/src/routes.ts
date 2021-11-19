@@ -8,7 +8,7 @@ async function query_val(variable: string, db: Db, filter_key?: string, filter_v
     query = { [filter_key]: filter_value }
   }
   var filtered_array: any[] = []
-  var result = await db.collection('main').find(query).toArray();
+  var result = await db.collection('naws_main').find(query).toArray();
   function iterateFunc(doc: any) {
     let lst = [doc.FY, doc[variable]];
     filtered_array.push(lst)
@@ -20,8 +20,7 @@ async function query_val(variable: string, db: Db, filter_key?: string, filter_v
   return filtered_array
 }
 
-function aggregate_time_series_data(arr: [string, number][], filter_value: number) {
-  // TODO: EITHER FIX VALUE TYPES IN THE DATASET OR CONVERT VALUES TO INT HERE
+function aggregate_time_series_data(arr: [string, number][], variable: string) {
   let a_dict = new Map<string, number>();
   let total_each_year = new Map<string, number>();
   // Initializing map to have all 0s
@@ -37,11 +36,17 @@ function aggregate_time_series_data(arr: [string, number][], filter_value: numbe
   function iterateFunc(v: [string, number]) {
     let yr: string
     yr = v[0]
-    if (v[1] === filter_value && a_dict.get(yr) != undefined) {
-      a_dict.set(yr, a_dict.get(yr)! + 1)
-    }
-    if (total_each_year.get(yr) != undefined) {
-      total_each_year.set(yr, total_each_year.get(yr)! + 1)
+
+
+    if (a_dict.get(yr) != undefined && v[1] != NaN) {
+      if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
+        a_dict.set(yr, a_dict.get(yr)! + v[1])
+        total_each_year.set(yr, total_each_year.get(yr)! + 1)
+      }
+      else if (v[1] === 1 || v[1] === 0) {
+        a_dict.set(yr, a_dict.get(yr)! + v[1])
+        total_each_year.set(yr, total_each_year.get(yr)! + 1)
+      }
     }
   }
   function errorFunc(error: any) {
@@ -79,29 +84,29 @@ module.exports = () => {
 
   /**** Routes ****/
   router.get('/hello', async (req: Express.Request, res: Express.Response) => {
-    res.json({msg: "Hello, world!"});
+    res.json({ msg: "Hello, world!" });
   });
 
   router.get('/hello/:name', async (req: Express.Request, res: Express.Response) => {
-    res.json({msg: `Hello, ${req.params.name}`});
+    res.json({ msg: `Hello, ${req.params.name}` });
   });
 
   router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const query_result = await query_val(req.params.variable, dbo.getDb())
     console.log("query result: ", query_result);
-    const output = await aggregate_time_series_data(query_result, 1);
+    const output = await aggregate_time_series_data(query_result, req.params.variable);
     console.log("aggregated result: ", Object.fromEntries(output));
-    res.json({msg: Object.fromEntries(output)});
+    res.json({ msg: Object.fromEntries(output) });
   });
 
   router.get('/timeSeries/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const query_result = await query_val(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal);
     console.log("query result: ", query_result);
-    const output = await aggregate_time_series_data(query_result, 1);
+    const output = await aggregate_time_series_data(query_result, req.params.variable);
     console.log("aggregated result: ", Object.fromEntries(output));
-    res.json({msg: Object.fromEntries(output)});
+    res.json({ msg: Object.fromEntries(output) });
   });
 
   router.get('/histogram/:variable', async (req: Express.Request, res: Express.Response) => {
@@ -110,7 +115,7 @@ module.exports = () => {
     console.log("query result: ", query_result);
     const output = await aggregate_histogram_data(query_result);
     console.log("aggregated result: ", output);
-    res.json({msg: output});
+    res.json({ msg: output });
   });
 
   return router;

@@ -20,6 +20,15 @@ function pre_process(db: Db) {
     })
 }
 
+function deleteCol(db: Db) {
+  db.collection('main').updateMany(
+    {},
+    { $unset: { NFWEEKS: "" } })
+    .then(function () {
+      console.log("processed!")
+    })
+}
+
 module.exports = {
   connectToServer: function (callback: Callback) {
     client.connect(function (err: MongoError, db: MC) {
@@ -27,7 +36,6 @@ module.exports = {
       if (db) {
         _db = db.db("naws");
         console.log("Successfully connected to MongoDB.");
-        
       }
       return callback(err, "Error in connecting to MongoDB");
     });

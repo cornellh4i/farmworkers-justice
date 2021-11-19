@@ -20,9 +20,10 @@ function LineGraph(props: any) {
     const yScale = d3.scaleLinear()
       .domain([0, h])
       .range([h, 0])
+
     const generatedScaleLine = d3.line()
       .x((d, i) => xScale(i))
-      .y((d, i) => yScale((d, i)))
+      .y((d, i) => yScale(data[i]))
       .curve(d3.curveCardinal)
 
     const xAxis = d3.axisBottom(xScale)

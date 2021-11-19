@@ -8,7 +8,7 @@ interface dataProps {
 
 interface DonutChartProps {
   innerRadius: number,
-  outerRadius: number, 
+  outerRadius: number,
   data: any,
   height: number,
   width: number
@@ -16,7 +16,7 @@ interface DonutChartProps {
 
 function DonutChart(props: DonutChartProps) {
   const ref: React.MutableRefObject<null> = useRef(null);
-  const createPie  =  d3
+  const createPie = d3
     .pie()
     .value(d => d.valueOf())
     .sort(null);
@@ -47,7 +47,7 @@ function DonutChart(props: DonutChartProps) {
       path
         .attr("class", "arc")
         .attr("d", createArc)
-        .attr("fill", (d, i) => colors("i"));
+        .attr("fill", (d, i) => colors(i.toString()));
 
       const text = groupWithUpdate
         .append("text")

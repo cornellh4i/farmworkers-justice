@@ -23,22 +23,29 @@ function App() {
       value: item === null || item === undefined ? Math.random() * 100 : item
     }));
 
+  /* const generateDataDonut = (length = 5) =>
+  d3.range(length).map((item, index) => ({
+    date: index,
+    value: item === null || item === undefined ? Math.random() * 100 : item
+  }));
+  */
+
   const [data1, setData2] = useState(generateData());
 
   return (
     <>
       <h1>MERN App!</h1>
       <p>Data from server: {data}</p>
-      <div style={{ marginTop: "100px", marginLeft: "auto", marginRight: "auto" }}>
+      <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}>
         <Donut
-          data={data1}
+          data={[100, 100, 200]}
           width={500}
           height={500}
           innerRadius={150}
           outerRadius={200}
         />
       </div>
-      <div style={{ marginBottom: "100px" }}>
+      <div style={{ marginBottom: "100px", marginLeft: "200px" }}>
         <Line
           data={[50, 75, 25, 150, 100, 50, 25, 125, 300, 105]}
           width={500}

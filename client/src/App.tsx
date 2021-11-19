@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import DataTable from 'react-data-table-component';
 //import ReactDOM from "react-dom"
+import Histogram from '../src/charts/Histogram';
+import * as d3 from "d3";
 
 interface rowProp {
   id: number,
@@ -74,6 +76,14 @@ function App() {
     getData();
   }, []); 
 
+  const ageData = [];
+  let i : number;
+  for (i = 0; i< 500; i ++){
+    let age = d3.randomInt(1,100)()
+    ageData.push(age);
+  };
+
+
   return (
     <>
       <h1>MERN App!</h1>
@@ -85,6 +95,11 @@ function App() {
           data={table}
           //defaultSortField="ethnicity"
         />
+        <Histogram
+          height ={500}
+          width = {500}
+          data = {ageData}/>
+       
     </>
   );
 }

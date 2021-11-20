@@ -30,30 +30,36 @@ function aggregate_time_series_data(arr: [string, number][], variable: string) {
     a_dict.set(yr, 0)
     total_each_year.set(yr, 0)
   }
-
+  // TODO: DOES IT NEED TO LOOP THROUGH ALL ARRAY ENTRIES TO INIT GET_FY?
   arr.forEach(get_fy, errorFunc)
 
   function iterateFunc(v: [string, number]) {
     let yr: string
     yr = v[0]
+    let value: number
+    value = v[1]
 
-
-    if (a_dict.get(yr) != undefined && v[1] != NaN) {
+    if (a_dict.get(yr) !== undefined && !isNaN(value) ) {
+      // console.log(value);
       if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
-        a_dict.set(yr, a_dict.get(yr)! + v[1])
+        a_dict.set(yr, a_dict.get(yr)! + value)
         total_each_year.set(yr, total_each_year.get(yr)! + 1)
       }
-      else if (v[1] === 1 || v[1] === 0) {
-        a_dict.set(yr, a_dict.get(yr)! + v[1])
+      else if (value === 1 || value === 0) {
+        a_dict.set(yr, a_dict.get(yr)! + value)
         total_each_year.set(yr, total_each_year.get(yr)! + 1)
       }
     }
   }
+
   function errorFunc(error: any) {
     console.log(error);
   }
+
   arr.forEach(iterateFunc, errorFunc)
-  a_dict.forEach((data, yr) => a_dict.set(yr, data / total_each_year.get(yr)!))
+  a_dict.forEach((data, yr) => {
+    a_dict.set(yr, data / total_each_year.get(yr)!)
+  })
   return a_dict
 }
 

@@ -21,7 +21,6 @@ function Histogram (props : histogramProp) {
   let data : Array<number> = props.data;
   console.log(data);
   const maxAge : number= Math.max(...data);
-  // const ageExtent : [number, number] | [undefined , undefined]= d3.extent(...data);
   const ageScale = d3.scaleLinear().domain([0, maxAge]).range([0, chartWidth]);
   let total : number[] = []
   let max = 0; 
@@ -47,6 +46,7 @@ function Histogram (props : histogramProp) {
   let leftAxis = d3.axisLeft(totalScale);
   let leftGridlines = d3.axisLeft(totalScale)
           .tickSize(-chartWidth-10)
+          .tickFormat(d => "");
   annotations.append("g")
     .attr("class", "y axis")
     .attr("transform",`translate(${margin.left-10},${margin.top})`)
@@ -56,11 +56,11 @@ function Histogram (props : histogramProp) {
     .attr("transform",`translate(${margin.left},${margin.top})`)
     .call(leftGridlines);
 
-  let bottomAxis = d3.axisBottom(ageScale)
-    .tickFormat(d3.format(''));
+  let bottomAxis = d3.axisBottom(ageScale).tickFormat(d3.format(''));
   let bottomGridlines = d3
     .axisBottom(ageScale)
-    .tickSize(-chartHeight)
+    .tickSize(-chartHeight )
+    .tickFormat(d => "");
   annotations.append("g")
     .attr("class", "x axis")
     .attr('transform',`translate(${margin.left},${chartHeight + margin.top + 10})`) 
@@ -93,7 +93,6 @@ function Histogram (props : histogramProp) {
     .attr("width",ageScale( 10 ) )
     .style("stroke", "gray" )
     .style("fill", "pink" );
-  // .style("stroke", colorScale( d.percentSurvived ) )
 
   chartArea.append("text")
     .attr("text-anchor","middle")
@@ -105,8 +104,7 @@ function Histogram (props : histogramProp) {
 
 
   return (
-    <svg id = "#histogram" height = {props.height} width = {props.width}>
-    </svg>
+    <svg id = "histogram" height = {props.height} width = {props.width}></svg>
   );
 }
 export default Histogram;

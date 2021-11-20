@@ -1,8 +1,12 @@
 import {useEffect, useState} from "react";
 import DataTable from 'react-data-table-component';
-//import ReactDOM from "react-dom"
+// import ReactDOM from "react-dom"
 import Histogram from '../src/charts/Histogram';
 import * as d3 from "d3";
+// require('react-dom');
+// window.React2 = require('react');
+// console.log(window.React1 === window.React2);
+
 
 interface rowProp {
   id: number,
@@ -64,17 +68,17 @@ function App() {
   const [data, setData] = useState("No data :(");
   const [test, setTest] = useState<Array<string>>([])
   
-  useEffect(() => {
-    async function getData() {
-      const url = `${API_URL}/hello`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setData(data.msg);
-      console.log(test);
-      setTest(["hello"]);
-    }
-    getData();
-  }, []); 
+  // useEffect(() => {
+  //   async function getData() {
+  //     const url = `${API_URL}/hello`;
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     setData(data.msg);
+  //     console.log(test);
+  //     setTest(["hello"]);
+  //   }
+  //   getData();
+  // }, []); 
 
   const ageData = [];
   let i : number;
@@ -99,7 +103,6 @@ function App() {
           height ={500}
           width = {500}
           data = {ageData}/>
-       
     </>
   );
 }

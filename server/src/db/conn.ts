@@ -12,14 +12,15 @@ const client = new MongoClient(ATLAS_URI, {
 
 var _db: Db;
 
+// Used to preprocess data by deleting documents before 2008
 function pre_process(db: Db) {
-
   db.collection('main').deleteMany({ FY: { $lt: "2008" } })
     .then(function () {
       console.log("processed!")
     })
 }
 
+// Used to preprocess data by deleting the NFWEEKS column
 function deleteCol(db: Db) {
   db.collection('main').updateMany(
     {},

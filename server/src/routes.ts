@@ -34,7 +34,8 @@ async function query_val(variable: string, db: Db, filter_key?: string, filter_v
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
  * @param variable is a that is being aggregated. EX: GENDER
- * @returns dictionary of years mapped to percentages of how often a variable appears in that year
+ * @returns dictionary of years mapped to percentages of how often a variable appears in that year. 
+ *          An average is returned for variables: B11, FWRDays, and NUMFEMPL. 
  */
 function aggregate_time_series_data(arr: [string, number][], variable: string) {
   let a_dict = new Map<string, number>();

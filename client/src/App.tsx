@@ -66,26 +66,31 @@ const table = [
 ]
 function App() {
   const [data, setData] = useState("No data :(");
-  const [test, setTest] = useState<Array<string>>([])
+  const [test, setTest] = useState<Array<string>>([]);
+  const [ageData, setAgeData] = useState<Array<number>>([]);
   
-  // useEffect(() => {
-  //   async function getData() {
-  //     const url = `${API_URL}/hello`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     setData(data.msg);
-  //     console.log(test);
-  //     setTest(["hello"]);
-  //   }
-  //   getData();
-  // }, []); 
 
-  const ageData = [];
-  let i : number;
-  for (i = 0; i< 500; i ++){
-    let age = d3.randomInt(1,100)()
-    ageData.push(age);
-  };
+  useEffect(() => {
+    async function getData() {
+      const url = `${API_URL}/hello`;
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      setData(data.msg);
+      console.log(test);
+      setTest(["hello"]);
+      
+    }
+    let i : number;
+    for (i = 0; i< 500; i ++){
+      let age = d3.randomInt(1,100)()
+      setAgeData(ageData => [...ageData,age]);
+    };
+    console.log(ageData);
+    getData();
+  }, []); 
+
+  
 
 
   return (
@@ -97,7 +102,6 @@ function App() {
           title="Ethnicity"
           columns= {columns}
           data={table}
-          //defaultSortField="ethnicity"
         />
         <Histogram
           height ={500}
@@ -107,6 +111,4 @@ function App() {
   );
 }
 
-//const rootElement = document.getElementById("root");
-//ReactDOM.render(<App />, rootElement);
 export default App;

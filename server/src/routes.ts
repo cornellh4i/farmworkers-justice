@@ -12,10 +12,10 @@ import { Db } from "mongodb";
  *          EX: [[2010, 2], [2010, 2]]
  */
 
-async function query_val(variable: string, db: Db, filter_key?: string, filter_value?: string | number) {
+async function query_val(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number) {
   var query = {}
-  if (typeof filter_key !== 'undefined' && typeof filter_value !== 'undefined') {
-    query = { [filter_key]: filter_value }
+  if (typeof filter_key1 !== 'undefined' && typeof filter_value1 !== 'undefined') {
+    query = { [filter_key1]: filter_value1 }
   }
   var filtered_array: any[] = []
   var result = await db.collection('naws_main').find(query).toArray();
@@ -29,6 +29,29 @@ async function query_val(variable: string, db: Db, filter_key?: string, filter_v
   result.forEach(iterateFunc, errorFunc);
   return filtered_array
 }
+
+async function query_two_vals(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number,
+  filter_key2?: string, filter_value2?: string | number) {
+  var query = {}
+  if (typeof filter_key1 !== 'undefined' && typeof filter_value1 !== 'undefined'
+    && typeof filter_key2 !== 'undefined' && typeof filter_value2 !== 'undefined') {
+    query = { $and: [{ filter_key1: filter_value1 }, { filter_key2: filter_value2 }] }
+  }
+  var filtered_array: any[] = []
+  var result = await db.collection('naws_main').find(query).toArray();
+  console.log(result);
+  function iterateFunc(doc: any) {
+    let lst = [doc.FY, doc[variable]];
+    filtered_array.push(lst)
+  }
+  function errorFunc(error: any) {
+    console.log(error);
+  }
+  result.forEach(iterateFunc, errorFunc);
+  console.log(filtered_array)
+  return filtered_array
+}
+
 
 /**
  * Takes an array and a string variable
@@ -78,32 +101,60 @@ function aggregate_time_series_data(arr: [string, number][], variable: string) {
   return a_dict
 }
 
-const RECENT_YEAR = "2018";
+const LATEST_YEAR = "2018";
 
 function aggregate_histogram_data(arr: [string, number][]) {
   let recent_vals: Array<number> = [];
 
   function iterateFunc(v: [string, number]) {
     let year = v[0]
-    if (year == RECENT_YEAR) {
+    if (year == LATEST_YEAR) {
       recent_vals.push(v[1])
     }
   }
-
   function errorFunc(error: any) {
     console.log(error);
   }
-
   arr.forEach(iterateFunc, errorFunc)
   return recent_vals
 }
 
+function aggregate_donut_chart_data(arr: [string, number][], variable: string, db: Db,) {
+  // This is a list with the number of times each encoding shows up in arr. 
+  // The index of the value in the list corresponds to the encoding value. 
+  let aggregate_encodings: Array<number> = [];
+  let a_dict = new Map<string, number>();
+  async function iterateFunc(v: [string, number]) {
+    let year = v[0]
+    let query = { Variable: variable, Encoding: v[1] }
+    var encoding_descrp = await db.collection('description-code').find(query).toArray();
+    console.log(encoding_descrp)
+    if (year == LATEST_YEAR) {
+      // a_dict.set(encoding_descrp.find(v[0]), a_dict.get(encoding_descrp)! + 1)
+    }
+  }
+  function errorFunc(error: any) {
+    console.log(error);
+  }
+  arr.forEach(iterateFunc, errorFunc)
+  return a_dict
+}
 
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
   /**** Routes ****/
+
+  router.get('/filterTwo/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const query_result = await query_two_vals(req.params.variable, dbo.getDb(),
+      req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2);
+    console.log("query result: ", query_result);
+    const output = await aggregate_time_series_data(query_result, req.params.variable);
+    console.log("aggregated result: ", Object.fromEntries(output));
+    res.json({ msg: Object.fromEntries(output) });
+  });
 
   router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
@@ -132,5 +183,13 @@ module.exports = () => {
     res.json({ msg: output });
   });
 
+  router.get('/donutAggregation/:variable', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const query_result = await query_val(req.params.variable, dbo.getDb())
+    console.log("query result: ", query_result);
+    const output = await aggregate_donut_chart_data(query_result, req.params.variable, dbo);
+    // console.log("aggregated result: ", Object.fromEntries(output));
+    res.json({ msg: Object.fromEntries(output) });
+  });
   return router;
 }

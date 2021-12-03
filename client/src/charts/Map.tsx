@@ -22,20 +22,28 @@ function Map (props : mapProp) {
     .attr("transform","translate("+margin.left+","+margin.top+")");
 
 
-    d3.json("us-smaller.json").then (function (us){
-
+    d3.json("./us-smaller.json").then(function (us){
       var states = topojson.feature((us as  unknown) as Topology, ((us as  unknown) as Topology).objects.states as GeometryObject) as geojson.FeatureCollection;    
       var projection = d3.geoAlbersUsa().fitSize([mapWidth, mapHeight], states);
       var path = d3.geoPath().projection(projection);
       console.log(us);
       console.log(states);
     
-      map.selectAll("path.state").data(states.features )
+      var div = d3.select('body').append('div')   
+      .style('opacity', 50)
+      map.selectAll("path.state").data(states.features)
       .join("path")
       .attr("class", "state")
       .attr("note", d => d.id!)  
-      .attr("d", path);
-    });
+      .attr("d", path)
+      .on("mousedown", function clicked(s) {
+        // console.log(event.target.getAttribute('note'))
+        if(s != null && (s.target! as HTMLTextAreaElement).getAttribute('note') === "06") {
+          // console.log("mouse down")
+          //console.log(path)
+          div.text("california");
+        }
+    })});
 
     // const displayMap = async function() {
     //   const us :any = await d3.json("us-smaller.json");

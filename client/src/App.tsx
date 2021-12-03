@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import DataTable from 'react-data-table-component';
 // import ReactDOM from "react-dom"
 import Histogram from '../src/charts/Histogram';
+import Map from '../src/charts/Map';
+
 import * as d3 from "d3";
 // require('react-dom');
 // window.React2 = require('react');
@@ -91,8 +93,6 @@ function App() {
   }, []); 
 
   
-
-
   return (
     <>
       <h1>MERN App!</h1>
@@ -107,6 +107,10 @@ function App() {
           height ={500}
           width = {500}
           data = {ageData}/>
+        <Map
+          height ={770}
+          width = {990}
+        />
     </>
   );
 }

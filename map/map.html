@@ -42,7 +42,7 @@
       console.log(us);
       console.log(states);
       //console.log(statesMesh);
-      console.log(path);
+      // console.log(path);
 
       var div = d3.select('body').append('div')   
       //.attr('class', 'tooltip')               
@@ -57,15 +57,16 @@
          .attr("class", "state")
          .attr("note", d => d.id)  
          .attr("d", path)
-         .on("mousedown", function clicked() {
-          console.log(event.target.getAttribute('note'))
-          if((event.target).getAttribute('note') == "06") {
-            console.log("mouse down")
-            //console.log(path)
-            div.text("california");
-          }
+        //  .on("mousedown", function clicked() {
+        //   console.log(event.target.getAttribute('note'))
+        //   if((event.target).getAttribute('note') == "06") {
+        //     console.log("mouse down")
+        //     //console.log(path)
+        //     div.text("california");
+        //   }
             
-         })
+        //  }
+         )
          ;
          
     

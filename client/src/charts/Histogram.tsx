@@ -19,7 +19,6 @@ function Histogram (props : histogramProp) {
     .attr("transform",`translate(${margin.left},${margin.top})`);
 
   let data : Array<number> = props.data;
-  console.log(data);
   const maxAge : number= Math.max(...data);
   const ageScale = d3.scaleLinear().domain([0, maxAge]).range([0, chartWidth]);
   let total : number[] = []
@@ -39,7 +38,6 @@ function Histogram (props : histogramProp) {
     });
   });
   
-  console.log(total);
   max = Math.ceil(max / 10) * 10 + 10
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
 

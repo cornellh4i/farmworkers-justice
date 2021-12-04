@@ -15,19 +15,19 @@ function LineGraph(props: any) {
       .style('overflow', 'visible');
 
     const xScale = d3.scaleLinear()
-      .domain([0, data.length - 1])
+      .domain([data[0].year, data[Object.keys(data).length-1].year])
       .range([0, w])
     const yScale = d3.scaleLinear()
       .domain([0, h])
       .range([h, 0])
 
     const generatedScaleLine = d3.line()
-      .x((d, i) => xScale(i))
-      .y((d, i) => yScale(data[i]))
+      .x((d, i) => xScale(data[i].year))
+      .y((d, i) => yScale(data[i].value))
       .curve(d3.curveCardinal)
 
     const xAxis = d3.axisBottom(xScale)
-      .ticks(data.length)
+      .ticks(Object.keys(data).length)
       .tickFormat(i => String(i))
     const yAxis = d3.axisLeft(yScale)
       .ticks(5);
@@ -46,6 +46,9 @@ function LineGraph(props: any) {
   }, [data]);
   return (
     <div>
+      <p>Data from server: {data[4].year}</p>
+      <p>Data from server: {data[5].value}</p>
+      <p>Data from server: {Object.keys(data).length}</p>
       <svg ref={svgRef}></svg>
     </div>
   )

@@ -1,74 +1,33 @@
 import {useEffect, useState} from "react";
-import DataTable from 'react-data-table-component';
-// import ReactDOM from "react-dom"
+import DataTable, {TableColumn} from 'react-data-table-component';
 import Histogram from '../src/charts/Histogram';
 import * as d3 from "d3";
-// require('react-dom');
-// window.React2 = require('react');
-// console.log(window.React1 === window.React2);
 
-
-interface rowProp {
+type rowProp = {
   id: number,
-  ethnicity: string,
-  percentage: string
+  response_description: string,
+  response: [number, number]
 }
 
 const API_URL = process.env.REACT_APP_API;
-const columns = [
+const dict : { [key: string]: [number, number]} = {};
+const columns : TableColumn<rowProp>[] = [
   {
-      name: "Ethnicity",
-      selector: (row: rowProp) => row.ethnicity,
-  },
+    name: "Ethnicity",
+    selector: row => row.response_description
+  }, 
   {
-      name: "Percentage",
-      selector: (row: rowProp) => row.percentage,
-  },
-];
-
-const table = [
-  {
-      id: 1,
-      ethnicity: 'Mexican\\American',
-      percentage: "72% (182)",
-  },
-  {
-      id: 2,
-      ethnicity: 'Mexican',
-      percentage: '72% (182)',
-  },
-  {
-      id: 3,
-      ethnicity: 'Chicano',
-      percentage: '72% (182)',
-  },
-  {
-      id: 4,
-      ethnicity: 'Mexican',
-      percentage: '72% (182)',
-  },
-  {
-      id: 5,
-      ethnicity: 'Other Hispanic',
-      percentage: '72% (182)',
-  },
-  {
-      id: 6,
-      ethnicity: 'Puerto Rican',
-      percentage: '72% (182)',
-  },
-  {
-      id: 7,
-      ethnicity: 'Not HIspanic or Latino',
-      percentage: '72% (182)',
+    name: "Percentage",
+    selector: row => row.response.toString()
   }
-  
-]
+];
+let table : rowProp[] = [];
 function App() {
   const [data, setData] = useState("No data :(");
   const [test, setTest] = useState<Array<string>>([]);
   const [ageData, setAgeData] = useState<Array<number>>([]);
-  
+  const [tableData, setTableData] = useState<Array<rowProp>>([]);
+
 
   useEffect(() => {
     async function getData() {
@@ -79,19 +38,38 @@ function App() {
       setData(data.msg);
       console.log(test);
       setTest(["hello"]);
-      
     }
-    let i : number;
-    for (i = 0; i< 500; i ++){
-      let age = d3.randomInt(1,100)()
-      setAgeData(ageData => [...ageData,age]);
-    };
-    console.log(ageData);
+
+    fetch(`${API_URL}/api/table/AGE`)
+    .then(res => res.json())
+    .then(data => {
+      setAgeData(data);
+    });
+
+    fetch(`${API_URL}/api/table/B01`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          let count : number = 0
+          for (let key in data) {
+            let value = dict[key]
+            let d : rowProp = {id: 0, response_description: "", response: [0, 0]};
+            d = {
+              id: count,
+              response_description: key, 
+              response: value
+            };
+            count++;
+            console.log(d)
+            table.push(d);
+            setTableData(table);
+        }
+      })
+        .catch(rejected => {
+            console.log(rejected);   
+        }); 
     getData();
   }, []); 
-
-  
-
 
   return (
     <>
@@ -101,7 +79,7 @@ function App() {
         <DataTable
           title="Ethnicity"
           columns= {columns}
-          data={table}
+          data={tableData}
         />
         <Histogram
           height ={500}

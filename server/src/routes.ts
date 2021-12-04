@@ -52,7 +52,6 @@ async function queryTwoVals(variable: string, db: Db, filter_key1?: string, filt
   return filtered_array
 }
 
-
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
@@ -65,13 +64,13 @@ async function queryTwoVals(variable: string, db: Db, filter_key1?: string, filt
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, number][], variable: string) {
-  const minYear : number = Math.min.apply(Math, arr.map(function(a) { return a[0]; }))
-  const maxYear : number = Math.max.apply(Math, arr.map(function(a) { return a[0]; }))
-  let output = new Array<{year: number, value: number}>();
+  const minYear: number = Math.min.apply(Math, arr.map(function (a) { return a[0]; }))
+  const maxYear: number = Math.max.apply(Math, arr.map(function (a) { return a[0]; }))
+  let output = new Array<{ year: number, value: number }>();
   let totalEachYear = new Map<number, number>();
   let i;
   for (i = 0; i < maxYear - minYear + 1; i++) {
-    output[i] = {year: minYear + i, value: 0};
+    output[i] = { year: minYear + i, value: 0 };
     totalEachYear.set(minYear + i, 0)
   }
 
@@ -86,7 +85,7 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
         totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
       }
       // Only consider Yes & No answers for the rest of the variables 
-      else if (value === 1 || value === 0) { 
+      else if (value === 1 || value === 0) {
         output[yrIdx].value += value;
         totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
       }

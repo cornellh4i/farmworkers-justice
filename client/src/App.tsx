@@ -88,11 +88,11 @@ function App() {
       let age = d3.randomInt(1,100)()
       setAgeData(ageData => [...ageData,age]);
     };
-    console.log(ageData);
     getData();
   }, []); 
 
-  
+  console.log(ageData);
+
   return (
     <>
       <h1>MERN App!</h1>
@@ -104,8 +104,8 @@ function App() {
           data={table}
         />
         <Histogram
-          height ={500}
-          width = {500}
+          height ={600}
+          width = {600}
           data = {ageData}/>
         <Map
           height ={770}

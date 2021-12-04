@@ -125,16 +125,30 @@ function aggregateDonutChart(arr: [number, number][], variable: string, db: Db,)
   // This is a list with the number of times each encoding shows up in arr. 
   // The index of the value in the list corresponds to the encoding value. 
   let aggregate_encodings: Array<number> = [];
+  console.log(arr)
   let output = new Map<string, number>();
   async function iterateFunc(v: [number, number]) {
-    let year = v[0]
+    const year = v[0]
+    var encodingDescrp: any;
     let query = { Variable: variable, Encoding: v[1] }
-    var encodingDescrp = await db.collection('description-code').find(query).toArray();
-    console.log(encodingDescrp)
+    try {
+      encodingDescrp = await db.collection('description-code').find(query).toArray();
+      // .then()
+    } catch (error) {
+      console.log(error)
+    };
+    // TODO: FIX THIS IF STATEMENT SO IT DETECTS LATEST YEAR. Weird cuz it works for other years like 2008
     if (year == LATEST_YEAR) {
-      // output.set(encodingDescrp.find(v[0]), output.get(encodingDescrp)! + 1)
+      console.log("latest year", LATEST_YEAR, output)
+      if (output.get(encodingDescrp[0].Description) === undefined) {
+        output.set(encodingDescrp[0].Description, 0)
+      }
+      else {
+        output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
+      }
     }
   }
+
   function errorFunc(error: any) {
     console.log(error);
   }
@@ -191,7 +205,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb())
     console.log("query result: ", queryResult);
-    const output = await aggregateDonutChart(queryResult, req.params.variable, dbo);
+    const output = await aggregateDonutChart(queryResult, req.params.variable, dbo.getDb());
     console.log("aggregated result: ", Object.fromEntries(output));
     res.json({ msg: Object.fromEntries(output) });
   });

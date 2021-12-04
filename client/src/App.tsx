@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     async function getData() {
       const url = `${API_URL}/api/timeSeries/FOREIGNB`;
-      const response = await fetch(url);
+      const response = await fetch(`/hello`);
       const data = await response.json();
       setData1(data.msg);
     }
@@ -35,7 +35,15 @@ function App() {
   dictionary1[2016] = 125;
   dictionary1[2017] = 300;
   dictionary1[2018] = 105;
-
+  
+  const dictionary3 = [ {year: 2009, value: 50}, {year: 2010, value: 75}, {year: 2011, value: 25}, {year: 2012, value: 150}
+    , {year: 2013, value: 100}, {year: 2014, value: 50}, {year: 2015, value: 25}, {year: 2016, value: 125}, {year: 2017, value: 300}
+    , {year: 2018, value: 105}];
+  
+  const maxVal = dictionary3.reduce((op, item) => op = op > item.value ? op : item.value, 0);
+  const maxYear = dictionary3.reduce((op, item) => op = op > item.year ? op : item.year, 0);
+  const minVal = dictionary3.reduce((op, item) => op = op < item.value ? op : item.value, maxVal);
+  
   type donutData = {
     year: number;
     value: number;
@@ -83,7 +91,7 @@ function App() {
     year: 2018,
     value: 105
   };
-  
+
   //const [data1, setData2] = useState(generateData());
 
   return (
@@ -99,14 +107,14 @@ function App() {
           outerRadius={200}
         />
       </div>
-      <p>Data from server: {Object.keys(dictionary2).length}</p>
-      <p>Data from server: {dictionary2[4].value}</p>
-      <p>Data from server: {Object.keys(dictionary1)[1]}</p>
-      <div style={{ marginBottom: "100px", marginLeft: "200px" }}>
+      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        Average Value per Year from 2009 to 2018
+      </h3>
+      <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
         <Line
-          data={data}
-          width={500}
-          height={400} />
+          data={dictionary3}
+          width={Object.keys(dictionary3).length*50}
+          height={Math.ceil(maxVal / 10) * 10} />
       </div>
     </>
   );

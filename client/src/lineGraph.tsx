@@ -36,6 +36,19 @@ function LineGraph(props: any) {
       .attr('transform', `translate(0, ${h})`);
     svg.append('g')
       .call(yAxis)
+    svg.append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", w)
+      .attr("y", h - 6)
+      .text("years");
+    svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", 6)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("average value");
 
     svg.selectAll('.line')
       .data([data])
@@ -46,9 +59,6 @@ function LineGraph(props: any) {
   }, [data]);
   return (
     <div>
-      <p>Data from server: {data[4].year}</p>
-      <p>Data from server: {data[5].value}</p>
-      <p>Data from server: {Object.keys(data).length}</p>
       <svg ref={svgRef}></svg>
     </div>
   )

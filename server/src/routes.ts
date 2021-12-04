@@ -105,6 +105,14 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
 
 const LATEST_YEAR = 2018;
 
+/**
+ * Takes an array and a string variable
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param variable is a that is being aggregated. EX: GENDER
+ * @returns a dictionary where the keys are encoding descriptions and the values are the 
+ *          percentage of times that encoding appears in the LATEST_YEAR. 
+ *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
+ */
 function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import DataTable, {TableColumn} from 'react-data-table-component';
 import Histogram from '../src/charts/Histogram';
-import * as d3 from "d3";
+import Map from '../src/charts/Map';
 
 type rowProp = {
   id: number,
@@ -21,13 +21,10 @@ const columns : TableColumn<rowProp>[] = [
     selector: row => row.response.toString()
   }
 ];
-let table : rowProp[] = [];
 function App() {
   const [data, setData] = useState("No data :(");
-  const [test, setTest] = useState<Array<string>>([]);
   const [ageData, setAgeData] = useState<Array<number>>([]);
   const [tableData, setTableData] = useState<Array<rowProp>>([]);
-
 
   useEffect(() => {
     async function getData() {
@@ -36,8 +33,6 @@ function App() {
       const data = await response.json();
       
       setData(data.msg);
-      console.log(test);
-      setTest(["hello"]);
     }
 
     fetch(`${API_URL}/api/table/AGE`)
@@ -49,7 +44,6 @@ function App() {
     fetch(`${API_URL}/api/table/B01`)
         .then(res => res.json())
         .then(data => {
-          console.log(data)
           let count : number = 0
           for (let key in data) {
             let value = dict[key]
@@ -60,20 +54,16 @@ function App() {
               response: value
             };
             count++;
-            console.log(d)
-            table.push(d);
-            setTableData(table);
+            setTableData(tableData => [...tableData,d]);
         }
       })
         .catch(rejected => {
-            console.log(rejected);   
         }); 
     getData();
   }, []); 
 
   return (
     <>
-      <h1>MERN App!</h1>
       <p>Data from server: {data} </p>
         
         <DataTable
@@ -82,9 +72,13 @@ function App() {
           data={tableData}
         />
         <Histogram
-          height ={500}
-          width = {500}
+          height ={600}
+          width = {600}
           data = {ageData}/>
+        <Map
+          height ={770}
+          width = {990}
+        />
     </>
   );
 }

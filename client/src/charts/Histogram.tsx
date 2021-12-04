@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import '../styles.css';
 
 interface histogramProp {
   height : number;
@@ -19,15 +20,17 @@ function Histogram (props : histogramProp) {
     .attr("transform",`translate(${margin.left},${margin.top})`);
 
   let data : Array<number> = props.data;
-  console.log(data);
-  const maxAge : number= Math.max(...data);
+  let maxAge : number= Math.max(...data);
+  maxAge = Math.ceil(maxAge / 10) * 10 ;
   const ageScale = d3.scaleLinear().domain([0, maxAge]).range([0, chartWidth]);
   let total : number[] = []
   let max = 0; 
   let i = 0;
-  for (i = 10; i<=maxAge; i+=10){
+
+  for (i = 10; i<=maxAge+10; i+=10){
     total[i] = 0;
   }
+
   data.forEach( age => {
   Object.keys(total).forEach ((key : any )=> {
     if (age <= key && key-10 < age){
@@ -39,7 +42,6 @@ function Histogram (props : histogramProp) {
     });
   });
   
-  console.log(total);
   max = Math.ceil(max / 10) * 10 + 10
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
 
@@ -69,7 +71,6 @@ function Histogram (props : histogramProp) {
     .attr("class", "x gridlines")
     .attr('transform',`translate(${margin.left},${chartHeight + margin.top})`) 
     .call(bottomGridlines);
-
   annotations.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "middle")
@@ -86,13 +87,16 @@ function Histogram (props : histogramProp) {
     .text("Population Totals");
 
   Object.keys(total).forEach ((key : any)=> {
+    if (total[key]=== 0){
+      delete total[key];
+    }
   chartArea.append("rect")
+  .attr("class", "histogram")
+
     .attr("x",ageScale( key-10 ))
     .attr("y",totalScale(total[key]) )
     .attr("height", chartHeight -totalScale(total[key]))
-    .attr("width",ageScale( 10 ) )
-    .style("stroke", "gray" )
-    .style("fill", "pink" );
+    .attr("width",ageScale( 10 ) );
 
   chartArea.append("text")
     .attr("text-anchor","middle")
@@ -101,7 +105,6 @@ function Histogram (props : histogramProp) {
     .attr('y',totalScale(total[key]) - 5)
     .text(total[key]);
   });
-
 
   return (
     <svg id = "histogram" height = {props.height} width = {props.width}></svg>

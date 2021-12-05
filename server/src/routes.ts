@@ -138,7 +138,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
 
   let output = new Map<string, number>();
   let n = 0;
-  
+
   var encodingDescrp: any;
   async function allEncoding() {
     let query = { Variable: variable }
@@ -158,11 +158,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       if (!isNaN(value)) {
         let j = 0;
         while (typeof description == 'undefined') {
-          if (j == encodingDescrp.length) {
-            console.log("overflow index: ", i);
-            console.log("overflow j: ", j);
-            console.log("overflow encoding: ", value);
-          }
           if (encodingDescrp[j].Encoding == value) {
             description = encodingDescrp[j].Description;
           }

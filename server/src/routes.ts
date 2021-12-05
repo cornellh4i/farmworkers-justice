@@ -1,5 +1,6 @@
 import Express from "express";
 import { Db } from "mongodb";
+import { getOutputFileNames, OutputFileType } from "typescript";
 
 /**
  * Takes an array and a string variable
@@ -129,39 +130,75 @@ function aggregateHistogram(arr: [number, number][]) {
   return recentVals
 }
 
-function aggregateDonutChart(arr: [number, number][], variable: string, db: Db,) {
+async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db,) {
   // This is a list with the number of times each encoding shows up in arr. 
   // The index of the value in the list corresponds to the encoding value. 
-  let aggregate_encodings: Array<number> = [];
-  console.log(arr)
+  // let aggregate_encodings: Array<number> = [];
+
   let output = new Map<string, number>();
-  async function iterateFunc(v: [number, number]) {
-    const year = v[0]
+  let n = 0;
+  
+  await Promise.all(arr.map(async (v) => {
     var encodingDescrp: any;
     let query = { Variable: variable, Encoding: v[1] }
     try {
-      encodingDescrp = await db.collection('description-code').find(query).toArray();
-      // .then()
+      encodingDescrp = await db.collection('description-code').find(query).toArray()
+      .then( function (encodingDescrp) {
+        if (encodingDescrp.length > 0) {
+          if (output.has(encodingDescrp[0].Description)) {
+            output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
+          }
+          else {
+            output.set(encodingDescrp[0].Description, 0);
+          }
+        n++;
+        }
+      })
     } catch (error) {
-      console.log(error)
+      console.log(error);
     };
-    // TODO: FIX THIS IF STATEMENT SO IT DETECTS LATEST YEAR. Weird cuz it works for other years like 2008
-    if (year == LATEST_YEAR) {
-      console.log("latest year", LATEST_YEAR, output)
-      if (output.get(encodingDescrp[0].Description) === undefined) {
-        output.set(encodingDescrp[0].Description, 0)
-      }
-      else {
-        output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
-      }
+  })
+  ).then( function() {
+    for (var encoding in output) {
+      console.log(encoding, output.get(encoding));
+      // TODO: not working yet (have to do with promise)
+      output.set(encoding, output.get(encoding)! / n);
+      console.log(output);
     }
-  }
+  });
+  
+//   async function allEncoding() {
+//     var encodingDescrp: any;
+//     let query = { Variable: variable }
+//     try {
+//       encodingDescrp = await db.collection('description-code').find(query).toArray()
+//       return encodingDescrp;
+//     } catch (error) {
+//       console.log(error);
+//     };
+//   }
 
-  function errorFunc(error: any) {
-    console.log(error);
-  }
-  arr.forEach(iterateFunc, errorFunc)
-  return output
+//   allEncoding()
+//   .then( function(encodingDescrp) {
+//     for (let i = 0; i < arr.length; i++) {
+//       const value = arr[i][1];
+//       if (typeof value !== 'undefined') {
+//         if (output.has(encodingDescrp[0].Description)) {
+//           output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
+//         }
+//         else {
+//           output.set(encodingDescrp[0].Description, 0);
+//         }
+//       }
+//     }
+//   })
+//   .then( function() {
+//     for (const [encoding, value] of Object.entries(output)) {
+//       output.set(encoding, value / n);
+//       console.log(output);
+//     }
+//   });
+  return output;
 }
 
 module.exports = () => {
@@ -211,10 +248,10 @@ module.exports = () => {
 
   router.get('/donutAggregation/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb())
+    const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
     console.log("query result: ", queryResult);
     const output = await aggregateDonutChart(queryResult, req.params.variable, dbo.getDb());
-    console.log("aggregated result: ", Object.fromEntries(output));
+    console.log("aggregated result: ", output);
     res.json({ msg: Object.fromEntries(output) });
   });
   return router;

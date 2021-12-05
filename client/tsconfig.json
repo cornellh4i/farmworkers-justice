@@ -31,7 +31,7 @@
   },
   "include": [
     "./src/**/*"
-  ],
+, "charts/Histogram.tsx"  ],
   "exclude": [
     "./node_modules"
   ]

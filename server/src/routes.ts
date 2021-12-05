@@ -1,4 +1,5 @@
 import Express from "express";
+import { utimes } from "fs";
 import { Db } from "mongodb";
 import { getOutputFileNames, OutputFileType } from "typescript";
 
@@ -138,66 +139,48 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   let output = new Map<string, number>();
   let n = 0;
   
-  await Promise.all(arr.map(async (v) => {
-    var encodingDescrp: any;
-    let query = { Variable: variable, Encoding: v[1] }
+  var encodingDescrp: any;
+  async function allEncoding() {
+    let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
-      .then( function (encodingDescrp) {
-        if (encodingDescrp.length > 0) {
-          if (output.has(encodingDescrp[0].Description)) {
-            output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
-          }
-          else {
-            output.set(encodingDescrp[0].Description, 0);
-          }
-        n++;
-        }
-      })
+      return encodingDescrp;
     } catch (error) {
       console.log(error);
     };
-  })
-  ).then( function() {
-    for (var encoding in output) {
-      console.log(encoding, output.get(encoding));
-      // TODO: not working yet (have to do with promise)
-      output.set(encoding, output.get(encoding)! / n);
-      console.log(output);
-    }
-  });
-  
-//   async function allEncoding() {
-//     var encodingDescrp: any;
-//     let query = { Variable: variable }
-//     try {
-//       encodingDescrp = await db.collection('description-code').find(query).toArray()
-//       return encodingDescrp;
-//     } catch (error) {
-//       console.log(error);
-//     };
-//   }
+  }
 
-//   allEncoding()
-//   .then( function(encodingDescrp) {
-//     for (let i = 0; i < arr.length; i++) {
-//       const value = arr[i][1];
-//       if (typeof value !== 'undefined') {
-//         if (output.has(encodingDescrp[0].Description)) {
-//           output.set(encodingDescrp[0].Description, output.get(encodingDescrp[0].Description)! + 1)
-//         }
-//         else {
-//           output.set(encodingDescrp[0].Description, 0);
-//         }
-//       }
-//     }
-//   })
-//   .then( function() {
-//     for (const [encoding, value] of Object.entries(output)) {
-//       output.set(encoding, value / n);
-//       console.log(output);
-//     }
-//   });
+  await allEncoding()
+  .then( function() {
+    for (let i = 0; i < arr.length; i++) {
+      const value = arr[i][1];
+      let description;
+      if (!isNaN(value)) {
+        let j = 0;
+        while (typeof description == 'undefined') {
+          if (j == encodingDescrp.length) {
+            console.log("overflow index: ", i);
+            console.log("overflow j: ", j);
+            console.log("overflow encoding: ", value);
+          }
+          if (encodingDescrp[j].Encoding == value) {
+            description = encodingDescrp[j].Description;
+          }
+          j++;
+        }
+        if (output.has(description)) {
+          output.set(description, output.get(description)! + 1)
+        }
+        else {
+          output.set(description, 0);
+        }
+        n++;
+      }
+    }
+    output.forEach((v, d) => {
+      output.set(d, v/n);
+    })
+  });
   return output;
 }
 

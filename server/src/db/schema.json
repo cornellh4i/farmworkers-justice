@@ -1,0 +1,57 @@
+{
+  "$schema": "",
+  "$id": "",
+  "title": "Farmer Interview",
+  "description": "This document records the details of a farmer",
+  "type": "object",
+  "properties": {
+    "GENDER": {
+      "description": "Farmer Gender",
+      "type": "number"
+    },
+    "FY": {
+      "description": "Fiscal Year",
+      "type": "number"
+    },
+    "REGION6": {
+      "description": "Interview Region",
+      "type": "number"
+    },
+    "FWID": {
+      "description": "Farmworker ID",
+      "type": "number"
+    },
+    "currstat": {
+      "description": "Current Work Authorization Status (Immigration Status)",
+      "type": "number"
+    },
+    "AGE": {
+      "description": "Age",
+      "type": "number"
+    },
+    "BLWAGE": {
+      "description": "Below Minimum Wage",
+      "type": "number"
+    },
+    "MARRIED": {
+      "description": "Marriage Status",
+      "type": "number"
+    },
+    "FLC": {
+      "description": "Employer is a Farm Labor Contractor",
+      "type": "number"
+    },
+    "CROP": {
+      "description": "Farmer's crop at time of interview",
+      "type": "number"
+    },
+    "B01": {
+      "description": "Farmer Ethnicity",
+      "type": "number"
+    },
+    "B02": {
+      "description": "Farmer Race",
+      "type": "number"
+    }
+  }
+}

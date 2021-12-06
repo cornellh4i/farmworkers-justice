@@ -184,6 +184,9 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  router.get('/hello', async (req: Express.Request, res: Express.Response) => {
+    res.json({msg: "Hello, world!"});
+  });
 
   router.get('/filterTwo/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
@@ -224,7 +227,7 @@ module.exports = () => {
     res.json({ msg: output });
   });
 
-  router.get('/donutAggregation/:variable', async (req: Express.Request, res: Express.Response) => {
+  router.get('/donut/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
     console.log("query result: ", queryResult);

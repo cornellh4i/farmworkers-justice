@@ -1,7 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from "d3";
 
+export interface timeSeriesProp {
+  year: number,
+  value: number
+}
+
+interface lineGraphProp {
+  data: Array<timeSeriesProp>;
+  width: number;
+  height: number
+}
+
 function LineGraph(props: any) {
+  console.log("data received: ", props.data)
   const [data] = useState(props.data);
   const svgRef = useRef(null);
   useEffect(() => {
@@ -65,4 +77,3 @@ function LineGraph(props: any) {
 }
 
 export default LineGraph
-

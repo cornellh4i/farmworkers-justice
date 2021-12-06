@@ -29,7 +29,13 @@ function DonutChart(props: DonutChartProps) {
 
   useEffect(
     () => {
-      const data = createPie(props.data);
+      // get list of data from the values
+      var donutData = []
+      for (let key in props.data) {
+        let value = props.data[key]
+        donutData.push(value)
+    }
+      const data = createPie(donutData);
       const group = d3.select(ref.current);
       const groupWithData = group.selectAll("g.arc").data(data);
 
@@ -52,23 +58,10 @@ function DonutChart(props: DonutChartProps) {
       const text = groupWithUpdate
         .append("text")
         .merge(groupWithData.select("text"));
-
+      const keys = Object.keys(props.data);
       function formatText(x: number) {
-        if (x === 0) {
-          return "Doesn't Speak Any English";
-        }
-        if (x === 1) {
-          return "Speaks A Little English";
-        }
-        if (x === 2) {
-          return "Speaks English Somewhat";
-        }
-        if (x === 3) {
-          return "Speaks English Well";
-        }
-        else {
-          return "hello";
-        }
+        // get the key
+        return keys[x]
       }
       text
         .attr("text-anchor", function (d) {

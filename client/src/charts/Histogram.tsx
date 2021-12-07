@@ -8,7 +8,7 @@ interface histogramProp {
 }
 
 function Histogram (props : histogramProp) {
-  console.log("received histogram data: ", props.data)
+  console.log("histogram data received: ", props.data)
   const svg = d3.select("svg#histogram");
   const width = props.width
   const height = props.height;
@@ -28,10 +28,12 @@ function Histogram (props : histogramProp) {
   let max = 0; 
   let i = 0;
 
+  // TODO: DO WE NEED TO ALLOCATE THIS MUCH ARRAY MEMORY FOR TOTAL?
   for (i = 10; i<=maxAge+10; i+=10){
     total[i] = 0;
   }
 
+  // TODO: USE ONE LOOP (SHOULD BE POSSIBLE)
   data.forEach( age => {
   Object.keys(total).forEach ((key : any )=> {
     if (age <= key && key-10 < age){
@@ -87,10 +89,13 @@ function Histogram (props : histogramProp) {
     .attr("transform", "rotate(-90)")
     .text("Population Totals");
 
+  // console.log("total: ", total)
   Object.keys(total).forEach ((key : any)=> {
     if (total[key]=== 0){
       delete total[key];
     }
+  // console.log("after total forEach: ", total)
+
   chartArea.append("rect")
   .attr("class", "histogram")
 

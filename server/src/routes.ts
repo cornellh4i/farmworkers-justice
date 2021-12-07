@@ -3,6 +3,13 @@ import { utimes } from "fs";
 import { Db } from "mongodb";
 import { getOutputFileNames, OutputFileType } from "typescript";
 
+interface encodingProp {
+  _id: Object;
+  Variable: string;
+  Encoding: number;
+  Description: string
+}
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -131,11 +138,57 @@ function aggregateHistogram(arr: [number, number][]) {
   return recentVals
 }
 
-async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db,) {
+async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
   // This is a list with the number of times each encoding shows up in arr. 
   // The index of the value in the list corresponds to the encoding value. 
   // let aggregate_encodings: Array<number> = [];
 
+  let output = new Map<string, number>();
+  let n = 0;
+
+  var encodingDescrp: any;
+  async function allEncoding() {
+    let query = { Variable: variable }
+    try {
+      encodingDescrp = await db.collection('description-code').find(query).toArray()
+      console.log("encoding description type: ", typeof encodingDescrp)
+      console.log("encoding descrp: ", encodingDescrp)
+      return encodingDescrp;
+    } catch (error) {
+      console.log(error);
+    };
+  }
+
+  await allEncoding()
+  .then( function() {
+    for (let i = 0; i < arr.length; i++) {
+      const value = arr[i][1];
+      let description;
+      if (!isNaN(value)) {
+        let j = 0;
+        while (typeof description == 'undefined') {
+          if (encodingDescrp[j].Encoding == value) {
+            description = encodingDescrp[j].Description;
+          }
+          j++;
+        }
+        if (output.has(description)) {
+          output.set(description, output.get(description)! + 1)
+        }
+        else {
+          output.set(description, 0);
+        }
+        n++;
+      }
+    }
+    output.forEach((v, d) => {
+      output.set(d, v/n);
+    })
+  });
+  return output;
+}
+
+async function aggregateTable(arr: [number, number][], variable: string, db: Db) {
   let output = new Map<string, number>();
   let n = 0;
 
@@ -173,10 +226,11 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       }
     }
     output.forEach((v, d) => {
-      output.set(d, v/n);
+      output.set(d, (v/n, v));
     })
   });
   return output;
+
 }
 
 module.exports = () => {
@@ -192,7 +246,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     const queryResult = await queryTwoVals(req.params.variable, dbo.getDb(),
       req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2);
-    console.log("query result: ", queryResult);
+    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
     // console.log("aggregated result: ", Object.fromEntries(output));
     // res.json({ msg: Object.fromEntries(output) });
@@ -203,36 +257,45 @@ module.exports = () => {
   router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    console.log("query result: ", queryResult);
+    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
-    console.log("aggregated result: ", output);
+    console.log("timeseries aggregated result: ", output);
     res.json({ msg: output });
   });
 
   router.get('/timeSeries/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal);
-    console.log("query result: ", queryResult);
+    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
-    console.log("aggregated result: ", output);
+    console.log("timeseries aggregated result: ", output);
     res.json({ msg: output });
   });
 
   router.get('/histogram/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    console.log("query result: ", queryResult);
+    // console.log("query result: ", queryResult);
     const output = await aggregateHistogram(queryResult);
-    console.log("aggregated result: ", output);
+    console.log("histogram aggregated result: ", output);
     res.json({ msg: output });
   });
 
   router.get('/donut/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
-    console.log("query result: ", queryResult);
+    // console.log("query result: ", queryResult);
     const output = await aggregateDonutChart(queryResult, req.params.variable, dbo.getDb());
-    console.log("aggregated result: ", output);
+    console.log("donut aggregated result: ", output);
+    res.json({ msg: Object.fromEntries(output) });
+  });
+
+  router.get('/table/:variable', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
+    // console.log("query result: ", queryResult);
+    const output = await aggregateTable(queryResult, req.params.variable, dbo.getDb());
+    console.log("table aggregated result: ", output);
     res.json({ msg: Object.fromEntries(output) });
   });
   return router;

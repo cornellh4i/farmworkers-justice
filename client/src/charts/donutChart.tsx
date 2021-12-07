@@ -15,6 +15,7 @@ interface DonutChartProps {
 }
 
 function DonutChart(props: DonutChartProps) {
+  console.log("donut data received: ", props.data)
   const ref: React.MutableRefObject<null> = useRef(null);
   const createPie = d3
     .pie()
@@ -27,8 +28,8 @@ function DonutChart(props: DonutChartProps) {
   const colors = d3.scaleOrdinal(d3.schemeCategory10);
   const format = d3.format(".2f");
 
-  useEffect(
-    () => {
+  // useEffect(
+  //   () => {
       // get list of data from the values
       var donutData = []
       for (let key in props.data) {
@@ -74,16 +75,15 @@ function DonutChart(props: DonutChartProps) {
             x = c[0],
             y = c[1],
             h = Math.sqrt(x * x + y * y);
-          console.log(d)
           return "translate(" + (x / h * 200) + ',' +
             (y / h * 200) + ")";
         })
         .style("fill", "black")
         .style("font-size", 10)
         .text(d => formatText(d.index));
-    },
-    [props.data]
-  );
+    // },
+    // [props.data]
+  // );
 
   return (
     <svg width={"50%"} height={props.height}>

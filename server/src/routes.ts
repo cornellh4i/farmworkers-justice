@@ -189,7 +189,8 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
 }
 
 async function aggregateTable(arr: [number, number][], variable: string, db: Db) {
-  let output = new Map<string, number>();
+  let sum = new Map<string, number>();
+  let output = new Map<string, [number, number]>();
   let n = 0;
 
   var encodingDescrp: any;
@@ -216,17 +217,17 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
           }
           j++;
         }
-        if (output.has(description)) {
-          output.set(description, output.get(description)! + 1)
+        if (sum.has(description)) {
+          sum.set(description, sum.get(description)! + 1)
         }
         else {
-          output.set(description, 0);
+          sum.set(description, 0);
         }
         n++;
       }
     }
-    output.forEach((v, d) => {
-      output.set(d, (v/n, v));
+    sum.forEach((v, d) => {
+      output.set(d, [v/n, v]);
     })
   });
   return output;

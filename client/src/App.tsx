@@ -11,7 +11,7 @@ import Table from './charts/Table'
 const API_URL = process.env.REACT_APP_API;
 
 function App() {
-  // const [data, setData] = useState("No data :(");
+  const [data, setData] = useState("No data :(");
   const [tableData, setTableData] = useState<{}>({});
   const [timeSeriesData, setTimeSeriesData] = useState<Array<[number, number]>>([]);
   const [donutData, setdonutData] = useState<{}>({});
@@ -25,25 +25,25 @@ function App() {
       // setData(data.msg);
       // console.log(data);
 
-      const urlHistogram = `${API_URL}/histogram/AGE`;
-      const histogramResponse = await fetch(urlHistogram);
-      const histogramOut = await histogramResponse.json();
-      setHistogramData(histogramOut.msg);
-      // console.log("histogram data: ", histogramData)
+      // const urlHistogram = `${API_URL}/histogram/AGE`;
+      // const histogramResponse = await fetch(urlHistogram);
+      // const histogramOut = await histogramResponse.json();
+      // setHistogramData(histogramOut.msg);
+      // // console.log("histogram data: ", histogramData)
 
-      const urlTimeSeries = `${API_URL}/timeSeries/FOREIGNB`;
-      const timeSeriesResponse = await fetch(urlTimeSeries);
-      const timeSeriesOut = await timeSeriesResponse.json();
-      setTimeSeriesData(timeSeriesOut.msg);
-      console.log("time series data: ", timeSeriesData)
-      // console.log("type of backend data: ", typeof timeSeriesOut.msg[0])
+      // const urlTimeSeries = `${API_URL}/timeSeries/FOREIGNB`;
+      // const timeSeriesResponse = await fetch(urlTimeSeries);
+      // const timeSeriesOut = await timeSeriesResponse.json();
+      // setTimeSeriesData(timeSeriesOut.msg);
+      // console.log("time series data: ", timeSeriesData)
+      // // console.log("type of backend data: ", typeof timeSeriesOut.msg[0])
 
 
-      const urlDonut = `${API_URL}/donut/B07`;
-      const donutResponse = await fetch(urlDonut);
-      const donutOut = await donutResponse.json();
-      setdonutData(donutOut.msg);
-      // console.log("donut data: ", donutData)
+      // const urlDonut = `${API_URL}/donut/B07`;
+      // const donutResponse = await fetch(urlDonut);
+      // const donutOut = await donutResponse.json();
+      // setdonutData(donutOut.msg);
+      // // console.log("donut data: ", donutData)
 
       const urlTable = `${API_URL}/table/B01`;
       const tableResponse = await fetch(urlTable);
@@ -181,10 +181,10 @@ function App() {
   return (
     <>
     {/* <p>Data from server: {data}</p> */}
-        {/* <Table
+        <Table
           data={tableData}
-        />  */}
-        <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        /> 
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
           Respondent Age
         </h3>
         <Histogram
@@ -194,9 +194,9 @@ function App() {
         <Map
           height ={770}
           width = {990}
-        />
+        /> */}
       {/* <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}> */}
-        <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
         </h3>
         <Donut
@@ -204,8 +204,8 @@ function App() {
           width={500}
           height={500}
           innerRadius={150}
-          outerRadius={200}
-        />
+          outerRadius={200} */}
+        {/* /> */}
      {/* </div> */}
       {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
          Average Value per Year from 2009 to 2018

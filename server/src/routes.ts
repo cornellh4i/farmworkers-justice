@@ -10,6 +10,7 @@ interface encodingProp {
   Description: string
 }
 
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -20,7 +21,6 @@ interface encodingProp {
  *          the query result and is in the form [FY, value of the variable key]. 
  *          EX: [[2010, 2], [2010, 2]]
  */
-
 async function queryVal(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number) {
   var query = {}
   if (typeof filter_key1 !== 'undefined' && typeof filter_value1 !== 'undefined') {
@@ -38,6 +38,7 @@ async function queryVal(variable: string, db: Db, filter_key1?: string, filter_v
   result.forEach(iterateFunc, errorFunc);
   return filtered_array
 }
+
 
 async function queryTwoVals(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number,
   filter_key2?: string, filter_value2?: string | number) {
@@ -60,6 +61,7 @@ async function queryTwoVals(variable: string, db: Db, filter_key1?: string, filt
   console.log(filtered_array)
   return filtered_array
 }
+
 
 /**
  * Takes an array and a string variable
@@ -114,13 +116,12 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
 
 const LATEST_YEAR = 2018;
 
+
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
  * @param variable is a that is being aggregated. EX: GENDER
- * @returns a dictionary where the keys are encoding descriptions and the values are the 
- *          percentage of times that encoding appears in the LATEST_YEAR. 
- *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
+ * @returns an array of all values from the LATEST_YEAR
  */
 function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
@@ -138,11 +139,16 @@ function aggregateHistogram(arr: [number, number][]) {
   return recentVals
 }
 
-async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
-  // This is a list with the number of times each encoding shows up in arr. 
-  // The index of the value in the list corresponds to the encoding value. 
-  // let aggregate_encodings: Array<number> = [];
 
+/**
+ * Takes an array and a string variable
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param variable is a that is being aggregated. EX: GENDER
+ * @returns a dictionary where the keys are encoding descriptions and the values are the 
+ *          percentage of times that encoding appears in the LATEST_YEAR. 
+ *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
+ */
+async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
   let output = new Map<string, number>();
   let n = 0;
 
@@ -189,6 +195,16 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   return output;
 }
 
+/**
+ * Takes an array and a string variable
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param variable is a that is being aggregated. EX: GENDER
+ * @returns a dictionary where the keys are encoding descriptions and the values 
+ *          are arrays of two values. The first value is the proportion 
+ *          percentage of the surveys that answered accordingly, and the second 
+ *          value is the number of count for that response.
+ *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
+ */
 async function aggregateTable(arr: [number, number][], variable: string, db: Db) {
   let sum = new Map<string, number>();
   let output = new Map<string, [number, number]>();
@@ -248,7 +264,6 @@ module.exports = () => {
     const dbo = require("./db/conn");
     const queryResult = await queryTwoVals(req.params.variable, dbo.getDb(),
       req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2);
-    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
     // console.log("aggregated result: ", Object.fromEntries(output));
     // res.json({ msg: Object.fromEntries(output) });
@@ -259,7 +274,6 @@ module.exports = () => {
   router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
     console.log("timeseries aggregated result: ", output);
     res.json({ msg: output });
@@ -268,7 +282,6 @@ module.exports = () => {
   router.get('/timeSeries/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal);
-    // console.log("query result: ", queryResult);
     const output = await aggregateTimeSeries(queryResult, req.params.variable);
     console.log("timeseries aggregated result: ", output);
     res.json({ msg: output });
@@ -277,7 +290,6 @@ module.exports = () => {
   router.get('/histogram/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    // console.log("query result: ", queryResult);
     const output = await aggregateHistogram(queryResult);
     console.log("histogram aggregated result: ", output);
     res.json({ msg: output });
@@ -286,7 +298,6 @@ module.exports = () => {
   router.get('/donut/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
-    // console.log("query result: ", queryResult);
     const output = await aggregateDonutChart(queryResult, req.params.variable, dbo.getDb());
     console.log("donut aggregated result: ", output);
     res.json({ msg: Object.fromEntries(output) });
@@ -295,7 +306,6 @@ module.exports = () => {
   router.get('/table/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
-    // console.log("query result: ", queryResult);
     const output = await aggregateTable(queryResult, req.params.variable, dbo.getDb());
     console.log("table aggregated result: ", output);
     res.json({ msg: Object.fromEntries(output) });

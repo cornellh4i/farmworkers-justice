@@ -7,16 +7,14 @@ export interface timeSeriesProp {
 }
 
 interface lineGraphProp {
-  data: Array<timeSeriesProp>;
+  data: any;
   width: number;
   height: number
 }
 
-function LineGraph(props: any) {
+function LineGraph(props: lineGraphProp) {
   console.log("time series data received: ", props.data)
-  // const [data] = useState(props.data);
   const svgRef: React.MutableRefObject<null> = useRef(null);
-  useEffect(() => {
   const w = props.width;
   const h = props.height;
   const svg = d3.select(svgRef.current)
@@ -28,7 +26,9 @@ function LineGraph(props: any) {
     .style('overflow', 'visible');
 
   const xScale = d3.scaleLinear()
-    .domain([props.data[0].year, props.data[Object.keys(props.data).length-1].year])
+    .domain((props.data.length !== 0)? 
+      [props.data[0].year, props.data[Object.keys(props.data).length-1].year] : 
+      [2008, 2018]) //[2008, 2018] is a temp placeholder before props is updated
     .range([0, w])
   const yScale = d3.scaleLinear()
     .domain([0, 1])
@@ -66,14 +66,12 @@ function LineGraph(props: any) {
   svg.selectAll('.line')
     .data([props.data])
     .join('path')
-    .attr('d', (d : Iterable <[number, number]>) => generatedScaleLine(d))
+    .attr('d', d => generatedScaleLine(d))
     .attr('fill', 'none')
     .attr('stroke', 'black')
-  }, [props.data]);
+  // }, [props.data]);
   return (
-    <div>
-      <svg ref={svgRef}></svg>
-    </div>
+    <svg ref={svgRef}></svg>
   )
 }
 

@@ -107,7 +107,7 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
 
   arr.forEach(iterateFunc, errorFunc)
   output.forEach((d) => {
-    d.value = d.value / totalEachYear.get(d.year)!
+    d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100) / 100
   })
   return output
 }
@@ -147,6 +147,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   let n = 0;
 
   var encodingDescrp: any;
+  // TODO: FACTORIZE INTO A FUNCTION OUTSIDE 
   async function allEncoding() {
     let query = { Variable: variable }
     try {
@@ -182,7 +183,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       }
     }
     output.forEach((v, d) => {
-      output.set(d, v/n);
+      output.set(d, Math.round(v/n * 100) / 100);
     })
   });
   return output;
@@ -227,7 +228,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
       }
     }
     sum.forEach((v, d) => {
-      output.set(d, [v/n, v]);
+      output.set(d, [Math.round(v/n * 100) / 100, v]);
     })
   });
   return output;

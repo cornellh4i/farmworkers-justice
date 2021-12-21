@@ -28,62 +28,57 @@ function DonutChart(props: DonutChartProps) {
   const colors = d3.scaleOrdinal(d3.schemeCategory10);
   const format = d3.format(".2f");
 
-  // useEffect(
-  //   () => {
-      // get list of data from the values
-      var donutData = []
-      for (let key in props.data) {
-        let value = props.data[key]
-        donutData.push(value)
-    }
-      const data = createPie(donutData);
-      const group = d3.select(ref.current);
-      const groupWithData = group.selectAll("g.arc").data(data);
+  // get list of data from the values
+  var donutData = []
+  for (let key in props.data) {
+    let value = props.data[key]
+    donutData.push(value)
+}
+  const data = createPie(donutData);
+  const group = d3.select(ref.current);
+  const groupWithData = group.selectAll("g.arc").data(data);
 
-      groupWithData.exit().remove();
+  groupWithData.exit().remove();
 
-      const groupWithUpdate = groupWithData
-        .enter()
-        .append("g")
-        .attr("class", "arc");
+  const groupWithUpdate = groupWithData
+    .enter()
+    .append("g")
+    .attr("class", "arc");
 
-      const path = groupWithUpdate
-        .append("path")
-        .merge(groupWithData.select("path.arc"));
+  const path = groupWithUpdate
+    .append("path")
+    .merge(groupWithData.select("path.arc"));
 
-      path
-        .attr("class", "arc")
-        .attr("d", createArc)
-        .attr("fill", (d, i) => colors(i.toString()));
+  path
+    .attr("class", "arc")
+    .attr("d", createArc)
+    .attr("fill", (d, i) => colors(i.toString()));
 
-      const text = groupWithUpdate
-        .append("text")
-        .merge(groupWithData.select("text"));
-      const keys = Object.keys(props.data);
-      function formatText(x: number) {
-        // get the key
-        return keys[x]
-      }
-      text
-        .attr("text-anchor", function (d) {
-          return (d.endAngle + d.startAngle) / 2 > Math.PI ?
-            "end" : "start";
-        })
-        .attr("alignment-baseline", "middle")
-        .attr("transform", function (d) {
-          var c = createArc.centroid(d),
-            x = c[0],
-            y = c[1],
-            h = Math.sqrt(x * x + y * y);
-          return "translate(" + (x / h * 200) + ',' +
-            (y / h * 200) + ")";
-        })
-        .style("fill", "black")
-        .style("font-size", 10)
-        .text(d => formatText(d.index));
-    // },
-    // [props.data]
-  // );
+  const text = groupWithUpdate
+    .append("text")
+    .merge(groupWithData.select("text"));
+  const keys = Object.keys(props.data);
+  function formatText(x: number) {
+    // get the key
+    return keys[x]
+  }
+  text
+    .attr("text-anchor", function (d) {
+      return (d.endAngle + d.startAngle) / 2 > Math.PI ?
+        "end" : "start";
+    })
+    .attr("alignment-baseline", "middle")
+    .attr("transform", function (d) {
+      var c = createArc.centroid(d),
+        x = c[0],
+        y = c[1],
+        h = Math.sqrt(x * x + y * y);
+      return "translate(" + (x / h * 200) + ',' +
+        (y / h * 200) + ")";
+    })
+    .style("fill", "black")
+    .style("font-size", 10)
+    .text(d => formatText(d.index));
 
   return (
     <svg width={"50%"} height={props.height}>

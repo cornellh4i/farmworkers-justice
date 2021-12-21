@@ -9,17 +9,5 @@
     "install": "cd client && npm install",
     "build": "cd client && npm run build"
   },
-  "license": "ISC",
-  "dependencies": {
-<<<<<<< HEAD
-    "express": "^4.17.1"
-=======
-    "d3": "^7.1.1",
-    "typescript": "^4.4.4"
-  },
-  "devDependencies": {
-    "@types/d3": "^7.1.0",
-    "@types/node": "^16.11.11"
->>>>>>> donut
-  }
+  "license": "ISC"
 }

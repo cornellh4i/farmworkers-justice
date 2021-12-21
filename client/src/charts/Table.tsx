@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 
 type rowProp = {
@@ -11,10 +10,12 @@ type tableProp = {
     data: {[key: string]: [number, number]}
 }
 
+const PECENTAGE_INDEX = 0
+const COUNT_INDEX = 1
+
 function Table (props : tableProp) {
-    const data = props.data;
-    console.log("table data received: ", data)
-    const [entries, setEntries] = useState<Array<rowProp>>([]);
+    console.log("table data received: ", props.data)
+    let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
         {
             name: "Ethnicity",
@@ -22,24 +23,22 @@ function Table (props : tableProp) {
         },
         {
             name: "Percentage",
-            selector: row => row.response.toString()
+            selector: row => row.response[PECENTAGE_INDEX] + "%" + " (" + row.response[COUNT_INDEX] + ")"
         }
     ];
-    useEffect(() => {
-        let count: number = 0
-        for (const [key, value] of Object.entries(data)) {
-            let d: rowProp;
-            d = {
-            id: count,
-            response_description: key,
-            response: value
-            };
-            count++;
-            setEntries(entries => [...entries, d]);
-        }
-        console.log("entries: ", entries)
-    
-    }, []);
+    let count: number = 0
+    for (const [key, value] of Object.entries(props.data)) {
+        let d: rowProp;
+        d = {
+        id: count,
+        response_description: key,
+        response: value
+        };
+        count++;
+        entries.push(d)
+    }
+    console.log("entries: ", entries)
+
     return ( 
         <DataTable title="Ethnicity of Respondents" columns= {columns} data={entries}
       /> 

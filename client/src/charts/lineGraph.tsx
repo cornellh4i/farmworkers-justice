@@ -16,7 +16,7 @@ function LineGraph(props: any) {
   console.log("time series data received: ", props.data)
   // const [data] = useState(props.data);
   const svgRef: React.MutableRefObject<null> = useRef(null);
-  // useEffect(() => {
+  useEffect(() => {
   const w = props.width;
   const h = props.height;
   const svg = d3.select(svgRef.current)
@@ -61,7 +61,7 @@ function LineGraph(props: any) {
     .attr("y", 6)
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
-    .text("average value");
+    .text("Percentage of Foreign Born"); //TODO: Will need to be generalized later on
 
   svg.selectAll('.line')
     .data([props.data])
@@ -69,7 +69,7 @@ function LineGraph(props: any) {
     .attr('d', (d : Iterable <[number, number]>) => generatedScaleLine(d))
     .attr('fill', 'none')
     .attr('stroke', 'black')
-  // }, [props.data]);
+  }, [props.data]);
   return (
     <div>
       <svg ref={svgRef}></svg>

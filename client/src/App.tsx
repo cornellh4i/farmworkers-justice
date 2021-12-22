@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import * as d3 from "d3";
-import Line, {timeSeriesProp} from './charts/lineGraph'
+import Line, { timeSeriesProp } from './charts/lineGraph'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
 
@@ -41,25 +41,25 @@ function App() {
     const tableResponse = await fetch(urlTable);
     const tableOut = await tableResponse.json();
     setTableData(tableOut.msg);
-    
+
   }
-  
+
   return (
     <>
-        <Table
-          data={tableData}
-        /> 
-        <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-          Respondent Age
-        </h3>
-        <Histogram
-          height ={600}
-          width = {600}
-          data = {histogramData}/>
-        <Map
-          height ={770}
-          width = {990}
-        />
+      <Table
+        data={tableData}
+      />
+      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        Respondent Age
+      </h3>
+      <Histogram
+        height={600}
+        width={600}
+        data={histogramData} />
+      <Map
+        height={770}
+        width={990}
+      />
       <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}>
         <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
@@ -71,17 +71,17 @@ function App() {
           innerRadius={150}
           outerRadius={200}
         />
-     </div>
+      </div>
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-         Average Value per Year from 2009 to 2018
-       </h3>
-       <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
-     <Line
-      data={timeSeriesData}
-      width={500}
-      height={400}
-      />
-       </div>
+        Average Value per Year from 2009 to 2018
+      </h3>
+      <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
+        <Line
+          data={timeSeriesData}
+          width={500}
+          height={400}
+        />
+      </div>
     </>
   );
 }

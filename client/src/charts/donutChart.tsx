@@ -1,11 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-interface dataProps {
-  date: number,
-  value: number
-}
-
 interface DonutChartProps {
   innerRadius: number,
   outerRadius: number,
@@ -33,7 +28,7 @@ function DonutChart(props: DonutChartProps) {
   for (let key in props.data) {
     let value = props.data[key]
     donutData.push(value)
-}
+  }
   const data = createPie(donutData);
   const group = d3.select(ref.current);
   const groupWithData = group.selectAll("g.arc").data(data);
@@ -54,12 +49,15 @@ function DonutChart(props: DonutChartProps) {
     .attr("d", createArc)
     .attr("fill", (d, i) => colors(i.toString()));
 
+
   const text = groupWithUpdate
     .append("text")
     .merge(groupWithData.select("text"));
+
+  // Want to loop through the keys to make this generalizable
   const keys = Object.keys(props.data);
   function formatText(x: number) {
-    // get the key
+    // get the specific key each time
     return keys[x]
   }
   text
@@ -73,15 +71,15 @@ function DonutChart(props: DonutChartProps) {
         x = c[0],
         y = c[1],
         h = Math.sqrt(x * x + y * y);
-      return "translate(" + (x / h * 200) + ',' +
-        (y / h * 200) + ")";
+      return "translate(" + ((x + 10) / h * 175) + ',' +
+        (y / h * 175) + ")";
     })
     .style("fill", "black")
-    .style("font-size", 10)
+    .style("font-size", 12)
     .text(d => formatText(d.index));
 
   return (
-    <svg width={"50%"} height={props.height}>
+    <svg width={props.width} height={props.height}>
       <g style={{ display: "block", width: "100%", marginLeft: "auto", marginRight: "auto" }}
         ref={ref}
         transform={`translate(${props.outerRadius} ${props.outerRadius})`}

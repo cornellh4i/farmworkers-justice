@@ -1,5 +1,6 @@
 import Express from "express";
 import { Db } from "mongodb";
+import { find } from "tslint/lib/utils";
 
 interface encodingProp {
   _id: Object;
@@ -174,7 +175,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
           output.set(description, output.get(description)! + 1)
         }
         else {
-          output.set(description, 0);
+          output.set(description, 1);
         }
         n++;
       }
@@ -229,7 +230,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
           sum.set(description, sum.get(description)! + 1)
         }
         else {
-          sum.set(description, 0);
+          sum.set(description, 1);
         }
         n++;
       }
@@ -242,16 +243,42 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 }
 
-async function main(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+
+async function findVizType(variable: string, db: Db) {
   let query = { Variable: variable }
   const vizType = await db.collection('variable-viz-type').findOne(query)
+  if (vizType !== null) {
+    return [vizType["Visualization Type"], vizType["Time Series"]]
+  } else {
+    throw "Variable not found in variable-viz-type collection: ", variable
+  }
+}
+
+
+async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+  var queryResult;
+  // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
+  if (typeof filterKey2 !== 'undefined'){
+    queryResult = await queryVal(variable, db, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
+  }
+  else if (typeof filterKey1 !== 'undefined') {
+    queryResult = await queryVal(variable, db, filterKey1, parseInt(filterValue1!))
+  }
+  else{
+    queryResult = await queryVal(variable, db)
+  }
+  const output = await aggregateTimeSeries(queryResult, variable)
+  return output;
+}
+
+
+async function main(variable: string, db: Db, vizType: string, timeSeries: boolean, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
   // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
   if (typeof filterKey2 !== 'undefined'){
     queryResult = await queryVal(variable, db, "FY", LATEST_YEAR, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
   }
   else if (typeof filterKey1 !== 'undefined') {
-    console.log("correct filter")
     queryResult = await queryVal(variable, db, "FY", LATEST_YEAR, filterKey1, parseInt(filterValue1!))
   }
   else{
@@ -259,18 +286,17 @@ async function main(variable: string, db: Db, filterKey1?: string, filterValue1?
   }
   var output;
   if (vizType !== null) {
-    if (vizType["Visualization Type"] === VizType.Histogram) {
+    if (vizType === VizType.Histogram) {
       output = aggregateHistogram(queryResult); 
     }
-    else if (vizType["Visualization Type"] === VizType.Table) {
+    else if (vizType === VizType.Table) {
       output = await aggregateTable(queryResult, variable, db);
       output = Object.fromEntries(output);
     }
-    else if (vizType["Visualization Type"] === VizType.Donut) {
+    else if (vizType === VizType.Donut) {
       output = await aggregateDonutChart(queryResult, variable, db);
       output = Object.fromEntries(output);
     }
-    // TODO: HANDLE TIME SERIES
   }
   else {
     console.log("Variable not found in variable-viz-type collection: ", variable)
@@ -283,26 +309,48 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
-
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const output = await main(req.params.variable, dbo.getDb())
+    var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
+    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
     console.log("output: ", output)
-    res.json({ msg: output });
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const output = await main(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal)
+    var timeSeriesData;
+    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey, req.params.filterVal)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
     console.log("output: ", output)
-    res.json({ msg: output });
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+
   });
 
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const output = await main(req.params.variable, dbo.getDb(), req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
+    var timeSeriesData;
+    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
     console.log("output: ", output)
-    res.json({ msg: output });
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+
   });
 
   return router;

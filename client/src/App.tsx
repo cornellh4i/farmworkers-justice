@@ -5,50 +5,47 @@ import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
-
+import { Button} from 'react-bootstrap';
 
 
 const API_URL = process.env.REACT_APP_API;
 
 function App() {
-  const [data, setData] = useState("No data :(");
   const [tableData, setTableData] = useState<{}>({});
-  const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
-  const [donutData, setdonutData] = useState<{}>({});
   const [histogramData, setHistogramData] = useState<Array<number>>([]);
+  const [donutData, setdonutData] = useState<{}>({});
+  const [FOREIGNBData, setFOREIGNBData] = useState<{}>({});
+  const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
 
   useEffect(() => {
     getData();
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/histogram/AGE`;
+    const urlHistogram = `${API_URL}/AGE`;
     const histogramResponse = await fetch(urlHistogram);
     const histogramOut = await histogramResponse.json();
-    setHistogramData(histogramOut.msg);
+    setHistogramData(histogramOut.data);
 
-    const urlTimeSeries = `${API_URL}/timeSeries/FOREIGNB`;
-    const timeSeriesResponse = await fetch(urlTimeSeries);
-    const timeSeriesOut = await timeSeriesResponse.json();
-    setTimeSeriesData(timeSeriesOut.msg);
-
-    const urlDonut = `${API_URL}/donut/B07`;
-    const donutResponse = await fetch(urlDonut);
-    const donutOut = await donutResponse.json();
-    setdonutData(donutOut.msg);
-
-    const urlTable = `${API_URL}/table/B01`;
+    const urlTable = `${API_URL}/B01`;
     const tableResponse = await fetch(urlTable);
     const tableOut = await tableResponse.json();
-    setTableData(tableOut.msg);
+    setTableData(tableOut.data);
 
+    const urlDonut = `${API_URL}/B07`;
+    const donutResponse = await fetch(urlDonut);
+    const donutOut = await donutResponse.json();
+    setdonutData(donutOut.data);
+
+    const urlFOREIGNB = `${API_URL}/FOREIGNB`;
+    const FOREIGNBResponse = await fetch(urlFOREIGNB);
+    const FOREIGNBOut = await FOREIGNBResponse.json();
+    setFOREIGNBData(FOREIGNBOut.data);
+    setTimeSeriesData(FOREIGNBOut.timeSeriesData)
   }
 
   return (
     <>
-      <Table
-        data={tableData}
-      />
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>
@@ -56,6 +53,9 @@ function App() {
         height={600}
         width={600}
         data={histogramData} />
+      <Table
+        data={tableData}
+      />
       <Map
         height={770}
         width={990}
@@ -72,6 +72,9 @@ function App() {
           outerRadius={200}
         />
       </div>
+      <Table
+        data={FOREIGNBData}
+      />
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Average Value per Year from 2009 to 2018
       </h3>

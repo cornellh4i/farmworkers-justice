@@ -13,8 +13,8 @@ interface lineGraphProp {
 }
 
 function LineGraph(props: lineGraphProp) {
-  console.log("time series data received: ", props.data)
   const svgRef: React.MutableRefObject<null> = useRef(null);
+  console.log("time series data received: ", props.data)
   const w = props.width;
   const h = props.height;
   const svg = d3.select(svgRef.current)
@@ -69,7 +69,6 @@ function LineGraph(props: lineGraphProp) {
     .attr('d', d => generatedScaleLine(d))
     .attr('fill', 'none')
     .attr('stroke', 'black')
-  // }, [props.data]);
   return (
     <svg ref={svgRef}></svg>
   )

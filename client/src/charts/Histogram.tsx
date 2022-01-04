@@ -89,12 +89,10 @@ function Histogram (props : histogramProp) {
     .attr("transform", "rotate(-90)")
     .text("Population Totals");
 
-  // console.log("total: ", total)
   Object.keys(total).forEach ((key : any)=> {
     if (total[key]=== 0){
       delete total[key];
     }
-  // console.log("after total forEach: ", total)
 
   chartArea.append("rect")
   .attr("class", "histogram")

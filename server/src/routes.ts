@@ -1,7 +1,6 @@
 import Express from "express";
-import { utimes } from "fs";
 import { Db } from "mongodb";
-import { getOutputFileNames, OutputFileType } from "typescript";
+import { find } from "tslint/lib/utils";
 
 interface encodingProp {
   _id: Object;
@@ -10,55 +9,47 @@ interface encodingProp {
   Description: string
 }
 
+enum VizType {
+  Donut = "donut",
+  Histogram = "histogram",
+  Table = "table"
+}
 
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
  * @param db is the database instance being used to filter data 
- * @param filter_key is a selected filter option. EX: GENDER, FLC, REGION6
- * @param filter_value is the selected filter value corresponding to filter_key
+ * @param filter_key1, @param filter_key2, @param filter_key3 are selected filter option. EX: GENDER, FLC, REGION6
+ * @param filter_value1, @param filter_value2, @param filter_value3 are the selected filter value corresponding to filter_key
  * @returns a nested array where each element corresponds to each document of 
  *          the query result and is in the form [FY, value of the variable key]. 
  *          EX: [[2010, 2], [2010, 2]]
  */
-async function queryVal(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number) {
+async function queryVal(variable: string, db: Db, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number, filter_key3?: string, filter_value3?: number) {
   var query = {}
-  if (typeof filter_key1 !== 'undefined' && typeof filter_value1 !== 'undefined') {
+  if (typeof filter_key3 !== 'undefined' && typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
+    query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { [filter_key3]: filter_value3 }] }
+  }
+  else if ( typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
+    query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }] }
+  }
+  else if (typeof filter_key1 !== 'undefined') {
     query = { [filter_key1]: filter_value1 }
   }
-  var filtered_array: any[] = []
+  else {
+    query = {}
+  }
+  var filtered_array: Array<[number, number]> = []
+  // TODO: USE PROJECTION
   var result = await db.collection('naws_main').find(query).toArray();
   function iterateFunc(doc: any) {
-    let lst = [doc.FY, doc[variable]];
+    let lst : [number, number] = [doc.FY, doc[variable]];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
     console.log(error);
   }
   result.forEach(iterateFunc, errorFunc);
-  return filtered_array
-}
-
-
-async function queryTwoVals(variable: string, db: Db, filter_key1?: string, filter_value1?: string | number,
-  filter_key2?: string, filter_value2?: string | number) {
-  var query = {}
-  if (typeof filter_key1 !== 'undefined' && typeof filter_value1 !== 'undefined'
-    && typeof filter_key2 !== 'undefined' && typeof filter_value2 !== 'undefined') {
-    query = { $and: [{ filter_key1: filter_value1 }, { filter_key2: filter_value2 }] }
-  }
-  var filtered_array: any[] = []
-  var result = await db.collection('naws_main').find(query).toArray();
-  console.log(result);
-  function iterateFunc(doc: any) {
-    let lst = [doc.FY, doc[variable]];
-    filtered_array.push(lst)
-  }
-  function errorFunc(error: any) {
-    console.log(error);
-  }
-  result.forEach(iterateFunc, errorFunc);
-  console.log(filtered_array)
   return filtered_array
 }
 
@@ -127,10 +118,7 @@ function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 
   function iterateFunc(v: [number, number]) {
-    let year = v[0]
-    if (year == LATEST_YEAR) {
-      recentVals.push(v[1])
-    }
+    recentVals.push(v[1])
   }
   function errorFunc(error: any) {
     console.log(error);
@@ -158,8 +146,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
     let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
-      console.log("encoding description type: ", typeof encodingDescrp)
-      console.log("encoding descrp: ", encodingDescrp)
       return encodingDescrp;
     } catch (error) {
       console.log(error);
@@ -173,17 +159,23 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       let description;
       if (!isNaN(value)) {
         let j = 0;
-        while (typeof description == 'undefined') {
-          if (encodingDescrp[j].Encoding == value) {
-            description = encodingDescrp[j].Description;
+        try {
+          while (typeof description == 'undefined') {
+            if (encodingDescrp[j].Encoding == value) {
+              description = encodingDescrp[j].Description;
+            }
+            j++;
           }
-          j++;
+        } catch(e) {
+          console.log(e);
+          console.log("j: ", j)
+          console.log("value: ", value)
         }
         if (output.has(description)) {
           output.set(description, output.get(description)! + 1)
         }
         else {
-          output.set(description, 0);
+          output.set(description, 1);
         }
         n++;
       }
@@ -238,7 +230,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
           sum.set(description, sum.get(description)! + 1)
         }
         else {
-          sum.set(description, 0);
+          sum.set(description, 1);
         }
         n++;
       }
@@ -251,64 +243,115 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 }
 
+
+async function getVizType(variable: string, db: Db) {
+  let query = { Variable: variable }
+  const vizType = await db.collection('variable-viz-type').findOne(query)
+  if (vizType !== null) {
+    return [vizType["Visualization Type"], vizType["Time Series"]]
+  } else {
+    throw "Variable not found in variable-viz-type collection: ", variable
+  }
+}
+
+
+async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+  var queryResult;
+  // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
+  if (typeof filterKey2 !== 'undefined'){
+    queryResult = await queryVal(variable, db, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
+  }
+  else if (typeof filterKey1 !== 'undefined') {
+    queryResult = await queryVal(variable, db, filterKey1, parseInt(filterValue1!))
+  }
+  else{
+    queryResult = await queryVal(variable, db)
+  }
+  const output = await aggregateTimeSeries(queryResult, variable)
+  return output;
+}
+
+
+async function main(variable: string, db: Db, vizType: string, timeSeries: boolean, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+  var queryResult;
+  // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
+  if (typeof filterKey2 !== 'undefined'){
+    queryResult = await queryVal(variable, db, "FY", LATEST_YEAR, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
+  }
+  else if (typeof filterKey1 !== 'undefined') {
+    queryResult = await queryVal(variable, db, "FY", LATEST_YEAR, filterKey1, parseInt(filterValue1!))
+  }
+  else{
+    queryResult = await queryVal(variable, db, "FY", LATEST_YEAR)
+  }
+  var output;
+  if (vizType !== null) {
+    if (vizType === VizType.Histogram) {
+      output = aggregateHistogram(queryResult); 
+    }
+    else if (vizType === VizType.Table) {
+      output = await aggregateTable(queryResult, variable, db);
+      output = Object.fromEntries(output);
+    }
+    else if (vizType === VizType.Donut) {
+      output = await aggregateDonutChart(queryResult, variable, db);
+      output = Object.fromEntries(output);
+    }
+  }
+  else {
+    console.log("Variable not found in variable-viz-type collection: ", variable)
+  }
+  return output;
+}
+
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
   /**** Routes ****/
-  router.get('/hello', async (req: Express.Request, res: Express.Response) => {
-    res.json({msg: "Hello, world!"});
+  router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
-  router.get('/filterTwo/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
+  router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const queryResult = await queryTwoVals(req.params.variable, dbo.getDb(),
-      req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2);
-    const output = await aggregateTimeSeries(queryResult, req.params.variable);
-    // console.log("aggregated result: ", Object.fromEntries(output));
-    // res.json({ msg: Object.fromEntries(output) });
-    console.log("aggregated result: ", output);
-    res.json({ msg: output });
+    var timeSeriesData;
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey, req.params.filterVal)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+
   });
 
-  router.get('/timeSeries/:variable', async (req: Express.Request, res: Express.Response) => {
+  router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    const output = await aggregateTimeSeries(queryResult, req.params.variable);
-    console.log("timeseries aggregated result: ", output);
-    res.json({ msg: output });
+    var timeSeriesData;
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    }
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+
   });
 
-  router.get('/timeSeries/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal);
-    const output = await aggregateTimeSeries(queryResult, req.params.variable);
-    console.log("timeseries aggregated result: ", output);
-    res.json({ msg: output });
-  });
-
-  router.get('/histogram/:variable', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb())
-    const output = await aggregateHistogram(queryResult);
-    console.log("histogram aggregated result: ", output);
-    res.json({ msg: output });
-  });
-
-  router.get('/donut/:variable', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
-    const output = await aggregateDonutChart(queryResult, req.params.variable, dbo.getDb());
-    console.log("donut aggregated result: ", output);
-    res.json({ msg: Object.fromEntries(output) });
-  });
-
-  router.get('/table/:variable', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn");
-    const queryResult = await queryVal(req.params.variable, dbo.getDb(), "FY", LATEST_YEAR)
-    const output = await aggregateTable(queryResult, req.params.variable, dbo.getDb());
-    console.log("table aggregated result: ", output);
-    res.json({ msg: Object.fromEntries(output) });
-  });
   return router;
 }

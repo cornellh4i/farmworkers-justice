@@ -7,13 +7,13 @@ type rowProp = {
 }
 
 type tableProp = {
-    data: {[key: string]: [number, number]}
+    data: { [key: string]: [number, number] }
 }
 
 const PECENTAGE_INDEX = 0
 const COUNT_INDEX = 1
 
-function Table (props : tableProp) {
+function Table(props: tableProp) {
     console.log("table data received: ", props.data)
     let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
@@ -23,27 +23,27 @@ function Table (props : tableProp) {
         },
         {
             name: "Percentage",
-            selector: row => row.response[PECENTAGE_INDEX] + "%" + " (" + row.response[COUNT_INDEX] + ")"
+            selector: row => row.response[PECENTAGE_INDEX] * 100 + "%" + " (" + row.response[COUNT_INDEX] + ")"
         }
     ];
     let count: number = 0
     for (const [key, value] of Object.entries(props.data)) {
         let d: rowProp;
         d = {
-        id: count,
-        response_description: key,
-        response: value
+            id: count,
+            response_description: key,
+            response: value
         };
         count++;
         entries.push(d)
     }
     console.log("entries: ", entries)
 
-    return ( 
-        <DataTable title="Ethnicity of Respondents" columns= {columns} data={entries}
-      /> 
+    return (
+        <DataTable title="Ethnicity of Respondents" columns={columns} data={entries}
+        />
     )
-    
+
 }
 
 export default Table;

@@ -244,7 +244,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 }
 
 
-async function findVizType(variable: string, db: Db) {
+async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
   const vizType = await db.collection('variable-viz-type').findOne(query)
   if (vizType !== null) {
@@ -312,7 +312,7 @@ module.exports = () => {
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
-    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
@@ -326,7 +326,7 @@ module.exports = () => {
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey, req.params.filterVal)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
@@ -341,7 +341,7 @@ module.exports = () => {
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    const [vizType, timeSeries] = await findVizType(req.params.variable, dbo.getDb())
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())

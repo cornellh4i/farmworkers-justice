@@ -22,15 +22,15 @@ function App() {
   }, []);
 
   async function getData() {
-    const urlTable = `${API_URL}/B01`;
-    const tableResponse = await fetch(urlTable);
-    const tableOut = await tableResponse.json();
-    setTableData(tableOut.data);
-
     const urlHistogram = `${API_URL}/AGE`;
     const histogramResponse = await fetch(urlHistogram);
     const histogramOut = await histogramResponse.json();
     setHistogramData(histogramOut.data);
+
+    const urlTable = `${API_URL}/B01`;
+    const tableResponse = await fetch(urlTable);
+    const tableOut = await tableResponse.json();
+    setTableData(tableOut.data);
 
     const urlDonut = `${API_URL}/B07`;
     const donutResponse = await fetch(urlDonut);
@@ -46,9 +46,6 @@ function App() {
 
   return (
     <>
-      <Table
-        data={tableData}
-      />
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>
@@ -56,6 +53,9 @@ function App() {
         height={600}
         width={600}
         data={histogramData} />
+      <Table
+        data={tableData}
+      />
       <Map
         height={770}
         width={990}

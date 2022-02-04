@@ -57,7 +57,7 @@ async function queryVal(variable: string, db: Db, filter_key1?: string, filter_v
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is a that is being aggregated. EX: GENDER
+ * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
  *          as {year: 2009, value: 0.54}. The value represents the percentage
  *          of how often a variable appears in that year. 
@@ -111,7 +111,7 @@ const LATEST_YEAR = 2018;
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is a that is being aggregated. EX: GENDER
+ * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_YEAR
  */
 function aggregateHistogram(arr: [number, number][]) {
@@ -131,7 +131,7 @@ function aggregateHistogram(arr: [number, number][]) {
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is a that is being aggregated. EX: GENDER
+ * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values are the 
  *          percentage of times that encoding appears in the LATEST_YEAR. 
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
@@ -190,7 +190,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is a that is being aggregated. EX: GENDER
+ * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values 
  *          are arrays of two values. The first value is the proportion 
  *          percentage of the surveys that answered accordingly, and the second 
@@ -243,18 +243,34 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 }
 
-
+/**
+ * Takes a string variable
+ * @param variable is a variable that is being queried. EX: GENDER
+ * @returns an array of two elements. The first element is the visualization 
+ *          type and the second element indicates whether the variable generates 
+ *          a time series visualization as well. *          
+ */
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
-  const vizType = await db.collection('variable-viz-type').findOne(query)
-  if (vizType !== null) {
-    return [vizType["Visualization Type"], vizType["Time Series"]]
+  const variableInfo = await db.collection('variable-info').findOne(query)
+  if (variableInfo !== null) {
+    return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
   } else {
-    throw "Variable not found in variable-viz-type collection: ", variable
+    throw "Variable not found in variable-info collection: ", variable
   }
 }
 
 
+/**
+ * @param variable is a variable to generate queries for
+ * @param vizType is the visualization type of the variable
+ * @param filterKey1 is the first filter being applied on the variable
+ * @param filterValue1 is the filter value corresponding to filterKey1
+ * @param filterKey2 is the first filter being applied on the variable
+ * @param filterValue2 is the filter value corresponding to filterKey2
+ * @returns the aggregated data of the variable in the format that is 
+ *          usable by timeseries visualization component
+ */
 async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
   // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
@@ -272,7 +288,18 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
 }
 
 
-async function main(variable: string, db: Db, vizType: string, timeSeries: boolean, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+/**
+ * @param variable is a variable to generate queries for
+ * @param vizType is the visualization type of the variable
+ * @param filterKey1 is the first filter being applied on the variable
+ * @param filterValue1 is the filter value corresponding to filterKey1
+ * @param filterKey2 is the first filter being applied on the variable
+ * @param filterValue2 is the filter value corresponding to filterKey2
+ * @returns the aggregated data of the variable in the format that is 
+ *          corresponding its visualization type. Ready to be used by 
+ *          visualization components.
+ */
+async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
   // TODO: ALLOW FILTERVAL PARSE IN AS DESCRIPTION STRING - NEED TO SEARCH FOR ENCODING
   if (typeof filterKey2 !== 'undefined'){
@@ -299,10 +326,11 @@ async function main(variable: string, db: Db, vizType: string, timeSeries: boole
     }
   }
   else {
-    console.log("Variable not found in variable-viz-type collection: ", variable)
+    console.log("Variable not found in variable-info collection: ", variable)
   }
   return output;
 }
+
 
 module.exports = () => {
   const express = require("express");
@@ -313,7 +341,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
     const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries)
+    const output = await main(req.params.variable, dbo.getDb(), vizType)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
@@ -327,7 +355,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData;
     const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey, req.params.filterVal)
+    const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey, req.params.filterVal)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
@@ -342,7 +370,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData;
     const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, timeSeries, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
+    const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }

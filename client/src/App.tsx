@@ -14,7 +14,7 @@ function App() {
   const [tableData, setTableData] = useState<{}>({});
   const [histogramData, setHistogramData] = useState<Array<number>>([]);
   const [donutData, setdonutData] = useState<{}>({});
-  const [FOREIGNBData, setFOREIGNBData] = useState<{}>({});
+  const [FLCData, setFLCData] = useState<{}>({});
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
 
   useEffect(() => {
@@ -37,11 +37,11 @@ function App() {
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
 
-    const urlFOREIGNB = `${API_URL}/FOREIGNB`;
-    const FOREIGNBResponse = await fetch(urlFOREIGNB);
-    const FOREIGNBOut = await FOREIGNBResponse.json();
-    setFOREIGNBData(FOREIGNBOut.data);
-    setTimeSeriesData(FOREIGNBOut.timeSeriesData)
+    const urlFLC = `${API_URL}/FLC`;
+    const FLCResponse = await fetch(urlFLC);
+    const FLCOut = await FLCResponse.json();
+    setFLCData(FLCOut.data);
+    setTimeSeriesData(FLCOut.timeSeriesData)
   }
 
   return (
@@ -72,8 +72,12 @@ function App() {
           outerRadius={200}
         />
       </div>
-      <Table
-        data={FOREIGNBData}
+      <Donut
+        data={FLCData}
+        width={500}
+        height={500}
+        innerRadius={150}
+        outerRadius={200}
       />
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Average Value per Year from 2009 to 2018

@@ -14,7 +14,6 @@ const PECENTAGE_INDEX = 0
 const COUNT_INDEX = 1
 
 function Table(props: tableProp) {
-    console.log("table data received: ", props.data)
     let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
         {
@@ -37,7 +36,6 @@ function Table(props: tableProp) {
         count++;
         entries.push(d)
     }
-    console.log("entries: ", entries)
 
     return (
         <DataTable title="Ethnicity of Respondents" columns={columns} data={entries}

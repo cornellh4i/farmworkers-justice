@@ -14,7 +14,6 @@ interface lineGraphProp {
 
 function LineGraph(props: lineGraphProp) {
   const svgRef: React.MutableRefObject<null> = useRef(null);
-  console.log("time series data received: ", props.data)
   const w = props.width;
   const h = props.height;
   const svg = d3.select(svgRef.current)

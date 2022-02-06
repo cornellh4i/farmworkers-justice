@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
+import Homepage from '../src/components/Homepage';
 import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
 import Donut from './charts/donutChart'
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <>
+      <Homepage />
       <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>

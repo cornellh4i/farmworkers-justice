@@ -8,7 +8,6 @@ interface histogramProp {
 }
 
 function Histogram (props : histogramProp) {
-  console.log("histogram data received: ", props.data)
   const svg = d3.select("svg#histogram");
   const width = props.width
   const height = props.height;

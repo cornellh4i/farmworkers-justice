@@ -10,7 +10,6 @@ interface DonutChartProps {
 }
 
 function DonutChart(props: DonutChartProps) {
-  console.log("donut data received: ", props.data)
   const ref: React.MutableRefObject<null> = useRef(null);
   const createPie = d3
     .pie()

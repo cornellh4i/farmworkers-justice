@@ -6,6 +6,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.4.0",
+    "@mui/styles": "^5.4.1",
     "@types/d3": "^7.1.0",
     "@types/geojson": "^7946.0.8",
     "@types/topojson-client": "^3.1.0",

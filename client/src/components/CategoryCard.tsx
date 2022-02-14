@@ -8,33 +8,29 @@ import { isConstructorDeclaration } from "typescript";
 
 interface CategoryCardProp {
     categoryTitle: string
-    categoryVariables: any;
+    categoryVariables: string[]
 }
-let variables: string[] = [];
 
 
 function CategoryCard(props: CategoryCardProp) {
-    useEffect(() => {
-        for (props.categoryVariables.variable_description in props.categoryVariables) {
-            console.log(props.categoryVariables.variable_description)
-            variables.push(props.categoryVariables.variable_description)
-        }
-    })
-
-
+    var variables: string[] = [];
+    //useEffect(() => {
+    // only when change occurs to page
+    for (let i = 0; i < props.categoryVariables.length; i++) {
+        //console.log(props.categoryVariables["variable-description"])
+        variables.push(props.categoryVariables[i])
+    }
+    console.log(variables)
+    //})
     return (
         <div>
             <h2>{props.categoryTitle}</h2>
             <Button variant="contained"> View Visualizations
             </Button>
-            <h3>
-                {variables}
-            </h3>
-
+            <ol>
+                {variables.map((variable) => <li>{variable}</li>)}
+            </ol>
         </div>
-
-
-
     )
 }
 

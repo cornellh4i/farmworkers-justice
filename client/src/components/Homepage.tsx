@@ -1,4 +1,59 @@
 import CategoryCard from "./CategoryCard";
+import image from "./Hero1.jpg";
+import "@fontsource/rubik";
+import '../styles.css';
+
+
+const h1Style1 = {
+  fontFamily:"Rubik", 
+  fontStyle:"normal", 
+  fontSize:"22px",
+  // fontWeight: "bold" as "bold",
+  width:"315px", 
+  height:"20px", 
+  left:"100px", 
+  // top:"289px",
+  // color: "white"
+}
+
+const h1Style2 = {
+  fontFamily:"Rubik", 
+  fontStyle:"normal", 
+  fontSize:"28px",
+  // fontWeight: 900, 
+  width:"315px", 
+  height:"20px", 
+  left:"100px", 
+  // top:"253px",
+  // color: "white"
+}
+
+const imageStyle = {
+  width:"1920px",
+  height:"563px",
+  left:"-287px"
+}
+
+const h3Style= {
+  // position:"static",
+  width:"1111px",
+  height:"20px",
+  fontFamily:"Rubik",
+  fontStyle:"normal",
+  // fontWeight: 300,
+  fontSize:"16px"
+}
+
+const h4Style= {
+  // position:"static",
+  width:"1111px",
+  height:"44px",
+  fontFamily:"Rubik",
+  fontStyle:"normal",
+  fontSize:"16px",
+  top:"36px"
+}
+
 
 function Homepage() {
   const variablesInCategories = require('../local-json/categories.json')
@@ -6,15 +61,19 @@ function Homepage() {
 
   return (
     <div>
-      <img src="./Hero1.png" style={{width:"1920px",height:"563px",position:"absolute",left:"-287px"}}></img>
-      <h2>Visualization of Data from the</h2>
-      <h1>National Agricultural Workers Survey (NAWS)</h1>
-      <h3>What is the National Agricultural Workers Survey (NAWS)?</h3>
-      <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-      <h3>Who is surveyed?</h3>
-      <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-      <h3>What data visualizations are presented on this site?</h3>
-      <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <div className="headerContainer">
+        <img src={image} alt ="test" style={imageStyle}></img>
+        <div className="text">
+          <h1 style={h1Style1}>Visualization of Data from the</h1>
+          <h1 style={h1Style2}>National Agricultural Workers Survey (NAWS)</h1>
+          </div>
+      </div>
+      <h3 style={h3Style}>What is the National Agricultural Workers Survey (NAWS)?</h3>
+      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <h3 style={h3Style}>Who is surveyed?</h3>
+      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <h3 style={h3Style}>What data visualizations are presented on this site?</h3>
+      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
       <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
         categoryVariables={getVariablesByCategory(0)} />
       <CategoryCard categoryTitle="Demographics, Family Size, Children, and Household Structure"

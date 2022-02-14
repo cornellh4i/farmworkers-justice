@@ -21,3 +21,16 @@
   stroke-width: 3px;
   fill: rgba(255, 255, 255, 0);
 }
+
+.headerContainer {
+  position: relative;
+  text-align: center;
+}
+
+.text{
+  position: absolute;
+  /* width: 315px; 
+  height: 230px;
+  left: 1300px;
+  top: 1000px; */
+}

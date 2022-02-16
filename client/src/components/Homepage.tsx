@@ -1,7 +1,7 @@
 import CategoryCard from "./CategoryCard";
 import image from "./Hero1.jpg";
 import "@fontsource/rubik";
-import '../styles.css';
+import '../styles.scss';
 
 
 const h1Style1 = {
@@ -11,9 +11,16 @@ const h1Style1 = {
   // fontWeight: "bold" as "bold",
   width:"315px", 
   height:"20px", 
-  left:"100px", 
+  // left:"100px", 
   // top:"289px",
   // color: "white"
+  // position: "absolute",
+  // bottom: "20px",
+  // right: "20px",
+  // backgroundColor: "black",
+  // color: "white",
+  // paddingLeft: "20px",
+  // paddingRight: "20px"
 }
 
 const h1Style2 = {
@@ -64,9 +71,9 @@ function Homepage() {
       <div className="headerContainer">
         <img src={image} alt ="test" style={imageStyle}></img>
         <div className="text">
-          <h1 style={h1Style1}>Visualization of Data from the</h1>
-          <h1 style={h1Style2}>National Agricultural Workers Survey (NAWS)</h1>
-          </div>
+          <h1 className="h1-top">Visualization of Data from the</h1>
+          <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
+        </div>
       </div>
       <h3 style={h3Style}>What is the National Agricultural Workers Survey (NAWS)?</h3>
       <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>

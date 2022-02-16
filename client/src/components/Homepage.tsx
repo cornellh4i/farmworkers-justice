@@ -5,29 +5,29 @@ import '../styles.scss';
 
 
 const imageStyle = {
-  width:"1920px",
-  height:"563px",
-  left:"-287px"
+  width: "1920px",
+  height: "563px",
+  left: "-287px"
 }
 
-const h3Style= {
+const h3Style = {
   // position:"static",
-  width:"1111px",
-  height:"20px",
-  fontFamily:"Rubik",
-  fontStyle:"normal",
+  width: "1111px",
+  height: "20px",
+  fontFamily: "Rubik",
+  fontStyle: "normal",
   // fontWeight: 300,
-  fontSize:"16px"
+  fontSize: "16px"
 }
 
-const h4Style= {
+const h4Style = {
   // position:"static",
-  width:"1111px",
-  height:"44px",
-  fontFamily:"Rubik",
-  fontStyle:"normal",
-  fontSize:"16px",
-  top:"36px"
+  width: "1111px",
+  height: "44px",
+  fontFamily: "Rubik",
+  fontStyle: "normal",
+  fontSize: "16px",
+  top: "36px"
 }
 
 
@@ -38,7 +38,7 @@ function Homepage() {
   return (
     <div>
       <div className="headerContainer">
-        <img src={image} alt ="test" style={imageStyle}></img>
+        <img src={image} alt="test" style={imageStyle}></img>
         <div className="text">
           <h1 className="h1-top">Visualization of Data from the</h1>
           <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
@@ -68,7 +68,7 @@ function Homepage() {
         categoryVariables={getVariablesByCategory(7)} />
       <CategoryCard categoryTitle="Health Care in the United States"
         categoryVariables={getVariablesByCategory(8)} />
-    
+
 
     </div>
   )

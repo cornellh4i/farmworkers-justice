@@ -4,31 +4,7 @@ import "@fontsource/rubik";
 import '../styles.scss';
 
 
-const imageStyle = {
-  width: "1920px",
-  height: "563px",
-  left: "-287px"
-}
 
-const h3Style = {
-  // position:"static",
-  width: "1111px",
-  height: "20px",
-  fontFamily: "Rubik",
-  fontStyle: "normal",
-  // fontWeight: 300,
-  fontSize: "16px"
-}
-
-const h4Style = {
-  // position:"static",
-  width: "1111px",
-  height: "44px",
-  fontFamily: "Rubik",
-  fontStyle: "normal",
-  fontSize: "16px",
-  top: "36px"
-}
 
 
 function Homepage() {
@@ -37,19 +13,20 @@ function Homepage() {
 
   return (
     <div>
+      <link rel="stylesheet" href="../styles.scss"></link>
       <div className="headerContainer">
-        <img src={image} alt="test" style={imageStyle}></img>
+        <img src={image} alt="test" className="imageStyle"></img>
         <div className="text">
           <h1 className="h1-top">Visualization of Data from the</h1>
           <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
         </div>
       </div>
-      <h3 style={h3Style}>What is the National Agricultural Workers Survey (NAWS)?</h3>
-      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-      <h3 style={h3Style}>Who is surveyed?</h3>
-      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-      <h3 style={h3Style}>What data visualizations are presented on this site?</h3>
-      <h4 style={h4Style}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <h3 className="h3Style">What is the National Agricultural Workers Survey (NAWS)?</h3>
+      <h4 className="h4Style">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <h3 className="h3Style">Who is surveyed?</h3>
+      <h4 className="h4Style">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <h3 className="h3Style">What data visualizations are presented on this site?</h3>
+      <h4 className="h4Style">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
       <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
         categoryVariables={getVariablesByCategory(0)} />
       <CategoryCard categoryTitle="Demographics, Family Size, Children, and Household Structure"

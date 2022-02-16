@@ -4,37 +4,6 @@ import "@fontsource/rubik";
 import '../styles.scss';
 
 
-const h1Style1 = {
-  fontFamily:"Rubik", 
-  fontStyle:"normal", 
-  fontSize:"22px",
-  // fontWeight: "bold" as "bold",
-  width:"315px", 
-  height:"20px", 
-  // left:"100px", 
-  // top:"289px",
-  // color: "white"
-  // position: "absolute",
-  // bottom: "20px",
-  // right: "20px",
-  // backgroundColor: "black",
-  // color: "white",
-  // paddingLeft: "20px",
-  // paddingRight: "20px"
-}
-
-const h1Style2 = {
-  fontFamily:"Rubik", 
-  fontStyle:"normal", 
-  fontSize:"28px",
-  // fontWeight: 900, 
-  width:"315px", 
-  height:"20px", 
-  left:"100px", 
-  // top:"253px",
-  // color: "white"
-}
-
 const imageStyle = {
   width:"1920px",
   height:"563px",

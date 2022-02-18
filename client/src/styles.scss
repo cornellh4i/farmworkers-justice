@@ -74,3 +74,145 @@
     top:"36px"
   }
 }
+.categoryCardContainer {
+  .categoryHeader {
+    position: static;
+    width: 1110px;
+    height: 26px;
+    left: 0px;
+    top: 0px;
+
+    /* Category Header */
+
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
+    /* or 100% */
+
+
+    color: #3E4955;
+
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 24px 0px;
+
+  }
+  .body {
+    position: static;
+    width: 807px;
+    height: 60px;
+    left: 0px;
+    top: 0px;
+
+    /* Body */
+
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    /* or 125% */
+
+
+    color: #3E4955;
+
+
+/* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 16px 0px;
+  }
+  .embeddedLink {
+    position: absolute;
+    width: 409px;
+    height: 20px;
+    left: 0px;
+    top: 76px;
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    /* Main/50 */
+    color: #FF820C;
+
+  }
+  .body2 {
+    position: static;
+    width: 582px;
+    height: 120px;
+    left: 0px;
+    top: 112px;
+
+    /* Body */
+
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    /* or 125% */
+
+
+    color: #000000;
+
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    margin: 16px 0px;
+
+    /* Body */
+
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    /* or 125% */
+
+
+    color: #000000;
+
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    margin: 16px 0px;
+  }
+  .primaryButton {
+    display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 10px;
+
+  position: absolute;
+  width: 283px;
+  height: 40px;
+  left: 0px;
+  top: 209px;
+
+  background: linear-gradient(180deg, #FFB83F 0%, #FF820C 100%);
+
+  }
+  .cardImageStyle {
+    position: absolute;
+    width: 283px;
+    height: 193px;
+    left: 0px;
+    top: 0px;
+
+  }
+}

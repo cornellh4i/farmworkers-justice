@@ -94,28 +94,14 @@
 
 
 .categoryCardContainer {
+  position: relative;
   .categoryHeader {
     position: static;
     width: 1110px;
     height: 26px;
     left: 0px;
     top: 0px;
-
-    /* Category Header */
-
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 20px;
-    /* or 100% */
-
-
     color: #3E4955;
-
-
-    /* Inside auto layout */
-
     flex: none;
     order: 0;
     flex-grow: 0;
@@ -129,20 +115,13 @@
     left: 0px;
     top: 0px;
 
-    /* Body */
-
     font-family: "Rubik";
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 20px;
-    /* or 125% */
-
 
     color: #3E4955;
-
-
-/* Inside auto layout */
 
     flex: none;
     order: 0;
@@ -150,7 +129,7 @@
     margin: 16px 0px;
   }
   .embeddedLink {
-    position: absolute;
+    position: static;
     width: 409px;
     height: 20px;
     left: 0px;
@@ -160,7 +139,6 @@
     font-weight: bold;
     font-size: 16px;
     line-height: 20px;
-    /* Main/50 */
     color: #FF820C;
 
   }
@@ -170,42 +148,12 @@
     height: 120px;
     left: 0px;
     top: 112px;
-
-    /* Body */
-
     font-family: Rubik;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 20px;
-    /* or 125% */
-
-
     color: #000000;
-
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 2;
-    flex-grow: 0;
-    margin: 16px 0px;
-
-    /* Body */
-
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 20px;
-    /* or 125% */
-
-
-    color: #000000;
-
-
-    /* Inside auto layout */
-
     flex: none;
     order: 2;
     flex-grow: 0;
@@ -222,16 +170,15 @@
   height: 40px;
   left: 0px;
   top: 209px;
-
   background: linear-gradient(180deg, #FFB83F 0%, #FF820C 100%);
-
+  
   }
   .cardImageStyle {
-    position: absolute;
+    position: relative;
     width: 283px;
     height: 193px;
     left: 0px;
     top: 0px;
-
   }
+
 }

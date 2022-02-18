@@ -5,6 +5,7 @@ import { isConstructorDeclaration } from "typescript";
 import image from "../images/CardImage.png";
 import "@fontsource/rubik";
 import '../styles.scss';
+import Grid from '@mui/material/Grid';
 
 
 
@@ -29,20 +30,32 @@ function CategoryCard(props: CategoryCardProp) {
         <div>
 
             <link rel="stylesheet" href="../styles.scss"></link>
-            <div className="headerContainer">
-                <h2 className="categoryHeader">{props.categoryTitle}</h2>
-                <img className="cardImageStyle" src={image} alt="cardcomponentimage" ></img>
+            <div className="categoryCardContainer">
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <h2 className="categoryHeader">{props.categoryTitle}</h2>
+                    </Grid>
+                </Grid>
+                <Grid container>
 
-
-                <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
-                <h4 className="embeddedLink"> What NAWS questions are covered in this category? </h4>
-                <ol className="body2" >
-                    {variables.map((variable) => <li>{variable}</li>)}
-                </ol>
-                <Button className="primarybutton"> View Visualizations
+                    <Grid item xs={4}>
+                        <img className="cardImageStyle" src={image} alt="cardcomponentimage" ></img>
+                    </Grid>
+                    <Grid item xs={7}>
+                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
+                        <h4 className="embeddedLink"> What NAWS questions are covered in this category? </h4>
+                        <ol className="body2" >
+                            {variables.map((variable) => <li>{variable}</li>)}
+                        </ol>
+                    </Grid>
+                </Grid>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className="primarybutton"> View Visualizations
                 </Button>
             </div>
-        </div>
+        </div >
     )
 }
 

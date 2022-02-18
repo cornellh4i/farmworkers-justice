@@ -95,6 +95,10 @@
 
 .categoryCardContainer {
   position: relative;
+  padding-left: 164px;
+  padding-right: 164px;
+  padding-bottom: 105px;
+  padding-top: 105px;
   .categoryHeader {
     position: static;
     width: 1110px;
@@ -106,6 +110,11 @@
     order: 0;
     flex-grow: 0;
     margin: 24px 0px;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 20px;
 
   }
   .body {
@@ -159,20 +168,7 @@
     flex-grow: 0;
     margin: 16px 0px;
   }
-  .primaryButton {
-    display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 10px;
-
-  position: absolute;
-  width: 283px;
-  height: 40px;
-  left: 0px;
-  top: 209px;
-  background: linear-gradient(180deg, #FFB83F 0%, #FF820C 100%);
   
-  }
   .cardImageStyle {
     position: relative;
     width: 283px;
@@ -180,5 +176,64 @@
     left: 0px;
     top: 0px;
   }
+  .greyLine {
+    position: absolute;
+  left: 0.78%;
+  right: 0%;
+  top: 0%;
+  bottom: 100%;
+  
+  /* Gray 5 */
+  
+  border: 3px solid #E0E0E0;
+  }
+  .orangeLine {
+    position: absolute;
+  left: 0%;
+  right: 93.47%;
+  top: 33.33%;
+  bottom: 66.67%;
+  
+  /* Main/50 */
+  
+  border: 5px solid #FF820C;
+  }
 
+}
+.primaryButton {
+  display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 10px;
+
+position: absolute;
+width: 283px;
+height: 40px;
+left: 0px;
+top: 209px;
+//background: linear-gradient(180deg, #FFB83F 0%, #FF820C 100%);
+color: #FFA500;
+}
+
+.greyLine {
+  position: absolute;
+left: 0.78%;
+right: 0%;
+top: 0%;
+bottom: 100%;
+
+/* Gray 5 */
+
+border: 3px solid #E0E0E0;
+}
+.hr2 {
+  position: absolute;
+left: 0%;
+right: 93.47%;
+top: 33.33%;
+bottom: 66.67%;
+
+/* Main/50 */
+
+border: 5px solid #FF820C;
 }

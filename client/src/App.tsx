@@ -51,7 +51,7 @@ function App() {
       {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3> */}
-      {/* <Histogram
+      <Histogram
         height={600}
         width={600}
         data={histogramData} />
@@ -90,7 +90,7 @@ function App() {
           width={500}
           height={400}
         />
-      </div> */}
+      </div>
     </>
   );
 }

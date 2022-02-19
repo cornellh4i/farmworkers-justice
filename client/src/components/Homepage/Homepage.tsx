@@ -1,11 +1,10 @@
-import CategoryCard from "./CategoryCard";
-import image from "./Hero1.jpg";
+import CategoryCard from "../CategoryCard/CategoryCard";
+import image from "./../../images/Hero1.jpg";
 import "@fontsource/rubik";
-import '../styles.scss';
+import './Homepage.scss';
 
 function Homepage() {
-  const variablesInCategories = require('../local-json/categories.json')
-
+  const variablesInCategories = require('./../../local-json/categories.json')
 
   return (
     <div>
@@ -17,7 +16,6 @@ function Homepage() {
             <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
             <div id="rectangle"></div>
         </div>
-        {/* <div id="rectangle"></div> */}
       </div>
       <div className="introduction-text">
         <h3>What is the National Agricultural Workers Survey (NAWS)?</h3>

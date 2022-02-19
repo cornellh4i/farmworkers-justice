@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import '../styles.scss';
+import '.Histogram.scss';
 
 interface histogramProp {
   height : number;

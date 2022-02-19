@@ -1,10 +1,8 @@
 import Button from '@mui/material/Button';
-import image from "../images/CardImage.png";
+import image from "../../images/CardImage.png";
 import "@fontsource/rubik";
-import '../styles.scss';
+import './CategoryCard.scss';
 import Grid from '@mui/material/Grid';
-
-
 
 
 interface CategoryCardProp {
@@ -18,7 +16,6 @@ function CategoryCard(props: CategoryCardProp) {
     //useEffect(() => {
     // only when change occurs to page
     for (let i = 0; i < props.categoryVariables.length; i++) {
-        //console.log(props.categoryVariables["variable-description"])
         variables.push(props.categoryVariables[i])
     }
     console.log(variables)

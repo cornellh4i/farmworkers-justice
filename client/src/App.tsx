@@ -3,7 +3,7 @@ import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
-import Homepage from './components/Homepage'
+import Homepage from './components/Homepage/Homepage'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
 import { Button } from 'react-bootstrap';

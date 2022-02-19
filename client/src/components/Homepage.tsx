@@ -12,23 +12,20 @@ function Homepage() {
       <link rel="stylesheet" href="../styles.scss"></link>
       <div className="headerContainer">
         <img src={image} alt="Workers in a field" className="imageStyle"></img>
-        <div className="text">
-          <div className="h1-top">
-            <h1>Visualization of Data from the</h1>
-          </div>
-          <div className="h1-bottom">
-            <h1>National Agricultural Workers Survey (NAWS)</h1>
-          </div>
-          <div id="rectangle"></div>
+        <div className="header">
+            <h1 className="h1-top">Visualization of Data from the</h1>
+            <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
+            <div id="rectangle"></div>
         </div>
+        {/* <div id="rectangle"></div> */}
       </div>
-      <div className="text2">
-        <h3 className="h3">What is the National Agricultural Workers Survey (NAWS)?</h3>
-        <h4 className="h4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-        <h3 className="h3">Who is surveyed?</h3>
-        <h4 className="h4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
-        <h3 className="h3'">What data visualizations are presented on this site?</h3>
-        <h4 className="h4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+      <div className="introduction-text">
+        <h3>What is the National Agricultural Workers Survey (NAWS)?</h3>
+        <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+        <h3>Who is surveyed?</h3>
+        <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
+        <h3>What data visualizations are presented on this site?</h3>
+        <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
       </div>
       <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
         categoryVariables={getVariablesByCategory(0)} />

@@ -48,9 +48,9 @@ function App() {
   return (
     <>
       <Homepage />
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+      {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
-      </h3>
+      </h3> */}
       {/* <Histogram
         height={600}
         width={600}

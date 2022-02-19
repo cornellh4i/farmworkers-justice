@@ -27,122 +27,95 @@
 .headerContainer {
   position: relative;
 
-  .text{
+  .imageStyle  {
+    width:100%;
+    height:50%;
+  }
+
+  .header{
     position: absolute;
-    bottom: 50px;
-    left: 20px;
+    bottom: 0;
     color: white;
-    padding-left: 20px;
-    padding-right: 20px;
     font-family: "Rubik";
     font-style: normal;
     text-align: left;
-    top: 289px;
-  }
-
-  .h1-top{
     font-weight: bold;
-    font-size: 22px;
-    line-height: 20px;
-  }
+    line-height: 30px;
+    width: 100%;
 
-  .h1-bottom{
-    font-weight: bold;
-    font-size: 28px;
-    line-height: 20px;
-  }
-  .imageStyle  {
-    width:1920px;
-    height:563px;
+    .h1-top{
+      font-size: 28px;
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+  
+    .h1-bottom{
+      font-size: 36px;
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+
+    #rectangle{
+      background-color: white;
+      height: 80px;
+      margin-left: 2%;
+      margin-right: 2%
+    }
+
   }
 }
   
-.text2{
-
+.introduction-text{
   font-family: Rubik;
   font-style: normal;
   font-size: 16px;
-  line-height: 20px;
-  padding-left: 164px;
-  padding-right: 164px;
+  padding-left: 5%;
+  padding-right: 5%;
+  
 
-  .h3{
-    // position:"static",
-    width:1111px;
-    height:20px;
+  h3{
     font-weight: bold;
   }
   
-  .h4 {
-    // position:"static",
-    width:1111px;
-    height:44px;
-    top:36px;
+  h4 {
     font-weight: normal;
   }
-}
-
-#rectangle{
-  position: absolute;
-  width:1240px;
-  background: white;
-  height: 87px;
-  left:75px;
-  top: 187px;
 }
 
 
 
 .categoryCardContainer {
   position: relative;
-  padding-left: 164px;
-  padding-right: 164px;
-  padding-bottom: 105px;
-  padding-top: 105px;
-  .categoryHeader {
-    position: static;
-    width: 1110px;
-    height: 26px;
-    left: 0px;
-    top: 0px;
-    color: #3E4955;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    margin: 24px 0px;
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 20px;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-bottom: 5%;
+  padding-top: 5%;
 
+  .greyLine {
+    border: 3px solid #E0E0E0;
+    align-items: center;
+    display: flex;
   }
-  .body {
-    position: static;
-    width: 807px;
-    height: 60px;
-    left: 0px;
-    top: 0px;
+  .orangeLine {    
+    border: 5px solid #FF820C;
+    align-items: center;
+    display: flex;
+  }
 
+  .cardImageStyle{
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .body {
     font-family: "Rubik";
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
-    line-height: 20px;
-
     color: #3E4955;
 
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    margin: 16px 0px;
   }
   .embeddedLink {
-    position: static;
-    width: 409px;
-    height: 20px;
-    left: 0px;
-    top: 76px;
     font-family: "Rubik";
     font-style: normal;
     font-weight: bold;
@@ -151,89 +124,12 @@
     color: #FF820C;
 
   }
-  .body2 {
-    position: static;
-    width: 582px;
-    height: 120px;
-    left: 0px;
-    top: 112px;
+  .variable-list {
     font-family: Rubik;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
-    line-height: 20px;
     color: #000000;
-    flex: none;
-    order: 2;
-    flex-grow: 0;
-    margin: 16px 0px;
-  }
-  
-  .cardImageStyle {
-    position: relative;
-    width: 283px;
-    height: 193px;
-    left: 0px;
-    top: 0px;
-  }
-  .greyLine {
-    position: absolute;
-  left: 0.78%;
-  right: 0%;
-  top: 0%;
-  bottom: 100%;
-  
-  /* Gray 5 */
-  
-  border: 3px solid #E0E0E0;
-  }
-  .orangeLine {
-    position: absolute;
-  left: 0%;
-  right: 93.47%;
-  top: 33.33%;
-  bottom: 66.67%;
-  
-  /* Main/50 */
-  
-  border: 5px solid #FF820C;
   }
 
-}
-.primaryButton {
-  display: flex;
-flex-direction: row;
-align-items: flex-start;
-padding: 10px;
-
-position: absolute;
-width: 283px;
-height: 40px;
-left: 0px;
-top: 209px;
-//background: linear-gradient(180deg, #FFB83F 0%, #FF820C 100%);
-color: #FFA500;
-}
-
-.greyLine {
-  position: absolute;
-left: 0.78%;
-right: 0%;
-top: 0%;
-bottom: 100%;
-
-/* Gray 5 */
-
-border: 3px solid #E0E0E0;
-}
-.hr2 {
-  position: absolute;
-left: 0%;
-right: 93.47%;
-top: 33.33%;
-bottom: 66.67%;
-
-/* Main/50 */
-
-border: 5px solid #FF820C;
 }

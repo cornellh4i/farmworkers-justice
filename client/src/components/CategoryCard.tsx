@@ -1,7 +1,4 @@
-import { useEffect } from "react";
 import Button from '@mui/material/Button';
-import * as categories from "../local-json/categories.json"
-import { isConstructorDeclaration } from "typescript";
 import image from "../images/CardImage.png";
 import "@fontsource/rubik";
 import '../styles.scss';
@@ -28,43 +25,35 @@ function CategoryCard(props: CategoryCardProp) {
     //})
     return (
         <div>
-
             <link rel="stylesheet" href="../styles.scss"></link>
             <div className="categoryCardContainer">
-
-                <Grid container>
-                    <Grid item xs={12}>
-                        <h2 className="categoryHeader">{props.categoryTitle}</h2>
-                        <Grid item xs={1}>
-                            <hr className="orangeLine" />
-                        </Grid>
-                        <Grid item xs={7}>
-                            <hr className="greyLine" />
-                        </Grid>
+                <h2 className="categoryHeader">{props.categoryTitle}</h2>
+                <Grid container >                   
+                    <Grid item xs={1}>
+                        <hr className="orangeLine" />
                     </Grid>
-
-
-                    <Grid container>
-
-                        <Grid item xs={3}>
-                            <img className="cardImageStyle" src={image} alt="cardcomponentimage" ></img>
-                        </Grid>
-                        <Grid item xs={7}>
-                            <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
-                            <h4 className="embeddedLink"> What NAWS questions are covered in this category? </h4>
-                            <Grid item xs={7}>
-                                <li className="body2" >
-                                    {variables.map((variable) => <li>{variable}</li>)}
-                                </li>
-                            </Grid>
-                        </Grid>
+                    <Grid item xs={11}>
+                        <hr className="greyLine" />
                     </Grid>
                 </Grid>
-                <Button
-                    variant="contained"
-                    //color="primary"
-                    className="primarybutton"> View Visualizations
-                </Button>
+                <Grid container spacing={2}>  
+                    <Grid item xs={3}>
+                        <img className="cardImageStyle" src={image} alt="cardcomponentimage" ></img>
+                        <Button
+                            variant="contained"
+                            sx={{backgroundColor: '#FFA500', width: '100%'}}
+                            className="view-visualizations"> View Visualizations
+                        </Button>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
+                        <h4 className="embeddedLink"> What NAWS questions are covered in this category? </h4>
+                        <div className="variable-list" >
+                            {variables.map((variable) => <li>{variable}</li>)}
+                        </div>
+                    </Grid>
+                </Grid>
+                
             </div >
         </div >
     )

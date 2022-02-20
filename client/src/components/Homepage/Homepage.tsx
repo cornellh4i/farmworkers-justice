@@ -1,7 +1,17 @@
 import CategoryCard from "../CategoryCard/CategoryCard";
-import image from "./../../images/Hero1.jpg";
+import headerImage from "./../../images/headerImage.jpg";
+import category0Image from "./../../images/category0.jpg";
+import category1Image from "./../../images/category1.jpg";
+import category2Image from "./../../images/category2.jpg";
+import category3Image from "./../../images/category3.jpg";
+import category4Image from "./../../images/category4.jpg";
+import category5Image from "./../../images/category5.jpg";
+import category6Image from "./../../images/category6.jpg";
+import category7Image from "./../../images/category7.jpg";
+import category8Image from "./../../images/category8.jpg";
 import "@fontsource/rubik";
 import './Homepage.scss';
+
 
 function Homepage() {
   const variablesInCategories = require('./../../local-json/categories.json')
@@ -10,7 +20,7 @@ function Homepage() {
     <div>
       <link rel="stylesheet" href="../styles.scss"></link>
       <div className="headerContainer">
-        <img src={image} alt="Workers in a field" className="imageStyle"></img>
+        <img src={headerImage} alt="Workers in a field" className="imageStyle"></img>
         <div className="header">
             <h1 className="h1-top">Visualization of Data from the</h1>
             <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
@@ -26,23 +36,23 @@ function Homepage() {
         <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
       </div>
       <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
-        categoryVariables={getVariablesByCategory(0)} />
+        categoryVariables={getVariablesByCategory(0)} image={category0Image}/>
       <CategoryCard categoryTitle="Demographics, Family Size, Children, and Household Structure"
-        categoryVariables={getVariablesByCategory(1)} />
+        categoryVariables={getVariablesByCategory(1)} image={category1Image}/>
       <CategoryCard categoryTitle="Language, Education, and English Skills"
-        categoryVariables={getVariablesByCategory(2)} />
+        categoryVariables={getVariablesByCategory(2)} image={category2Image}/>
       <CategoryCard categoryTitle="Housing Characteristics and Distance to Work"
-        categoryVariables={getVariablesByCategory(3)} />
+        categoryVariables={getVariablesByCategory(3)} image={category3Image}/>
       <CategoryCard categoryTitle="Employment Patterns and Farm Job Characteristics"
-        categoryVariables={getVariablesByCategory(4)} />
+        categoryVariables={getVariablesByCategory(4)} image={category4Image}/>
       <CategoryCard categoryTitle="Employment Experience"
-        categoryVariables={getVariablesByCategory(5)} />
+        categoryVariables={getVariablesByCategory(5)} image={category5Image}/>
       <CategoryCard categoryTitle="Non-Crop Work Activities During the Year"
-        categoryVariables={getVariablesByCategory(6)} />
+        categoryVariables={getVariablesByCategory(6)} image={category6Image}/>
       <CategoryCard categoryTitle="Income, Assets, and Use of Assistance Programs"
-        categoryVariables={getVariablesByCategory(7)} />
+        categoryVariables={getVariablesByCategory(7)} image={category7Image}/>
       <CategoryCard categoryTitle="Health Care in the United States"
-        categoryVariables={getVariablesByCategory(8)} />
+        categoryVariables={getVariablesByCategory(8)} image={category8Image}/>
     </div>
   )
 

@@ -1,5 +1,4 @@
 import Button from '@mui/material/Button';
-import image from "../../images/CardImage.png";
 import "@fontsource/rubik";
 import './CategoryCard.scss';
 import Grid from '@mui/material/Grid';
@@ -8,6 +7,7 @@ import Grid from '@mui/material/Grid';
 interface CategoryCardProp {
     categoryTitle: string
     categoryVariables: string[]
+    image: string
 }
 
 
@@ -35,7 +35,7 @@ function CategoryCard(props: CategoryCardProp) {
                 </Grid>
                 <Grid container spacing={2}>  
                     <Grid item xs={3}>
-                        <img className="cardImageStyle" src={image} alt="cardcomponentimage" ></img>
+                        <img className="cardImageStyle" src={props.image} alt="cardcomponentimage" ></img>
                         <Button
                             variant="contained"
                             sx={{backgroundColor: '#FFA500', width: '100%'}}

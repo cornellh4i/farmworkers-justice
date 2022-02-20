@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import * as d3 from "d3";

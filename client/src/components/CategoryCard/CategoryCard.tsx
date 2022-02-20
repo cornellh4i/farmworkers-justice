@@ -1,8 +1,12 @@
+import { useState } from "react";
 import Button from '@mui/material/Button';
 import "@fontsource/rubik";
 import './CategoryCard.scss';
 import Grid from '@mui/material/Grid';
-
+import ListItemButton from '@mui/material/ListItemButton';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 
 interface CategoryCardProp {
     categoryTitle: string
@@ -13,13 +17,13 @@ interface CategoryCardProp {
 
 function CategoryCard(props: CategoryCardProp) {
     var variables: string[] = [];
-    //useEffect(() => {
-    // only when change occurs to page
+    const [open, setOpen] = useState(false);
+
+
     for (let i = 0; i < props.categoryVariables.length; i++) {
         variables.push(props.categoryVariables[i])
     }
-    console.log(variables)
-    //})
+
     return (
         <div>
             <link rel="stylesheet" href="../styles.scss"></link>
@@ -43,11 +47,17 @@ function CategoryCard(props: CategoryCardProp) {
                         </Button>
                     </Grid>
                     <Grid item xs={9}>
-                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
-                        <h4 className="embeddedLink"> What NAWS questions are covered in this category? </h4>
-                        <div className="variable-list" >
-                            {variables.map((variable) => <li>{variable}</li>)}
-                        </div>
+                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>                   
+                        <ListItemButton onClick={() => { setOpen(!open) }}>
+                            <h4 className="variables-list-collapse"> What NAWS questions are covered in this category? </h4>
+                            {open ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <div className="variables-list" >
+                                {variables.map((variable) => <li>{variable}</li>)}
+                            </div>
+                        </Collapse>
+
                     </Grid>
                 </Grid>
                 

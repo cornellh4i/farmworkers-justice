@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
-import Homepage from '../src/components/Homepage';
 import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
+import Homepage from './components/Homepage/Homepage'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
-import { Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 
 const API_URL = process.env.REACT_APP_API;
@@ -48,9 +48,9 @@ function App() {
   return (
     <>
       <Homepage />
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+      {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
-      </h3>
+      </h3> */}
       <Histogram
         height={600}
         width={600}

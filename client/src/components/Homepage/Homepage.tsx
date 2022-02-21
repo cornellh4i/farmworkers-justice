@@ -18,7 +18,6 @@ function Homepage() {
 
   return (
     <div>
-      <link rel="stylesheet" href="../styles.scss"></link>
       <div className="headerContainer">
         <img src={headerImage} alt="Workers in a field" className="imageStyle"></img>
         <div className="header">

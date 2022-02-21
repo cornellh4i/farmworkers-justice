@@ -26,7 +26,6 @@ function CategoryCard(props: CategoryCardProp) {
 
     return (
         <div>
-            <link rel="stylesheet" href="../styles.scss"></link>
             <div className="categoryCardContainer">
                 <h2 className="categoryHeader">{props.categoryTitle}</h2>
                 <Grid container >                   

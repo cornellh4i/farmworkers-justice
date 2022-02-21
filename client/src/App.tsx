@@ -7,6 +7,7 @@ import Homepage from './components/Homepage/Homepage'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
 import { Button } from 'react-bootstrap';
+import Minipage from './components/Minipage/Minipage'
 
 
 const API_URL = process.env.REACT_APP_API;
@@ -47,10 +48,9 @@ function App() {
 
   return (
     <>
+      <Minipage />
       <Homepage />
-      {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Respondent Age
-      </h3> */}
+
       <Histogram
         height={600}
         width={600}

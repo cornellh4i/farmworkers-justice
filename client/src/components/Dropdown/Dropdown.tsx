@@ -12,17 +12,17 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 interface DropdownProp {
   categoryIndex: number
 
-  categoryVariables: string[]
+  categoryVariable: string
 }
 
 
 function CategoryCard(props: DropdownProp) {
   const [open, setOpen] = useState(false);
-  const variables: string[] = [];
+  // const variables: string[] = [];
 
-  for (let i = 0; i < props.categoryVariables.length; i++) {
-    variables.push(props.categoryVariables[i])
-  }
+  // for (let i = 0; i < props.categoryVariables.length; i++) {
+  //   variables.push(props.categoryVariables[i])
+  // }
 
   return (
     <div>
@@ -31,7 +31,7 @@ function CategoryCard(props: DropdownProp) {
           <Grid item xs={9}>
             <ListItemButton onClick={() => { setOpen(!open) }}>
               <h4 className="variableHeader">
-                {variables.map((variable) => <li>{variable}</li>)} </h4>
+                {props.categoryVariable} </h4>
               {open ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>

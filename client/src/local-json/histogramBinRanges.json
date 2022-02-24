@@ -34,6 +34,26 @@
             "variable-encoding": "A08",
             "variable-description": "In what year did you/they first enter the US to live or work? (if foreign-born)",
             "bin-ranges": [
+                {
+                    "start": null,
+                    "end": 1985
+                },
+                {
+                    "start": 1986,
+                    "end": 1995
+                },
+                {
+                    "start": 1996,
+                    "end": 2005
+                },
+                {
+                    "start": 2006,
+                    "end": 2015
+                },
+                {
+                    "start": 2016,
+                    "end": null
+                }
             ]
         },
         {
@@ -68,22 +88,22 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 3
+                    "end": 4
                 },
                 {
-                    "start": 4,
-                    "end": 7
+                    "start": 5,
+                    "end": 8
                 },
                 {
-                    "start": 8,
-                    "end": 11
+                    "start": 9,
+                    "end": 12
                 },
                 {
-                    "start": 12,
-                    "end": 15
+                    "start": 13,
+                    "end": 16
                 },
                 {
-                    "start": 16,
+                    "start": 17,
                     "end": null
                 }
             ]
@@ -128,22 +148,22 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 3
+                    "end": 4
                 },
                 {
-                    "start": 4,
-                    "end": 7
+                    "start": 5,
+                    "end": 8
                 },
                 {
-                    "start": 8,
-                    "end": 11
+                    "start": 9,
+                    "end": 12
                 },
                 {
-                    "start": 12,
-                    "end": 15
+                    "start": 13,
+                    "end": 16
                 },
                 {
-                    "start": 16,
+                    "start": 17,
                     "end": null
                 }
             ]
@@ -249,27 +269,39 @@
             "variable-description": "What was your total income last year in USD?",
             "bin-ranges": [
                 {
+                    "start": 0,
                     "start-encoding": 0,
+                    "end": 0,
                     "end-encoding": 0
                 },
                 {
+                    "start": 0,
                     "start-encoding": 1,
+                    "end": 9999,
                     "end-encoding": 6
                 },
                 {
+                    "start": 10000,
                     "start-encoding": 7,
+                    "end": 19999,
                     "end-encoding": 10
                 },
                 {
+                    "start": 20000,
                     "start-encoding": 11,
+                    "end": 29999,
                     "end-encoding": 12
                 },
                 {
+                    "start": 30000,
                     "start-encoding": 13,
+                    "end": 39999,
                     "end-encoding": 14
                 },
                 {
+                    "start": 40000,
                     "start-encoding": 15,
+                    "end": null,
                     "end-encoding": 15
                 }
             ]
@@ -279,27 +311,39 @@
             "variable-description": "What was your family's total income last year in USD?",
             "bin-ranges": [
                 {
+                    "start": 0,
                     "start-encoding": 0,
+                    "end": 0,
                     "end-encoding": 0
                 },
                 {
+                    "start": 0,
                     "start-encoding": 1,
+                    "end": 9999,
                     "end-encoding": 6
                 },
                 {
+                    "start": 10000,
                     "start-encoding": 7,
+                    "end": 19999,
                     "end-encoding": 10
                 },
                 {
+                    "start": 20000,
                     "start-encoding": 11,
+                    "end": 29999,
                     "end-encoding": 12
                 },
                 {
+                    "start": 30000,
                     "start-encoding": 13,
+                    "end": 39999,
                     "end-encoding": 14
                 },
                 {
+                    "start": 40000,
                     "start-encoding": 15,
+                    "end": null,
                     "end-encoding": 15
                 }
             ]

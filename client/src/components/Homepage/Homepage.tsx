@@ -33,7 +33,6 @@ export function getVariablesByCategory(categoryIndex: number) {
 
 
 function Homepage() {
-
   return (
     <div>
       <div className="headerContainer">
@@ -53,26 +52,25 @@ function Homepage() {
         <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
       </div>
       <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
-        categoryVariables={getVariablesByCategory(0)} image={category0Image} />
+        categoryEncoding={0} image={category0Image} />
       <CategoryCard categoryTitle="Demographics, Family Size, Children, and Household Structure"
-        categoryVariables={getVariablesByCategory(1)} image={category1Image} />
+        categoryEncoding={1} image={category1Image} />
       <CategoryCard categoryTitle="Language, Education, and English Skills"
-        categoryVariables={getVariablesByCategory(2)} image={category2Image} />
+        categoryEncoding={2} image={category2Image} />
       <CategoryCard categoryTitle="Housing Characteristics and Distance to Work"
-        categoryVariables={getVariablesByCategory(3)} image={category3Image} />
+        categoryEncoding={3} image={category3Image} />
       <CategoryCard categoryTitle="Employment Patterns and Farm Job Characteristics"
-        categoryVariables={getVariablesByCategory(4)} image={category4Image} />
+        categoryEncoding={4} image={category4Image} />
       <CategoryCard categoryTitle="Employment Experience"
-        categoryVariables={getVariablesByCategory(5)} image={category5Image} />
+        categoryEncoding={5} image={category5Image} />
       <CategoryCard categoryTitle="Non-Crop Work Activities During the Year"
-        categoryVariables={getVariablesByCategory(6)} image={category6Image} />
+        categoryEncoding={6} image={category6Image} />
       <CategoryCard categoryTitle="Income, Assets, and Use of Assistance Programs"
-        categoryVariables={getVariablesByCategory(7)} image={category7Image} />
+        categoryEncoding={7} image={category7Image} />
       <CategoryCard categoryTitle="Health Care in the United States"
-        categoryVariables={getVariablesByCategory(8)} image={category8Image} />
+        categoryEncoding={8} image={category8Image} />
     </div>
   )
-
 
 }
 export default Homepage;

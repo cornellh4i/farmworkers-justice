@@ -3,25 +3,20 @@ import './Minipage.scss';
 import Dropdown from "../Dropdown/Dropdown";
 import "@fontsource/rubik";
 import { getVariablesByCategory } from "./../Homepage/Homepage"
-
 function Minipage() {
     const variablesInCategories = require('./../../local-json/categories.json')
     return (
         <div>
-            <Dropdown categoryIndex={0} categoryVariables={getVariablesByCategory(0)} />
-            <Dropdown categoryIndex={1} categoryVariables={getVariablesByCategory(1)} />
-            <Dropdown categoryIndex={2} categoryVariables={getVariablesByCategory(2)} />
-            <Dropdown categoryIndex={3} categoryVariables={getVariablesByCategory(3)} />
-            <Dropdown categoryIndex={4} categoryVariables={getVariablesByCategory(4)} />
-            <Dropdown categoryIndex={5} categoryVariables={getVariablesByCategory(5)} />
-            <Dropdown categoryIndex={6} categoryVariables={getVariablesByCategory(6)} />
-            <Dropdown categoryIndex={7} categoryVariables={getVariablesByCategory(7)} />
-            <Dropdown categoryIndex={8} categoryVariables={getVariablesByCategory(8)} />
+            {getVariablesByCategory(0).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={0}></Dropdown>)}
+            {getVariablesByCategory(1).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={1}></Dropdown>)}
+            {getVariablesByCategory(2).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={2}></Dropdown>)}
+            {getVariablesByCategory(3).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={3}></Dropdown>)}
+            {getVariablesByCategory(4).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={4}></Dropdown>)}
+            {getVariablesByCategory(5).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={5}></Dropdown>)}
+            {getVariablesByCategory(6).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={6}></Dropdown>)}
+            {getVariablesByCategory(7).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={7}></Dropdown>)}
+            {getVariablesByCategory(8).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={8}></Dropdown>)}
         </div>
     )
-
-
-
-
 }
 export default Minipage;

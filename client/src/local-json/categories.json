@@ -2,7 +2,7 @@
     "categories": [
         {
             "category-description": "Birthplace, Work Authorization, and Migrant Types",
-            "category-encoding": 1,
+            "category-encoding": 0,
             "variables": [
                 {
                     "variable-encoding": "A08",
@@ -56,7 +56,7 @@
         },
         {   
             "category-description": "Demographics, Family Size, Children, and Household Structure",
-            "category-encoding": 2,
+            "category-encoding": 1,
             "variables": [
                 {
                     "variable-encoding": "AGE",
@@ -82,7 +82,7 @@
         },
         {
             "category-description": "Language, Education, and English Skills",
-            "category-encoding": 3,
+            "category-encoding": 2,
             "variables": [
                 {
                     "variable-encoding": "A09",
@@ -140,7 +140,7 @@
         },
         {
             "category-description": "Housing Characteristics and Distance to Work",
-            "category-encoding": 4,
+            "category-encoding": 3,
             "variables": [
                 {
                     "variable-encoding": "D33A",
@@ -166,7 +166,7 @@
         },
         {
             "category-description": "Employment Patterns and Farm Job Characteristics",
-            "category-encoding": 5,
+            "category-encoding": 4,
             "variables": [
                 {
                     "variable-encoding": "C09Weeks",
@@ -240,7 +240,7 @@
         },
         {
             "category-description": "Employment Experience",
-            "category-encoding": 6,
+            "category-encoding": 5,
             "variables": [
                 {
                     "variable-encoding": "B11",
@@ -258,12 +258,12 @@
         },
         {
             "category-description": "Non-Crop Work Activities During the Year",
-            "category-encoding": 7,
+            "category-encoding": 6,
             "variables": []
         },
         {
             "category-description": "Income, Assets, and Use of Assistance Programs",
-            "category-encoding": 8,
+            "category-encoding": 7,
             "variables": [
                 {
                     "variable-encoding": "G01",
@@ -337,7 +337,7 @@
         },
         {
             "category-description": "Health Care in the United States",
-            "category-encoding": 9,
+            "category-encoding": 8,
             "variables": [
                 {
                     "variable-encoding": "NH01",

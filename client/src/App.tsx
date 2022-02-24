@@ -4,6 +4,7 @@ import Map from '../src/charts/Map';
 import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
 import Homepage from './components/Homepage/Homepage'
+import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
 import { Button } from 'react-bootstrap';
@@ -47,10 +48,13 @@ function App() {
   }
 
   return (
-    <>
-      <Minipage />
-      <Homepage />
-
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/visualizations" element={<Minipage />} />
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        Respondent Age
+      </h3>
       <Histogram
         height={600}
         width={600}
@@ -90,8 +94,9 @@ function App() {
           width={500}
           height={400}
         />
-      </div>
-    </>
+      </div> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 

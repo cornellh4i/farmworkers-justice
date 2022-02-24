@@ -6,6 +6,7 @@ interface histogramProp {
   width : number;
   data : number [];
 }
+//TODO: HANDLE D50MTCOD,G01,G03 AS SPECIAL CASES WITH ENCODING TRANSLATION
 
 function Histogram (props : histogramProp) {
   const svg = d3.select("svg#histogram");

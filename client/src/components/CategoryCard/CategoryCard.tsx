@@ -39,7 +39,7 @@ function CategoryCard(props: CategoryCardProp) {
 
 
     function viewVisualizationOnClick() {
-        navigate('/visualizations', { state: { categoryEncoding: props.categoryEncoding } })
+        navigate(`/visualizations/${props.categoryEncoding}`)
     }
 
     return (

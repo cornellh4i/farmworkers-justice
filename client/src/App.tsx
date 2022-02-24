@@ -51,7 +51,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/visualizations" element={<Minipage />} />
+        <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>

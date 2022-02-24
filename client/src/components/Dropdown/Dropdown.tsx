@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from '@mui/material/Button';
 import "@fontsource/rubik";
 import './Dropdown.scss';
 import Grid from '@mui/material/Grid';
@@ -11,18 +10,12 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 interface DropdownProp {
   categoryIndex: number
-
   categoryVariable: string
 }
 
 
 function CategoryCard(props: DropdownProp) {
   const [open, setOpen] = useState(false);
-  // const variables: string[] = [];
-
-  // for (let i = 0; i < props.categoryVariables.length; i++) {
-  //   variables.push(props.categoryVariables[i])
-  // }
 
   return (
     <div>

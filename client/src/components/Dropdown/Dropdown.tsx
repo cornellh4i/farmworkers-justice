@@ -10,28 +10,37 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 interface DropdownProp {
   categoryIndex: number
-  variableEncoding: string
+  //variableEncoding: string
+  dropdownOpen: boolean
+  dropdownIndex: number
   categoryVariable: string
+  encodings: string
+  onCollapse: any
 }
+const API_URL = process.env.REACT_APP_API;
 
 
 function CategoryCard(props: DropdownProp) {
-  const [open, setOpen] = useState(false);
 
+  function onClickCustom() {
+    props.onCollapse(props.dropdownIndex)
+  }
+
+  console.log(props.encodings)
   return (
     <div>
       <div className="dropdownContainer">
         <Grid container >
           <Grid item xs={9}>
-            <ListItemButton onClick={() => { setOpen(!open) }}>
+            <ListItemButton onClick={onClickCustom}>
               <h4 className="variableHeader">
                 {props.categoryVariable}
-                {console.log(props.categoryVariable)}</h4>
-              {open ? <ExpandLess /> : <ExpandMore />}
+              </h4>
+              {props.dropdownOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <div >
-
+            <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
+              <div>
+                {props.encodings}
               </div>
             </Collapse>
           </Grid>

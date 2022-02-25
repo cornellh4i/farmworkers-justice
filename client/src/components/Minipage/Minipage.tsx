@@ -34,8 +34,18 @@ function Minipage() {
             {getVariablesByCategory(5).map((l) => <Dropdown categoryVariable={l[0]} categoryIndex={5} variableEncoding={l[1]}></Dropdown>)}
             {getVariablesByCategory(6).map((l) => <Dropdown categoryVariable={l[0]} categoryIndex={6} variableEncoding={l[1]}></Dropdown>)}
             {getVariablesByCategory(7).map((l) => <Dropdown categoryVariable={l[0]} categoryIndex={7} variableEncoding={l[1]}></Dropdown>)}
-            {getVariablesByCategory(8).map((l) => <Dropdown categoryVariable={l[0]} categoryIndex={8} variableEncoding={l[1]}></Dropdown>)}
+            {getVariablesByCategory(8).map((l) => <Dropdown categoryVariable={l[0]} categoryIndex={8} variableEncoding={l[1]}></Dropdown>)}</div>)
+    /* import { getVariablesByCategory } from "./../Homepage/Homepage"
+import { useParams } from 'react-router-dom';
+
+
+function Minipage() {
+    const params = useParams();
+    const categoryIndex = parseInt(params.categoryEncoding!)
+    return (
+        <div>
+            {getVariablesByCategory(categoryIndex).map((variable) => <Dropdown categoryVariable={variable} categoryIndex={0}></Dropdown>)}
         </div>
     )
-}
+} */}
 export default Minipage;

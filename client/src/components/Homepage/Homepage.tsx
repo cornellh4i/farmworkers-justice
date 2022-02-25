@@ -20,16 +20,16 @@ const variablesInCategories = require('./../../local-json/categories.json')
   * @returns an array of descriptions corresponding to all variables under   
   *          the input category
   */
-export function getVariablesByCategory(categoryIndex: number) {
-  var variables = variablesInCategories["categories"][categoryIndex]["variables"]
-  console.log("variables: ", variables)
-  var descriptionsByCategory = []
-  for (let i = 0; i < variables.length; i++) {
-    descriptionsByCategory.push(variables[i]["variable-description"])
-  }
-  return descriptionsByCategory
+// export function getVariablesByCategory(categoryIndex: number) {
+//   var variables = variablesInCategories["categories"][categoryIndex]["variables"]
+//   console.log("variables: ", variables)
+//   var descriptionsByCategory = []
+//   for (let i = 0; i < variables.length; i++) {
+//     descriptionsByCategory.push(variables[i]["variable-description"])
+//   }
+//   return descriptionsByCategory
 
-}
+// }
 
 
 function Homepage() {

@@ -11,14 +11,17 @@ interface mapProp {
   regionEncoding : number;
 }
 
-// Test should highlight Kentucky and Arkansas
-let States: string[] = ['01', '05', '12', '13', '22', '28', '45']
+// For testing
+let Encoding = {
+  1 : ["02", "04", "06", "36"],
+  2 : ["17", "43", "23"]
+}
 
 function Map (props : mapProp) {
   const svg = d3.select("#usmap");
   const width = props.width
   const height = props.height;
-  const regionEncoding = props.regionEncoding;
+  type regionEncoding = typeof props.regionEncoding;
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -37,8 +40,8 @@ function Map (props : mapProp) {
     .attr("note", d => d.id!)  
     .attr("d", path)
     .attr("class", function(d) {
-      for (let i = 0; i < States.length; i++) {
-        if (d.id === States[i]) { return "highlighted"; }
+      for (let i = 0; i < Encoding[1].length; i++) {
+        if (d.id === Encoding[1][i]) { return "highlighted"; }
       }
       return "state";
     })

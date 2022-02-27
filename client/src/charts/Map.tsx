@@ -11,17 +11,21 @@ interface mapProp {
   regionEncoding : number;
 }
 
-// For testing
-let Encoding = {
-  1 : ["02", "04", "06", "36"],
-  2 : ["17", "43", "23"]
+// TEST - manual encoding
+let Encoding: {[key: number]: string[]} = {
+  1 : ["09", "10", "21", "23", "24", "25", "33", "34", "36", "37", "42", "44", "47", "50", "51", "54"],
+  2 : ["01", "05", "12", "13", "22", "28", "45"],
+  3 : ["17", "18", "19", "20", "26", "27", "29", "31", "38", "39", "46", "55"],
+  4 : ["04", "35", "40", "48"], 
+  5 : ["08", "16", "30", "32", "41", "49", "53", "56"],
+  6 : ["06"]
 }
 
 function Map (props : mapProp) {
   const svg = d3.select("#usmap");
   const width = props.width
   const height = props.height;
-  type regionEncoding = typeof props.regionEncoding;
+  const regionEncoding = props.regionEncoding;
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -40,8 +44,8 @@ function Map (props : mapProp) {
     .attr("note", d => d.id!)  
     .attr("d", path)
     .attr("class", function(d) {
-      for (let i = 0; i < Encoding[1].length; i++) {
-        if (d.id === Encoding[1][i]) { return "highlighted"; }
+      for (let i = 0; i < Encoding[regionEncoding].length; i++) {
+        if (d.id === Encoding[regionEncoding][i]) { return "highlighted"; }
       }
       return "state";
     })

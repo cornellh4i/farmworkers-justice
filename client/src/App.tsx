@@ -6,7 +6,7 @@ import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/DonutChart'
 import Table from './charts/Table'
-import LineGraph from './charts/LineGraph'
+import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 

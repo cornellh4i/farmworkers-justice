@@ -11,15 +11,9 @@ interface mapProp {
   regionEncoding : number;
 }
 
-// TEST - manual encoding
-let Encoding: {[key: number]: string[]} = {
-  1 : ["09", "10", "21", "23", "24", "25", "33", "34", "36", "37", "42", "44", "47", "50", "51", "54"],
-  2 : ["01", "05", "12", "13", "22", "28", "45"],
-  3 : ["17", "18", "19", "20", "26", "27", "29", "31", "38", "39", "46", "55"],
-  4 : ["04", "35", "40", "48"], 
-  5 : ["08", "16", "30", "32", "41", "49", "53", "56"],
-  6 : ["06"]
-}
+// Encoding from local JSON file
+const Encoding = require('../local-json/mapRegionEncoding.json'); 
+
 
 function Map (props : mapProp) {
   const svg = d3.select("#usmap");

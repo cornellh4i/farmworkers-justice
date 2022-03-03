@@ -39,14 +39,14 @@ function CategoryCard(props: CategoryCardProp) {
 
 
     function viewVisualizationOnClick() {
-        navigate('/visualizations', {state: {categoryEncoding: props.categoryEncoding}}) 
+        navigate(`/visualizations/${props.categoryEncoding}`)
     }
 
     return (
         <div>
             <div className="categoryCardContainer">
                 <h2 className="categoryHeader">{props.categoryTitle}</h2>
-                <Grid container >                   
+                <Grid container >
                     <Grid item xs={1}>
                         <hr className="orangeLine" />
                     </Grid>
@@ -54,32 +54,31 @@ function CategoryCard(props: CategoryCardProp) {
                         <hr className="greyLine" />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2}>  
+                <Grid container spacing={2}>
                     <Grid item xs={3}>
                         <img className="cardImageStyle" src={props.image} alt="cardcomponentimage" ></img>
                         <Button
                             variant="contained"
-                            sx={{backgroundColor: '#FFA500', width: '100%'}}
+                            sx={{ backgroundColor: '#FFA500', width: '100%' }}
                             className="view-visualizations"
                             onClick={viewVisualizationOnClick}
-                        > 
+                        >
                             View Visualizations
                         </Button>
                     </Grid>
                     <Grid item xs={9}>
-                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>                   
+                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
                         <ListItemButton onClick={() => { setOpen(!open) }}>
                             <h4 className="variables-list-collapse"> What NAWS questions are covered in this category? </h4>
                             {open ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
                         <Collapse in={open} timeout="auto" unmountOnExit>
                             <div className="variables-list" >
-                                {categoryVariables.map((categoryVariable) => <li>{categoryVariable}</li>)}
+                                {categoryVariables.map((categoryVariable, index) => <li key={index}>{categoryVariable}</li>)}
                             </div>
                         </Collapse>
                     </Grid>
                 </Grid>
-                
             </div >
         </div >
     )

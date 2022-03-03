@@ -8,18 +8,23 @@ import './Map.scss'
 interface mapProp {
   height : number;
   width : number;
-  regionEncoding : number;
+  regionEncoding : string;
 }
 
-// Encoding from local JSON file
-const Encoding = require('../local-json/mapRegionEncoding.json'); 
-
+interface regionToStatesProps {
+  regionEncoding: string,
+  stateIDs: Array<string>
+}
 
 function Map (props : mapProp) {
+  // Encoding from local JSON file
+  const regionToStatesData = require('../local-json/mapRegionEncoding.json'); 
+  var stateIDs = regionToStatesData["regionToStates"].find((el: regionToStatesProps) =>
+    el.regionEncoding === props.regionEncoding).stateIDs;
+  console.log(stateIDs)
   const svg = d3.select("#usmap");
   const width = props.width
   const height = props.height;
-  const regionEncoding = props.regionEncoding;
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -38,8 +43,8 @@ function Map (props : mapProp) {
     .attr("note", d => d.id!)  
     .attr("d", path)
     .attr("class", function(d) {
-      for (let i = 0; i < Encoding[regionEncoding].length; i++) {
-        if (d.id === Encoding[regionEncoding][i]) { return "highlighted"; }
+      for (let i = 0; i < stateIDs.length; i++) {
+        if (d.id === stateIDs[i]) { return "highlighted"; }
       }
       return "state";
     })

@@ -74,12 +74,11 @@ function CategoryCard(props: CategoryCardProp) {
                         </ListItemButton>
                         <Collapse in={open} timeout="auto" unmountOnExit>
                             <div className="variables-list" >
-                                {categoryVariables.map((categoryVariable) => <li>{categoryVariable}</li>)}
+                                {categoryVariables.map((categoryVariable, index) => <li key={index}>{categoryVariable}</li>)}
                             </div>
                         </Collapse>
                     </Grid>
                 </Grid>
-
             </div >
         </div >
     )

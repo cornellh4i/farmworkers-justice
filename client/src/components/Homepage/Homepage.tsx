@@ -11,9 +11,7 @@ import category7Image from "./../../images/category7.jpg";
 import category8Image from "./../../images/category8.jpg";
 import "@fontsource/rubik";
 import './Homepage.scss';
-
-
-const variablesInCategories = require('./../../local-json/categories.json')
+import variablesInCategories from './../../local-json/categories.json';
 
 /**
   * @param categoryIndex 0-based order of category appearing on the homepage
@@ -22,7 +20,6 @@ const variablesInCategories = require('./../../local-json/categories.json')
   */
 export function getVariablesByCategory(categoryIndex: number) {
   var variables = variablesInCategories["categories"][categoryIndex]["variables"]
-  console.log("variables: ", variables)
   var descriptionsByCategory = []
   for (let i = 0; i < variables.length; i++) {
     descriptionsByCategory.push(variables[i]["variable-description"])

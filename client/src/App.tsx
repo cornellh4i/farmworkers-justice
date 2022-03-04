@@ -52,7 +52,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path="histogram" element={<Histogram height={600} width={600} categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} />
+        <Route path="histogram" element={<Histogram categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
           Respondent Age
         </h3> */}

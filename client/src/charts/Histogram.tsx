@@ -1,15 +1,18 @@
 import * as d3 from "d3";
 import './Histogram.scss';
 import { useEffect } from 'react';
+import { stratify } from "d3";
 
 interface binProp {
   "start": null | number,
   "end": null | number
+  "start-encoding": null | number
+  "end-encoding": null | number
 }
 
 interface histogramProp {
-  height: number;
-  width: number;
+  // height: number;
+  // width: number;
   //data: number[];
   categoryEncoding: string;
   variableEncoding: string;
@@ -44,8 +47,8 @@ function Histogram(props: histogramProp) {
 
 
   const svg = d3.select("svg#histogram");
-  const width = props.width
-  const height = props.height;
+  const width = 600
+  const height = 600
   const margin = { top: 10, right: 10, bottom: 50, left: 60 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
@@ -67,14 +70,14 @@ function Histogram(props: histogramProp) {
   let total: number[] = []
   let max = 0;
   let i = 0;
-  console.log(binRanges)
+  //console.log(binRanges[0]["end"])
 
   // TODO: DO WE NEED TO ALLOCATE THIS MUCH ARRAY MEMORY FOR TOTAL?
   let x = 0;
-  for (x = 0; x < binRanges.size; x++) {
-    total[binRanges[x]["end"]] = 0;
+  for (x = 0; x < binRanges.length; x++) {
+    //console.log(binRanges[x])
+    total[x] = 0;
   }
-
   // for (i = 10; i <= maxValue + 10; i += 10) {
   //   total[i] = 0;
   // }
@@ -83,7 +86,23 @@ function Histogram(props: histogramProp) {
   // change to use binranges
   data.forEach(d => {
     Object.keys(total).forEach((key: any) => {
-      if (d <= key && key - 10 < d) {
+      if (binRanges[key]["start"] == null) {
+        if (d <= binRanges[key]["end"]) {
+          let curr = total[key] + 1;
+          if (curr > max)
+            max = curr;
+          total[key] = curr;
+        }
+      }
+      else if (binRanges[key]["end"] == null) {
+        if (d >= binRanges[key]["start"]) {
+          let curr = total[key] + 1;
+          if (curr > max)
+            max = curr;
+          total[key] = curr;
+        }
+      }
+      else if (d <= binRanges[key]["end"] && d >= binRanges[key]["start"]) {
         let curr = total[key] + 1;
         if (curr > max)
           max = curr;
@@ -92,59 +111,64 @@ function Histogram(props: histogramProp) {
     });
   });
 
+  console.log(total)
+
   max = Math.ceil(max / 10) * 10 + 10
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
 
   let leftAxis = d3.axisLeft(totalScale);
-  let leftGridlines = d3.axisLeft(totalScale)
-    .tickSize(-chartWidth - 10)
-    .tickFormat(d => "");
-  annotations.append("g")
-    .attr("class", "y axis")
-    .attr("transform", `translate(${margin.left - 10},${margin.top})`)
-    .call(leftAxis)
-  annotations.append("g")
-    .attr("class", "y gridlines")
-    .attr("transform", `translate(${margin.left},${margin.top})`)
-    .call(leftGridlines);
+  // let leftGridlines = d3.axisLeft(totalScale)
+  //   .tickSize(-chartWidth - 10)
+  //   .tickFormat(d => "");
+  // annotations.append("g")
+  //   .attr("class", "y axis")
+  //   .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+  //   .call(leftAxis)
+  // annotations.append("g")
+  //   .attr("class", "y gridlines")
+  //   .attr("transform", `translate(${margin.left},${margin.top})`)
+  //   .call(leftGridlines);
 
   let bottomAxis = d3.axisBottom(dataScale).tickFormat(d3.format(''));
-  let bottomGridlines = d3
-    .axisBottom(dataScale)
-    .tickSize(-chartHeight)
-    .tickFormat(d => "");
-  annotations.append("g")
-    .attr("class", "x axis")
-    .attr('transform', `translate(${margin.left},${chartHeight + margin.top + 10})`)
-    .call(bottomAxis);
-  annotations.append("g")
-    .attr("class", "x gridlines")
-    .attr('transform', `translate(${margin.left},${chartHeight + margin.top})`)
-    .call(bottomGridlines);
-  annotations.append("text")
-    .attr("class", "x label")
-    .attr("text-anchor", "middle")
-    .attr("x", dataScale(maxValue / 2) + margin.left)
-    .attr("y", chartHeight + margin.bottom + 5);
-  //.text("Age Groups");
+  // let bottomGridlines = d3
+  //   .axisBottom(dataScale)
+  //   .tickSize(-chartHeight)
+  //   .tickFormat(d => "");
+  // annotations.append("g")
+  //   .attr("class", "x axis")
+  //   .attr('transform', `translate(${margin.left},${chartHeight + margin.top + 10})`)
+  //   .call(bottomAxis);
+  // annotations.append("g")
+  //   .attr("class", "x gridlines")
+  //   .attr('transform', `translate(${margin.left},${chartHeight + margin.top})`)
+  //   .call(bottomGridlines);
+  // annotations.append("text")
+  //   .attr("class", "x label")
+  //   .attr("text-anchor", "middle")
+  //   .attr("x", dataScale(maxValue / 2) + margin.left)
+  //   .attr("y", chartHeight + margin.bottom + 5);
+  // //.text("Age Groups");
 
-  annotations.append("text")
-    .attr("class", "y label")
-    .attr("text-anchor", "middle")
-    .attr("x", -height / 2 + margin.right)
-    .attr("y", dataScale(3))
-    .attr("transform", "rotate(-90)");
+  // annotations.append("text")
+  //   .attr("class", "y label")
+  //   .attr("text-anchor", "middle")
+  //   .attr("x", -height / 2 + margin.right)
+  //   .attr("y", dataScale(3))
+  //   .attr("transform", "rotate(-90)");
   //.text("Population Totals");
 
   Object.keys(total).forEach((key: any) => {
-    if (total[key] === 0) {
-      delete total[key];
-    }
+    let end = binRanges[key]["end"]
+    let start = binRanges[key]["start"]
+    let diff = end - start
+    // if (total[key] === 0) {
+    //   delete total[key];
+    // }
 
     chartArea.append("rect")
       .attr("class", "histogram")
 
-      .attr("x", dataScale(key - 10))
+      .attr("x", dataScale(end - diff))
       .attr("y", totalScale(total[key]))
       .attr("height", chartHeight - totalScale(total[key]))
       .attr("width", dataScale(10));
@@ -152,15 +176,15 @@ function Histogram(props: histogramProp) {
     chartArea.append("text")
       .attr("text-anchor", "middle")
       .attr("font-size", "15px")
-      .attr("x", dataScale(key - 5))
-      .attr('y', totalScale(total[key]) - 5)
-      .text(total[key]);
+      .attr("x", dataScale(end - diff / 2))
+      .attr('y', totalScale(total[key]) - diff / 2)
+      .text((start === null ? " " : start) + " - " + (end === null ? " " : end));
   });
 
   return (
     <div>
       {props.variableDescription}
-      <svg id="histogram" height={props.height} width={props.width}></svg>
+      <svg id="histogram" height={600} width={600}></svg>
     </div>
 
   );

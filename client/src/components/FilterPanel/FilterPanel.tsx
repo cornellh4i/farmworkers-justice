@@ -8,30 +8,41 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
-
 function FilterPanel() {
   const [gender, setGender] = React.useState('');
   const [currstat, setCurrStat] = React.useState('');
   const [flc, setFlc] = React.useState('');
   const [region6, setRegion6] = React.useState('');
 
+  const [filter, setFilter] = React.useState<null | string>(null);
 
-  const handleGenderChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    DeletableChips();
+  const handleGenderChange = (event: { target: { value: string; }; }) => {
+    console.log(event.target.value);
     setGender(event.target.value);
-
-
+    setFilter(event.target.value);
   };
-  const handleCurrStatChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleCurrStatChange = (event: { target: { value: string; }; }) => {
     setCurrStat(event.target.value);
+    setFilter(event.target.value);
   };
-  const handleFlcChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleFlcChange = (event: { target: { value: string; }; }) => {
     setFlc(event.target.value);
+    setFilter(event.target.value);
   };
-  const handleRegion6Change = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleRegion6Change = (event: { target: { value: string; }; }) => {
     setRegion6(event.target.value);
+    setFilter(event.target.value);
   };
 
+    function handleDelete(){
+      setFilter(null);
+      setGender('');
+      setCurrStat('');
+      setFlc('');
+      setRegion6('');
+
+
+    };
 
   return (
     <div>
@@ -45,8 +56,8 @@ function FilterPanel() {
             label="Gender"
             onChange={handleGenderChange}
           >
-            <MenuItem value={"m"}>Male</MenuItem>
-            <MenuItem value={"f"}>Female</MenuItem>
+            <MenuItem value={"Male"}>Male</MenuItem>
+            <MenuItem value={"Female"}>Female</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -61,10 +72,10 @@ function FilterPanel() {
             label="Work Authorization Status"
             onChange={handleCurrStatChange}
           >
-            <MenuItem value={0}>Citizen</MenuItem>
-            <MenuItem value={1}>Green Card</MenuItem>
-            <MenuItem value={2}>Other Work Authorization</MenuItem>
-            <MenuItem value={3}>Unauthorized</MenuItem>
+            <MenuItem value={"Citizen"}>Citizen</MenuItem>
+            <MenuItem value={"Green Card"}>Green Card</MenuItem>
+            <MenuItem value={"Other Work Authorization"}>Other Work Authorization</MenuItem>
+            <MenuItem value={"Unauthorized"}>Unauthorized</MenuItem>
 
           </Select>
         </FormControl>
@@ -80,8 +91,8 @@ function FilterPanel() {
             label="Employer"
             onChange={handleFlcChange}
           >
-            <MenuItem value={0}>Other</MenuItem>
-            <MenuItem value={1}>Farm-labor Contractor</MenuItem>
+            <MenuItem value={"Grower/Nurs./Packh/Oth"}>Grower/Nurs./Packh/Oth</MenuItem>
+            <MenuItem value={"Farm-labor Contractor"}>Farm-labor Contractor</MenuItem>
 
           </Select>
         </FormControl>
@@ -98,45 +109,31 @@ function FilterPanel() {
             onChange={handleRegion6Change}
           >
 
-            <MenuItem value={1}>East</MenuItem>
-            <MenuItem value={2}>South East</MenuItem>
-            <MenuItem value={3}>Midwest</MenuItem>
-            <MenuItem value={4}>South West</MenuItem>
-            <MenuItem value={5}>North West</MenuItem>
-            <MenuItem value={6}>California</MenuItem>
+            <MenuItem value={"East"}>East</MenuItem>
+            <MenuItem value={"South East"}>South East</MenuItem>
+            <MenuItem value={"Midwest"}>Midwest</MenuItem>
+            <MenuItem value={"South West"}>South West</MenuItem>
+            <MenuItem value={"North West"}>North West</MenuItem>
+            <MenuItem value={"California"}>California</MenuItem>
 
 
           </Select>
         </FormControl>
       </Box>
+      < div >
 
+{filter===null?
+null:
+<Stack direction="row" spacing={1}>
+        <Chip label={filter} onDelete={handleDelete} />
+      </Stack>
 
+}
 
-
-
-
-
+    </div >
 
     </div>
   )
-}
-
-function DeletableChips() {
-  const handleDelete = () => {
-    console.info('You clicked the delete icon.');
-  };
-
-
-  return (
-
-
-    < div >
-      <Stack direction="row" spacing={1}>
-        <Chip label="Deletable" onDelete={handleDelete} />
-        <Chip label="Deletable" variant="outlined" onDelete={handleDelete} />
-      </Stack>
-    </div >);
-
 }
 
 export default FilterPanel;

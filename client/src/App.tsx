@@ -52,49 +52,47 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
+        <Route path="histogram" element={<Histogram height={600} width={600} categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Respondent Age
-      </h3>
-      <Histogram
-        height={600}
-        width={600}
-        data={histogramData} />
-      <Table
-        data={tableData}
-      />
-      <Map
-        height={770}
-        width={990}
-      />
-      <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}>
-        <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
-          How well do you speak English?
-        </h3>
+          Respondent Age
+        </h3> */}
+
+        {/* <Table
+          data={tableData}
+        />
+        <Map
+          height={770}
+          width={990}
+        />
+        <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}>
+          <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
+            How well do you speak English?
+          </h3>
+          <Donut
+            data={donutData}
+            width={500}
+            height={500}
+            innerRadius={150}
+            outerRadius={200}
+          />
+        </div>
         <Donut
-          data={donutData}
+          data={FLCData}
           width={500}
           height={500}
           innerRadius={150}
           outerRadius={200}
         />
-      </div>
-      <Donut
-        data={FLCData}
-        width={500}
-        height={500}
-        innerRadius={150}
-        outerRadius={200}
-      />
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Average Value per Year from 2009 to 2018
-      </h3>
-      <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
-        <Line
-          data={timeSeriesData}
-          width={500}
-          height={400}
-        />
-      </div> */}
+        <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+          Average Value per Year from 2009 to 2018
+        </h3>
+        <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
+          <Line
+            data={timeSeriesData}
+            width={500}
+            height={400}
+          />
+        </div> */}
       </Routes>
     </BrowserRouter>
   );

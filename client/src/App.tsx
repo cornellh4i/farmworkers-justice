@@ -53,7 +53,7 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} />
-
+        <Route path='/map' element={<Map regionEncoding = {"1"} />} />
         {/* <Table
           data={tableData}
         />

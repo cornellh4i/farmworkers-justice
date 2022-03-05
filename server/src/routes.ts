@@ -377,7 +377,6 @@ module.exports = () => {
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
-
   });
 
   return router;

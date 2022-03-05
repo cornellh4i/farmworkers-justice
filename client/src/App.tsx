@@ -5,7 +5,7 @@ import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
-import Donut from './charts/donutChart'
+import Donut from './charts/DonutChart'
 import Table from './charts/Table'
 import { Button } from 'react-bootstrap';
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "@fontsource/rubik";
 import './Dropdown.scss';
 import Grid from '@mui/material/Grid';
@@ -9,15 +8,12 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 
 
 interface DropdownProp {
-  categoryIndex: number
-  //variableEncoding: string
   dropdownOpen: boolean
   dropdownIndex: number
   categoryVariable: string
-  encodings: string
-  onCollapse: any
+  encoding: string
+  onCollapse: Function
 }
-const API_URL = process.env.REACT_APP_API;
 
 
 function CategoryCard(props: DropdownProp) {
@@ -26,7 +22,6 @@ function CategoryCard(props: DropdownProp) {
     props.onCollapse(props.dropdownIndex)
   }
 
-  console.log(props.encodings)
   return (
     <div>
       <div className="dropdownContainer">
@@ -40,7 +35,7 @@ function CategoryCard(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
               <div>
-                {props.encodings}
+                {props.encoding}
               </div>
             </Collapse>
           </Grid>

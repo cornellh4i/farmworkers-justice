@@ -67,6 +67,7 @@ function LineGraph(props: LineGraphProp) {
     .attr("class", "y label")
     .attr("text-anchor", "end")
     .attr("y", -50)
+    .attr("x", -w/2 + ((categoryVariable.length * 8)/2))
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
     .text(categoryVariable); 

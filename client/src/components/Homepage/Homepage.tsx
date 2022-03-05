@@ -28,7 +28,7 @@ export function getVariablesByCategory(categoryIndex: number) {
 
 }
 
-
+import Map from "../../charts/Map";
 function Homepage() {
   return (
     <div>

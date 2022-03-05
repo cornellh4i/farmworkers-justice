@@ -41,7 +41,7 @@ function App() {
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
 
-    const urlFLC = `${API_URL}/B11`;
+    const urlFLC = `${API_URL}/G01`;
     const FLCResponse = await fetch(urlFLC);
     const FLCOut = await FLCResponse.json();
     setFLCData(FLCOut.data);
@@ -53,7 +53,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {0} variableEncoding = {"B11"} categoryVariable = {"How many years have you done farmwork"}/>} />
+        <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>

@@ -6,8 +6,6 @@ import { GeometryObject, Topology } from 'topojson-specification';
 import './Map.scss'
 
 interface mapProp {
-  height : number;
-  width : number;
   regionEncoding : string;
 }
 
@@ -21,10 +19,9 @@ function Map (props : mapProp) {
   const regionToStatesData = require('../local-json/mapRegionEncoding.json'); 
   var stateIDs = regionToStatesData["regionToStates"].find((el: regionToStatesProps) =>
     el.regionEncoding === props.regionEncoding).stateIDs;
-  console.log(stateIDs)
   const svg = d3.select("#usmap");
-  const width = props.width
-  const height = props.height;
+  const width = 990; // modify this later
+  const height = 770; // modify this later
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -51,7 +48,7 @@ function Map (props : mapProp) {
   });
 
   return (
-  <svg id="usmap" height = {props.height} width = {props.width} ></svg>
+  <svg id="usmap" height={height} width={width} ></svg>
   )
 }
 

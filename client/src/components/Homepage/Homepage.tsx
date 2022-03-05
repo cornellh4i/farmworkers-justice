@@ -24,8 +24,7 @@ function Homepage() {
             <div id="rectangle"></div>
         </div>
       </div>
-      <Map height = {770} width = {990} regionEncoding = {"1"} />
-      {/* <div className="introduction-text">
+      <div className="introduction-text">
         <h3>What is the National Agricultural Workers Survey (NAWS)?</h3>
         <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h4>
         <h3>Who is surveyed?</h3>
@@ -50,7 +49,7 @@ function Homepage() {
       <CategoryCard categoryTitle="Income, Assets, and Use of Assistance Programs"
         categoryEncoding={7} image={category7Image}/>
       <CategoryCard categoryTitle="Health Care in the United States"
-        categoryEncoding={8} image={category8Image}/> */}
+        categoryEncoding={8} image={category8Image}/>
     </div>
   )
 

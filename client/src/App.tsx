@@ -51,8 +51,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        {/* <Route path="/filterpanel" element={<FilterPanel />} /> */}
-        {/* <Route path="/visualizations" element={<Minipage />} />  */}
+        <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path='/map' element={<Map regionEncoding = {"1"} />} />
       {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age

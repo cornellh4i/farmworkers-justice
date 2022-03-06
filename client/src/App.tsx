@@ -6,7 +6,7 @@ import Line, { timeSeriesProp } from './charts/lineGraph'
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
 import FilterPanel from "./components/FilterPanel/FilterPanel";
-import Donut from './charts/donutChart'
+import Donut from './charts/DonutChart'
 import Table from './charts/Table'
 import { Button } from 'react-bootstrap';
 

@@ -1,198 +1,170 @@
 import { useState } from "react";
 import * as React from 'react';
-import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import './FilterPanel.scss'
 
 
 //handlechange: disable
 //handeldelete: enable
+// TODO: DISABLE DROPDOWN WHEN 2 FILTERS SELECTED
+
+const FilterEnum = {
+  GENDER: "gender",
+  CURRSTAT: "currstat",
+  FLC: "flc",
+  REGION6: "region6"
+}
 
 function FilterPanel() {
-  const [gender, setGender] = React.useState('');
-  const [currstat, setCurrStat] = React.useState('');
-  const [flc, setFlc] = React.useState('');
-  const [region6, setRegion6] = React.useState('');
+  const [gender, setGender] = useState('');
+  const [currstat, setCurrStat] = useState('');
+  const [flc, setFlc] = useState('');
+  const [region6, setRegion6] = useState('');
 
-  const [filter1, setFilter1] = React.useState<null | string[]>(null);
-  const [filter2, setFilter2] = React.useState<null | string[]>(null);
+  const [filter1, setFilter1] = useState<null | string[]>(null);
+  const [filter2, setFilter2] = useState<null | string[]>(null);
 
-  const handleGenderChange = (event: { target: { value: string; }; }) => {
-    console.log(event.target.value);
-    setGender(event.target.value);
-    if(filter1 === null) {
-      setFilter1([event.target.value, "gender"]);
-    } else if (filter2 === null && filter1[1] != "gender") {
-      setFilter2([event.target.value, "gender"]);
+  function handleFilterChange(filterName: string, event: { target: { value: string; }} ) {
+    if (filterName === FilterEnum.GENDER) {
+      setGender(event.target.value);
+    } else if (filterName === FilterEnum.CURRSTAT) {
+      setCurrStat(event.target.value);
+    } else if (filterName === FilterEnum.FLC) {
+      setFlc(event.target.value);
+    } else if (filterName === FilterEnum.REGION6) {
+      setRegion6(event.target.value);
     }
-    
-  };
-  const handleCurrStatChange = (event: { target: { value: string; }; }) => {
-    setCurrStat(event.target.value);
-    if(filter1 === null) {
-      setFilter1([event.target.value, "currstat"]);
-    } else if (filter2 === null && filter1[1] != "currstat") {
-      setFilter2([event.target.value, "currstat"]);
-    }
-  };
-  const handleFlcChange = (event: { target: { value: string; }; }) => {
-    setFlc(event.target.value);
-    if(filter1 === null) {
-      setFilter1([event.target.value, "flc"]);
-    } else if (filter2 === null && filter1[1] != "flc") {
-      setFilter2([event.target.value, "flc"]);
-    }
-  };
-  const handleRegion6Change = (event: { target: { value: string; }; }) => {
-    setRegion6(event.target.value);
-    if(filter1 === null) {
-      setFilter1([event.target.value, "region6"]);
-    } else if (filter2 === null && filter1[1] != "region6") {
-      setFilter2([event.target.value, "region6"]);
+
+    if(filter1 === null || filter1[1] === filterName) {
+      setFilter1([event.target.value, filterName]);
+    } else if (filter2 === null || filter2[1] === filterName) {
+      setFilter2([event.target.value, filterName]);
     }
   };
 
-    function handleDelete1(){
-      if(filter1![1] === "gender"){
-        setGender('');
-      }
-      else if(filter1![1] === "currstat"){
-        setCurrStat('');
-      }
-      else if(filter1![1] === "flc"){
-        setFlc('');
-      }
-      else{
-        setRegion6('');
-      }
+  function handleDeleteFilter1(){
+    if(filter1![1] === FilterEnum.GENDER){
+      setGender('');
+    } else if(filter1![1] === FilterEnum.CURRSTAT){
+      setCurrStat('');
+    } else if(filter1![1] === FilterEnum.FLC){
+      setFlc('');
+    } else if (filter1![1] === FilterEnum.REGION6){
+      setRegion6('');
+    }
 
-      if(filter2 !== null){
-        setFilter1(filter2);
-        setFilter2(null);
-      }
-      else{
-        setFilter1(null);
-      }
-
-
-      
-    };
-
-    function handleDelete2(){
-      if(filter2![1] === "gender"){
-        setGender('');
-      }
-      else if(filter2![1] === "currstat"){
-        setCurrStat('');
-      }
-      else if(filter2![1] === "flc"){
-        setFlc('');
-      }
-      else{
-        setRegion6('');
-      }
+    if(filter2 !== null){
+      setFilter1(filter2);
       setFilter2(null);
+    } else{
+      setFilter1(null);
+    }
+  };
 
-      
-    };
+  function handleDeleteFilter2(){
+    if(filter2![1] === FilterEnum.GENDER){
+      setGender('');
+    } else if(filter2![1] === FilterEnum.CURRSTAT){
+      setCurrStat('');
+    } else if(filter2![1] === FilterEnum.FLC){
+      setFlc('');
+    } else if (filter2![1] === FilterEnum.REGION6){
+      setRegion6('');
+    }
+    setFilter2(null);
+  };
 
   return (
     <div>
-      <Box sx={{ width: 1 / 12 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={gender}
-            label="Gender"
-            onChange={handleGenderChange}
-          >
-            <MenuItem value={"Male"}>Male</MenuItem>
-            <MenuItem value={"Female"}>Female</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+      <Grid container spacing={1}>
+        <Grid item xs={1}>
+          <FormControl fullWidth>
+            <InputLabel id="gender-select-label">Gender</InputLabel>
+            <Select
+              labelId="gender-select-label"
+              id="gender-select"
+              value={gender}
+              label="Gender"
+              onChange={(e) => handleFilterChange(FilterEnum.GENDER, e)}
+            >
+              <MenuItem value={"Male"}>Male</MenuItem>
+              <MenuItem value={"Female"}>Female</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={2}>
+          <FormControl fullWidth>
+            <InputLabel id="currstat-select-label">Work Authorization Status</InputLabel>
+            <Select
+              labelId="currstat-select-label"
+              id="currstat-select"
+              value={currstat}
+              label="Work Authorization Status"
+              onChange={(e) => handleFilterChange(FilterEnum.CURRSTAT, e)}
+            >
+              <MenuItem value={"Citizen"}>Citizen</MenuItem>
+              <MenuItem value={"Green Card"}>Green Card</MenuItem>
+              <MenuItem value={"Other Work Authorization"}>Other Work Authorization</MenuItem>
+              <MenuItem value={"Unauthorized"}>Unauthorized</MenuItem>
 
-      <Box sx={{ width: 1 / 6 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Work Authorization Status</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={currstat}
-            label="Work Authorization Status"
-            onChange={handleCurrStatChange}
-          >
-            <MenuItem value={"Citizen"}>Citizen</MenuItem>
-            <MenuItem value={"Green Card"}>Green Card</MenuItem>
-            <MenuItem value={"Other Work Authorization"}>Other Work Authorization</MenuItem>
-            <MenuItem value={"Unauthorized"}>Unauthorized</MenuItem>
-
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Box sx={{ width: 1 / 12 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Employer</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={flc}
-            label="Employer"
-            onChange={handleFlcChange}
-          >
-            <MenuItem value={"Grower/Nurs./Packh/Oth"}>Grower/Nurs./Packh/Oth</MenuItem>
-            <MenuItem value={"Farm-labor Contractor"}>Farm-labor Contractor</MenuItem>
-
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Box sx={{ width: 1 / 12 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Region</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={region6}
-            label="Region"
-            onChange={handleRegion6Change}
-          >
-
-            <MenuItem value={"East"}>East</MenuItem>
-            <MenuItem value={"South East"}>South East</MenuItem>
-            <MenuItem value={"Midwest"}>Midwest</MenuItem>
-            <MenuItem value={"South West"}>South West</MenuItem>
-            <MenuItem value={"North West"}>North West</MenuItem>
-            <MenuItem value={"California"}>California</MenuItem>
-
-
-          </Select>
-        </FormControl>
-      </Box>
-      < div >
-
-{filter1===null?
-null:
-<Stack direction="row" spacing={1}>
-        <Chip label={filter1[0]} onDelete={handleDelete1} />
-      </Stack>
-}
-
-{filter2===null?
-null:
-<Stack direction="row" spacing={1}>
-        <Chip label={filter2[0]} onDelete={handleDelete2} />
-      </Stack>
-}
-    </div >
-
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={1}>
+          <FormControl fullWidth>
+            <InputLabel id="flc-select-label">Employer</InputLabel>
+            <Select
+              labelId="flc-select-label"
+              id="flc-select"
+              value={flc}
+              label="Employer"
+              onChange={(e) => handleFilterChange(FilterEnum.FLC, e)}
+            >
+              <MenuItem value={"Grower/Nurs./Packh/Oth"}>Grower/Nurs./Packh/Oth</MenuItem>
+              <MenuItem value={"Farm-labor Contractor"}>Farm-labor Contractor</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={1}>
+          <FormControl fullWidth>
+            <InputLabel id="region6-select-label">Region</InputLabel>
+            <Select
+              labelId="region6-select-label"
+              id="region6-select"
+              value={region6}
+              label="Region"
+              onChange={(e) => handleFilterChange(FilterEnum.REGION6, e)}
+            >
+              <MenuItem value={"East"}>East</MenuItem>
+              <MenuItem value={"South East"}>South East</MenuItem>
+              <MenuItem value={"Midwest"}>Midwest</MenuItem>
+              <MenuItem value={"South West"}>South West</MenuItem>
+              <MenuItem value={"North West"}>North West</MenuItem>
+              <MenuItem value={"California"}>California</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid> 
+      < div className="chip">
+        { filter1 === null ?
+          null:
+          <Stack direction="row" spacing={1} sx={{marginRight: '1rem'}}>
+            <Chip label={filter1[0]} onDelete={handleDeleteFilter1} />
+          </Stack>
+        }
+        { filter2 === null ?
+          null:
+          <Stack direction="row" spacing={1} >
+            <Chip label={filter2[0]} onDelete={handleDeleteFilter2} />
+          </Stack>
+        }
+      </div>
     </div>
   )
 }

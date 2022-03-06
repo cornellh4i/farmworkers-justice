@@ -12,7 +12,6 @@ import './FilterPanel.scss'
 
 //handlechange: disable
 //handeldelete: enable
-// TODO: DISABLE DROPDOWN WHEN 2 FILTERS SELECTED
 
 const FilterEnum = {
   GENDER: "gender",
@@ -27,6 +26,7 @@ function FilterPanel() {
   const [flc, setFlc] = useState('');
   const [region6, setRegion6] = useState('');
 
+  // filter1 and filter2 states are in the form of [filter value, filter name]
   const [filter1, setFilter1] = useState<null | string[]>(null);
   const [filter2, setFilter2] = useState<null | string[]>(null);
 
@@ -92,6 +92,7 @@ function FilterPanel() {
               value={gender}
               label="Gender"
               onChange={(e) => handleFilterChange(FilterEnum.GENDER, e)}
+              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.GENDER && filter2[1] !== FilterEnum.GENDER)}
             >
               <MenuItem value={"Male"}>Male</MenuItem>
               <MenuItem value={"Female"}>Female</MenuItem>
@@ -107,6 +108,7 @@ function FilterPanel() {
               value={currstat}
               label="Work Authorization Status"
               onChange={(e) => handleFilterChange(FilterEnum.CURRSTAT, e)}
+              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.CURRSTAT && filter2[1] !== FilterEnum.CURRSTAT)}
             >
               <MenuItem value={"Citizen"}>Citizen</MenuItem>
               <MenuItem value={"Green Card"}>Green Card</MenuItem>
@@ -125,6 +127,7 @@ function FilterPanel() {
               value={flc}
               label="Employer"
               onChange={(e) => handleFilterChange(FilterEnum.FLC, e)}
+              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.FLC && filter2[1] !== FilterEnum.FLC)}
             >
               <MenuItem value={"Grower/Nurs./Packh/Oth"}>Grower/Nurs./Packh/Oth</MenuItem>
               <MenuItem value={"Farm-labor Contractor"}>Farm-labor Contractor</MenuItem>
@@ -140,6 +143,7 @@ function FilterPanel() {
               value={region6}
               label="Region"
               onChange={(e) => handleFilterChange(FilterEnum.REGION6, e)}
+              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.REGION6 && filter2[1] !== FilterEnum.REGION6)}
             >
               <MenuItem value={"East"}>East</MenuItem>
               <MenuItem value={"South East"}>South East</MenuItem>

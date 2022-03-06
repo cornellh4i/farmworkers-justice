@@ -1,18 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import * as d3 from "d3";
 
-export interface timeSeriesProp {
-  year: number,
-  value: number
-}
-
-interface lineGraphProp {
+interface LineGraphProp {
   data: any;
   width: number;
   height: number
 }
 
-function LineGraph(props: lineGraphProp) {
+function LineGraph(props: LineGraphProp) {
   const svgRef: React.MutableRefObject<null> = useRef(null);
   const w = props.width;
   const h = props.height;

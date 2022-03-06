@@ -5,6 +5,7 @@ import "@fontsource/rubik";
 import { getVariablesByCategory } from "./../Homepage/Homepage"
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import FilterPanel from "../FilterPanel/FilterPanel";
 
 function Minipage() {
     const params = useParams();
@@ -14,6 +15,9 @@ function Minipage() {
 
     const [dropdownIndex, setDropdownIndex] = useState<number | null>(null)
     const [encodings, setEncodings] = useState<Array<string>>([])
+
+    const [mapFilterSelected, setMapFilterSelected] = useState<null | string>(null);
+
 
 
     function onCollapse(index: number) {
@@ -40,7 +44,13 @@ function Minipage() {
 
     return (
         <div>
-            {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable} dropdownOpen={index === dropdownIndex} dropdownIndex={index} encoding={encodings[index]} onCollapse={onCollapse}></Dropdown>)}
+            <FilterPanel setMapFilterSelected={setMapFilterSelected}/>
+            {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable} 
+                dropdownOpen={index === dropdownIndex} dropdownIndex={index} encoding={encodings[index]} onCollapse={onCollapse} 
+                mapFilterSelected={mapFilterSelected}
+
+
+                ></Dropdown>)}
         </div>
     )
 }

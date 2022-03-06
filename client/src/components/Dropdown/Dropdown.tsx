@@ -5,6 +5,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import Map from './../../charts/Map';
+
 
 
 interface DropdownProp {
@@ -13,7 +15,9 @@ interface DropdownProp {
   categoryVariable: string
   encoding: string
   onCollapse: Function
+  mapFilterSelected : null | string
 }
+
 
 
 function CategoryCard(props: DropdownProp) {
@@ -36,6 +40,10 @@ function CategoryCard(props: DropdownProp) {
             <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
               <div>
                 {props.encoding}
+                {props.mapFilterSelected === null? null : <Map regionEncoding= {"1"} />}
+                  
+
+                
               </div>
             </Collapse>
           </Grid>

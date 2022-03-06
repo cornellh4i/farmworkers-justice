@@ -8,7 +8,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import './FilterPanel.scss'
-
+import { propsToClassKey } from "@mui/styles";
 
 //handlechange: disable
 //handeldelete: enable
@@ -20,11 +20,16 @@ const FilterEnum = {
   REGION6: "region6"
 }
 
-function FilterPanel() {
+interface FilterPanelProps {
+  setMapFilterSelected : Function
+}
+
+function FilterPanel(props : FilterPanelProps) {
   const [gender, setGender] = useState('');
   const [currstat, setCurrStat] = useState('');
   const [flc, setFlc] = useState('');
   const [region6, setRegion6] = useState('');
+
 
   // filter1 and filter2 states are in the form of [filter value, filter name]
   const [filter1, setFilter1] = useState<null | string[]>(null);
@@ -39,6 +44,8 @@ function FilterPanel() {
       setFlc(event.target.value);
     } else if (filterName === FilterEnum.REGION6) {
       setRegion6(event.target.value);
+      props.setMapFilterSelected(event.target.value);
+
     }
 
     if(filter1 === null || filter1[1] === filterName) {

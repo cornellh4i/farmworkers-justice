@@ -8,7 +8,6 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Map from './../../charts/Map';
 
 
-
 interface DropdownProp {
   dropdownOpen: boolean
   dropdownIndex: number
@@ -19,9 +18,7 @@ interface DropdownProp {
 }
 
 
-
-function CategoryCard(props: DropdownProp) {
-
+function Dropdown(props: DropdownProp) {
   function onClickCustom() {
     props.onCollapse(props.dropdownIndex)
   }
@@ -40,10 +37,7 @@ function CategoryCard(props: DropdownProp) {
             <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
               <div>
                 {props.encoding}
-                {props.mapFilterSelected === null? null : <Map regionEncoding= {"1"} />}
-                  
-
-                
+                {props.mapFilterSelected === null? null : <Map regionEncoding="1"/>}
               </div>
             </Collapse>
           </Grid>
@@ -54,6 +48,6 @@ function CategoryCard(props: DropdownProp) {
   )
 }
 
-export default CategoryCard;
+export default Dropdown;
 
 

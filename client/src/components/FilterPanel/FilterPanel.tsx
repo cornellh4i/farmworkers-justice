@@ -45,7 +45,6 @@ function FilterPanel(props : FilterPanelProps) {
     } else if (filterName === FilterEnum.REGION6) {
       setRegion6(event.target.value);
       props.setMapFilterSelected(event.target.value);
-
     }
 
     if(filter1 === null || filter1[1] === filterName) {
@@ -64,6 +63,7 @@ function FilterPanel(props : FilterPanelProps) {
       setFlc('');
     } else if (filter1![1] === FilterEnum.REGION6){
       setRegion6('');
+      props.setMapFilterSelected(null);
     }
 
     if(filter2 !== null){
@@ -83,6 +83,7 @@ function FilterPanel(props : FilterPanelProps) {
       setFlc('');
     } else if (filter2![1] === FilterEnum.REGION6){
       setRegion6('');
+      props.setMapFilterSelected(null);
     }
     setFilter2(null);
   };

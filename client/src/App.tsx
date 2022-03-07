@@ -52,7 +52,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path='/map' element={<Map regionEncoding="1"/>} />
+        {/* <Route path='/map' element={<Map mapFilterSelected="East" />} /> */}
       {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
         Respondent Age
       </h3>

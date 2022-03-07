@@ -11,19 +11,19 @@ function Minipage() {
     const params = useParams();
     const categoryIndex = parseInt(params.categoryEncoding!)
     const variablesInCategories = require('./../../local-json/categories.json')
-    const [dropdownIndex, setDropdownIndex] = useState<number | null>(null)
+    const [currentCollapseIndex, setCurrentCollapseIndex] = useState<number | null>(null)
     const [encodings, setEncodings] = useState<Array<string>>([])
     const [mapFilterSelected, setMapFilterSelected] = useState<null | string>(null);
 
 
 
-    function onCollapse(index: number) {
-        if (index === dropdownIndex) {
-            setDropdownIndex(null) // closing collapse
-        } else {
-            setDropdownIndex(index);
-        }
-    }
+    // function onCollapse(index: number) {
+    //     if (index === dropdownIndex) {
+    //         setDropdownIndex(null) // closing collapse
+    //     } else {
+    //         setDropdownIndex(index);
+    //     }
+    // }
 
     function getVariablesEncoding(categoryIndex: number) {
         var variables = variablesInCategories["categories"][categoryIndex]["variables"]
@@ -43,8 +43,8 @@ function Minipage() {
         <div>
             <FilterPanel setMapFilterSelected={setMapFilterSelected}/>
             {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable} 
-                dropdownOpen={index === dropdownIndex} dropdownIndex={index} encoding={encodings[index]} onCollapse={onCollapse} 
-                mapFilterSelected={mapFilterSelected} ></Dropdown>)}
+                index={index} encoding={encodings[index]}  mapFilterSelected={mapFilterSelected} 
+                currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
         </div>
     )
 }

@@ -5,19 +5,25 @@ import { useEffect, useState, useRef } from 'react';
 import { GeometryObject, Topology } from 'topojson-specification';
 import './Map.scss'
 
-interface mapProp {
-  regionEncoding : string;
+interface MapProp {
+  mapFilterSelected : string;
+  collapseIndex: null | number;
 }
 
-interface regionToStatesProps {
+interface RegionToStatesProps {
   regionEncoding: string,
   stateIDs: Array<string>
 }
 
-function Map(props : mapProp) {
+interface FilterEncodingProp {
+  "filter-encoding": number,
+  "filter-value": string
+}
+
+function Map(props : MapProp) {
   const svg = d3.select("#usmap");
-  const width = 990; // modify this later
-  const height = 770; // modify this later
+  const width = 300; 
+  const height = 200; 
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -25,13 +31,17 @@ function Map(props : mapProp) {
   .attr("transform","translate("+margin.left+","+margin.top+")");
   const [stateIDs, setStateIDs] = useState<Array<string>>([])
   const regionToStatesData = require('../local-json/mapRegionEncoding.json'); 
-
+  const filterEncoding = require("./../local-json/filterEncoding.json")
+  
   useEffect(() => {
-    // TODO: set regionEncoding using mapfilterselected
-    var newStateIDs = regionToStatesData["regionToStates"].find((el: regionToStatesProps) =>
-    el.regionEncoding === props.regionEncoding).stateIDs;
+    const newRegionEncoding = filterEncoding.REGION6.find((el: FilterEncodingProp) => 
+      el["filter-value"] === props.mapFilterSelected)["filter-encoding"];
+
+    const newStateIDs = regionToStatesData["regionToStates"].find((el: RegionToStatesProps) =>
+      el.regionEncoding === newRegionEncoding).stateIDs;
     setStateIDs(newStateIDs)
-  }, [])
+    console.log(props.mapFilterSelected)
+  }, [props.mapFilterSelected, props.collapseIndex])
     
   const us = require("./us-smaller.json")
   var states = topojson.feature((us as unknown) as Topology, ((us as unknown) as Topology).objects.states as GeometryObject) as geojson.FeatureCollection;    
@@ -47,7 +57,6 @@ function Map(props : mapProp) {
     }
     return "state";
   })
-  console.log(map)
   
 
   return (

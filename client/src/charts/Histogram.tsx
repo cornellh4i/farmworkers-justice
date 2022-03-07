@@ -1,8 +1,9 @@
 import * as d3 from "d3";
 import './Histogram.scss';
 import { useEffect } from 'react';
-import { stratify } from "d3";
+import { bin, stratify } from "d3";
 
+//
 interface binProp {
   "start": null | number,
   "end": null | number
@@ -11,9 +12,6 @@ interface binProp {
 }
 
 interface histogramProp {
-  // height: number;
-  // width: number;
-  //data: number[];
   categoryEncoding: string;
   variableEncoding: string;
   variableDescription: string;
@@ -74,10 +72,12 @@ function Histogram(props: histogramProp) {
 
   // TODO: DO WE NEED TO ALLOCATE THIS MUCH ARRAY MEMORY FOR TOTAL?
   let x = 0;
+
   for (x = 0; x < binRanges.length; x++) {
     //console.log(binRanges[x])
     total[x] = 0;
   }
+
   // for (i = 10; i <= maxValue + 10; i += 10) {
   //   total[i] = 0;
   // }
@@ -86,8 +86,14 @@ function Histogram(props: histogramProp) {
   // change to use binranges
   data.forEach(d => {
     Object.keys(total).forEach((key: any) => {
+      let start = "start";
+      let end = "end";
+      if (binRanges[key]["start-encoding"] != null) {
+        start = "start-encoding"
+        end = "end-encoding"
+      }
       if (binRanges[key]["start"] == null) {
-        if (d <= binRanges[key]["end"]) {
+        if (d <= binRanges[key][end]) {
           let curr = total[key] + 1;
           if (curr > max)
             max = curr;
@@ -95,19 +101,21 @@ function Histogram(props: histogramProp) {
         }
       }
       else if (binRanges[key]["end"] == null) {
-        if (d >= binRanges[key]["start"]) {
+        if (d >= binRanges[key][start]) {
           let curr = total[key] + 1;
           if (curr > max)
             max = curr;
           total[key] = curr;
         }
       }
-      else if (d <= binRanges[key]["end"] && d >= binRanges[key]["start"]) {
+
+      if (d <= binRanges[key][end] && d >= binRanges[key][start]) {
         let curr = total[key] + 1;
         if (curr > max)
           max = curr;
         total[key] = curr;
       }
+
     });
   });
 

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import * as d3 from "d3";
-import Line, { timeSeriesProp } from './charts/lineGraph'
 import Homepage from './components/Homepage/Homepage'
-import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
-import Donut from './charts/donutChart'
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+//import Donut from './charts/DonutChart'
 import Table from './charts/Table'
+import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 
@@ -58,6 +58,7 @@ function App() {
           Respondent Age
         </h3> */}
 
+        <Route path='/map' element={<Map regionEncoding={"1"} />} />
         {/* <Table
           data={tableData}
         />
@@ -65,18 +66,13 @@ function App() {
           height={770}
           width={990}
         />
-        <div style={{ marginTop: "100px", marginLeft: "200px", marginRight: "auto" }}>
-          <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
-            How well do you speak English?
-          </h3>
-          <Donut
-            data={donutData}
-            width={500}
-            height={500}
-            innerRadius={150}
-            outerRadius={200}
-          />
-        </div>
+        <Donut
+          data={donutData}
+          width={500}
+          height={500}
+          innerRadius={150}
+          outerRadius={200}
+        />
         <Donut
           data={FLCData}
           width={500}
@@ -84,16 +80,13 @@ function App() {
           innerRadius={150}
           outerRadius={200}
         />
-        <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-          Average Value per Year from 2009 to 2018
-        </h3>
-        <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
-          <Line
-            data={timeSeriesData}
-            width={500}
-            height={400}
-          />
-        </div> */}
+      <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
+        <LineGraph
+          data={timeSeriesData}
+          width={500}
+          height={400}
+        />
+      </div> */}
       </Routes>
     </BrowserRouter>
   );

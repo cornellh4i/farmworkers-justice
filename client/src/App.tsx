@@ -26,20 +26,20 @@ function App() {
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/AGE`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    setHistogramData(histogramOut.data);
+    // const urlHistogram = `${API_URL}/AGE`;
+    // const histogramResponse = await fetch(urlHistogram);
+    // const histogramOut = await histogramResponse.json();
+    // setHistogramData(histogramOut.data);
 
-    const urlTable = `${API_URL}/B01`;
-    const tableResponse = await fetch(urlTable);
-    const tableOut = await tableResponse.json();
-    setTableData(tableOut.data);
+    // const urlTable = `${API_URL}/B01`;
+    // const tableResponse = await fetch(urlTable);
+    // const tableOut = await tableResponse.json();
+    // setTableData(tableOut.data);
 
-    const urlDonut = `${API_URL}/B07`;
-    const donutResponse = await fetch(urlDonut);
-    const donutOut = await donutResponse.json();
-    setdonutData(donutOut.data);
+    // const urlDonut = `${API_URL}/B07`;
+    // const donutResponse = await fetch(urlDonut);
+    // const donutOut = await donutResponse.json();
+    // setdonutData(donutOut.data);
 
     const urlFLC = `${API_URL}/G01`;
     const FLCResponse = await fetch(urlFLC);

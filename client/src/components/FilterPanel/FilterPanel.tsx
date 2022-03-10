@@ -14,10 +14,10 @@ import { propsToClassKey } from "@mui/styles";
 //handeldelete: enable
 
 const FilterEnum = {
-  GENDER: "gender",
-  CURRSTAT: "currstat",
-  FLC: "flc",
-  REGION6: "region6"
+  GENDER: "GENDER",
+  CURRSTAT: "CURRSTAT",
+  FLC: "FLC",
+  REGION6: "REGION6"
 }
 
 interface FilterPanelProps {

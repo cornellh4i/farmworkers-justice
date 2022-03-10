@@ -10,7 +10,7 @@ interface LineGraphProp {
   categoryEncoding: string;
 }
 
-const toExclude: string[] = ["B11", "FWRDays", "NUMFEMPL"];
+const toExclude: string[] = ["B11", "G01", "G03", "FWRDays", "NUMFEMPL"];
 
 function findMinY(data: any){
   return Math.min.apply(Math, data.map(function(o: any) { return o.value; }));

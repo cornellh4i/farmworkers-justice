@@ -65,7 +65,7 @@ function Histogram(props: histogramProp) {
   let maxValue: number = Math.max(...data);
   maxValue = Math.ceil(maxValue / 10) * 10;
   console.log("max val: " + maxValue)
-  const dataScale = d3.scaleLinear().domain([0, maxValue]).range([0, chartWidth]);
+  const dataScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
   let total: number[] = []
   let max = 0;
   let i = 0;
@@ -172,9 +172,7 @@ function Histogram(props: histogramProp) {
     let start = binRanges[key]["start"]
 
     let diff = end - start
-    if (total[key] === 0) {
-      delete total[key];
-    }
+
 
     chartArea.append("rect")
       .attr("class", "histogram")

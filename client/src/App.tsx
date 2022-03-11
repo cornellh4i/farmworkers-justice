@@ -4,7 +4,7 @@ import Map from '../src/charts/Map';
 import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Donut from './charts/DonutChart'
+import Donut from './charts/donutChart'
 import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';

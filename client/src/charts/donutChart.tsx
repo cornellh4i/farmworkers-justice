@@ -28,6 +28,8 @@ function DonutChart(props: DonutChartProps) {
     let value = props.data[key]
     donutData.push(value)
   }
+
+  
   const data = createPie(donutData);
   const group = d3.select(ref.current);
   const groupWithData = group.selectAll("g.arc").data(data);
@@ -59,16 +61,18 @@ function DonutChart(props: DonutChartProps) {
     // get the specific key each time
     return keys[x]
   }
+  // text labels 
   text
     .attr("text-anchor", function (d) {
-      return (d.endAngle + d.startAngle) / 2 > Math.PI ?
-        "end" : "start";
+      return d.startAngle + (d.endAngle - d.startAngle)/2 < Math.PI ?
+        "start":"end";
     })
     .attr("alignment-baseline", "middle")
     .attr("transform", function (d) {
       var c = createArc.centroid(d),
         x = c[0],
         y = c[1],
+        // unsure of this
         h = Math.sqrt(x * x + y * y);
       return "translate(" + ((x + 10) / h * 175) + ',' +
         (y / h * 175) + ")";
@@ -76,6 +80,7 @@ function DonutChart(props: DonutChartProps) {
     .style("fill", "black")
     .style("font-size", 12)
     .text(d => formatText(d.index));
+    //still need to add polylines but still unsure if we want it 
 
   return (
     <svg width={props.width} height={props.height}>

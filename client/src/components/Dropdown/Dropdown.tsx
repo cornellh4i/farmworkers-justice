@@ -35,6 +35,7 @@ function CategoryCard(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
               <div>
+
                 {props.encoding}
               </div>
             </Collapse>

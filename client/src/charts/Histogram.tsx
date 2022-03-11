@@ -47,10 +47,10 @@ function Histogram(props: histogramProp) {
   const svg = d3.select("svg#histogram");
   const width = 600
   const height = 600
-  const margin = { top: 10, right: 10, bottom: 50, left: 60 };
+  const margin = { top: 10, right: 10, bottom: 10, left: 10 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
-  let annotations = svg.append("g").attr("id", "annotations");
+  //let annotations = svg.append("g").attr("id", "annotations");
   let chartArea = svg.append("g").attr("id", "points")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -64,6 +64,7 @@ function Histogram(props: histogramProp) {
 
   let maxValue: number = Math.max(...data);
   maxValue = Math.ceil(maxValue / 10) * 10;
+  console.log("max val: " + maxValue)
   const dataScale = d3.scaleLinear().domain([0, maxValue]).range([0, chartWidth]);
   let total: number[] = []
   let max = 0;
@@ -77,6 +78,7 @@ function Histogram(props: histogramProp) {
     //console.log(binRanges[x])
     total[x] = 0;
   }
+  //console.log(total)
 
   // for (i = 10; i <= maxValue + 10; i += 10) {
   //   total[i] = 0;
@@ -122,9 +124,10 @@ function Histogram(props: histogramProp) {
   console.log(total)
 
   max = Math.ceil(max / 10) * 10 + 10
+  console.log("max: " + max)
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
 
-  let leftAxis = d3.axisLeft(totalScale);
+  //let leftAxis = d3.axisLeft(totalScale);
   // let leftGridlines = d3.axisLeft(totalScale)
   //   .tickSize(-chartWidth - 10)
   //   .tickFormat(d => "");
@@ -137,7 +140,7 @@ function Histogram(props: histogramProp) {
   //   .attr("transform", `translate(${margin.left},${margin.top})`)
   //   .call(leftGridlines);
 
-  let bottomAxis = d3.axisBottom(dataScale).tickFormat(d3.format(''));
+  //let bottomAxis = d3.axisBottom(dataScale).tickFormat(d3.format(''));
   // let bottomGridlines = d3
   //   .axisBottom(dataScale)
   //   .tickSize(-chartHeight)
@@ -164,19 +167,19 @@ function Histogram(props: histogramProp) {
   //   .attr("y", dataScale(3))
   //   .attr("transform", "rotate(-90)");
   //.text("Population Totals");
-
-  Object.keys(total).forEach((key: any) => {
+  Object.keys(total).forEach((key: any, index) => {
     let end = binRanges[key]["end"]
     let start = binRanges[key]["start"]
+
     let diff = end - start
-    // if (total[key] === 0) {
-    //   delete total[key];
-    // }
+    if (total[key] === 0) {
+      delete total[key];
+    }
 
     chartArea.append("rect")
       .attr("class", "histogram")
 
-      .attr("x", dataScale(end - diff))
+      .attr("x", dataScale(index * 10))
       .attr("y", totalScale(total[key]))
       .attr("height", chartHeight - totalScale(total[key]))
       .attr("width", dataScale(10));
@@ -184,8 +187,8 @@ function Histogram(props: histogramProp) {
     chartArea.append("text")
       .attr("text-anchor", "middle")
       .attr("font-size", "15px")
-      .attr("x", dataScale(end - diff / 2))
-      .attr('y', totalScale(total[key]) - diff / 2)
+      .attr("x", dataScale(index * 10 + 5))
+      .attr('y', totalScale(total[key]) - 10)
       .text((start === null ? " " : start) + " - " + (end === null ? " " : end));
   });
 

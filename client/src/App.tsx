@@ -25,10 +25,10 @@ function App() {
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/AGE`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    setHistogramData(histogramOut.data);
+    // const urlHistogram = `${API_URL}/AGE`;
+    // const histogramResponse = await fetch(urlHistogram);
+    // const histogramOut = await histogramResponse.json();
+    // setHistogramData(histogramOut.data);
 
     const urlTable = `${API_URL}/B01`;
     const tableResponse = await fetch(urlTable);
@@ -52,8 +52,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path="histogram" element={<Histogram categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} />
-        {/* <Route path="histogram" element={<Histogram categoryEncoding={"10"} variableDescription={"What was your total income last year in USD?"} variableEncoding={"G01"} />} /> */}
+        {/* <Route path="histogram" element={<Histogram categoryEncoding={"1"} variableDescription={"Respondent Age"} variableEncoding={"AGE"} />} /> */}
+        {/* <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} /> */}
+        <Route path="histogram" element={<Histogram categoryEncoding={"10"} variableDescription={"What was your total income last year in USD?"} variableEncoding={"G01"} />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
           Respondent Age
         </h3> */}

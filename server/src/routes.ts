@@ -291,7 +291,6 @@ async function getVizType(variable: string, db: Db) {
   }
 }
 
-
 /**
  * @param variable is a variable to generate queries for
  * @param vizType is the visualization type of the variable
@@ -361,7 +360,6 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   }
   return output;
 }
-
 
 module.exports = () => {
   const express = require("express");

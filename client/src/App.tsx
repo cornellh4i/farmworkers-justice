@@ -54,7 +54,8 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
-        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        <Route path='/map' element={<Map regionEncoding = {"1"} />} />
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
         Respondent Age
       </h3>
       <Histogram

@@ -9,6 +9,7 @@ import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import Line from './charts/lineGraph';
 
 
 const API_URL = process.env.REACT_APP_API;
@@ -25,22 +26,22 @@ function App() {
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/AGE`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    setHistogramData(histogramOut.data);
+    // const urlHistogram = `${API_URL}/AGE`;
+    // const histogramResponse = await fetch(urlHistogram);
+    // const histogramOut = await histogramResponse.json();
+    // setHistogramData(histogramOut.data);
 
-    const urlTable = `${API_URL}/B01`;
-    const tableResponse = await fetch(urlTable);
-    const tableOut = await tableResponse.json();
-    setTableData(tableOut.data);
+    // const urlTable = `${API_URL}/B01`;
+    // const tableResponse = await fetch(urlTable);
+    // const tableOut = await tableResponse.json();
+    // setTableData(tableOut.data);
 
-    const urlDonut = `${API_URL}/B07`;
-    const donutResponse = await fetch(urlDonut);
-    const donutOut = await donutResponse.json();
-    setdonutData(donutOut.data);
+    // const urlDonut = `${API_URL}/B07`;
+    // const donutResponse = await fetch(urlDonut);
+    // const donutOut = await donutResponse.json();
+    // setdonutData(donutOut.data);
 
-    const urlFLC = `${API_URL}/FLC`;
+    const urlFLC = `${API_URL}/G01`;
     const FLCResponse = await fetch(urlFLC);
     const FLCOut = await FLCResponse.json();
     setFLCData(FLCOut.data);
@@ -52,8 +53,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
+        <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         <Route path='/map' element={<Map regionEncoding = {"1"} />} />
-      {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
         Respondent Age
       </h3>
       <Histogram

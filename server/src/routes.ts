@@ -15,6 +15,19 @@ enum VizType {
   Table = "table"
 }
 
+const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
+
+interface timeSeriesRangesProp {
+  encoding: number,
+  start: null | number, 
+  end: null | number
+}
+
+interface timeSeriesEncodingsProp {
+  "variable-encoding": string, 
+  "variable-description": string, 
+  "ranges": timeSeriesRangesProp[]
+}
 
 /**
  * Takes an array and a string variable
@@ -62,13 +75,13 @@ async function queryVal(variable: string, db: Db, filter_key1?: string, filter_v
  * @returns an array of dictionaries where each dictionary element is formatted
  *          as {year: 2009, value: 0.54}. The value represents the percentage
  *          of how often a variable appears in that year. 
- *          An average value is returned for variables: B11, FWRDays, 
+ *          An average value is returned for variables: B11, G01, G03, FWRDays, 
  *          and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, number][], variable: string) {
-  const minYear: number = Math.min.apply(Math, arr.map(function (a) { return a[0]; }))
-  const maxYear: number = Math.max.apply(Math, arr.map(function (a) { return a[0]; }))
+  const minYear: number = Math.min(...arr.map(function (a) { return a[0]; }))
+  const maxYear: number = Math.max(...arr.map(function (a) { return a[0]; }))
   let output = new Array<{ year: number, value: number }>();
   let totalEachYear = new Map<number, number>();
   let i;
@@ -77,29 +90,48 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
     totalEachYear.set(minYear + i, 0)
   }
 
-  function iterateFunc(v: [number, number]) {
-    const yr: number = v[0];
-    const value: number = v[1];
-    const yrIdx: number = yr - minYear;
-
-    if (!isNaN(value)) {
-      if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
+  if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
+    arr.forEach((v) => {
+      const yr: number = v[0];
+      const value: number = v[1];
+      const yrIdx: number = yr - minYear;
+      if (!isNaN(value)) {
         output[yrIdx].value += value;
         totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
       }
-      // Only consider Yes & No answers for the rest of the variables 
-      else if (value === 1 || value === 0) {
-        output[yrIdx].value += value;
-        totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+    })
+  } else if (variable === "G01" || variable === "G03") {
+    arr.forEach((v) => {
+      const yr: number = v[0];
+      const value: number = v[1];
+      const yrIdx: number = yr - minYear;
+      const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
+        e["variable-encoding"] === variable);
+      
+      if (!isNaN(value)) {
+        let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
+            e["encoding"] === value );
+        if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
+          let midValue = (range.start + range.end + 1) / 2
+          output[yrIdx].value += midValue;
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+        }
       }
-    }
+    }) 
+  } else {
+    arr.forEach((v) => {
+      const yr: number = v[0];
+      const value: number = v[1];
+      const yrIdx: number = yr - minYear;
+      if (!isNaN(value)) {
+        if (value === 1 || value === 0) { // Only consider Yes & No answers for the rest of the variables 
+          output[yrIdx].value += value;
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+        }
+      }
+    })
   }
 
-  function errorFunc(error: any) {
-    console.log(error);
-  }
-
-  arr.forEach(iterateFunc, errorFunc)
   output.forEach((d) => {
     d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100) / 100
   })
@@ -169,8 +201,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
           }
         } catch(e) {
           console.log(e);
-          console.log("j: ", j)
-          console.log("value: ", value)
         }
         if (output.has(description)) {
           output.set(description, output.get(description)! + 1)

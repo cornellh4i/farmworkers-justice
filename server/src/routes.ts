@@ -111,7 +111,7 @@ const LATEST_YEAR = 2018;
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_YEAR, 0], [LATEST_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_YEAR
  */
@@ -131,66 +131,95 @@ function aggregateHistogram(arr: [number, number][]) {
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_YEAR, 0], [LATEST_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values are the 
  *          percentage of times that encoding appears in the LATEST_YEAR. 
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
+// async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
+//   let output = new Map<string, number>();
+//   let n = 0;
+
+//   var encodingDescrp: any;
+//   // TODO: FACTORIZE INTO A FUNCTION OUTSIDE 
+//   async function allEncoding() {
+//     let query = { Variable: variable }
+//     try {
+//       encodingDescrp = await db.collection('description-code').find(query).toArray()
+//       return encodingDescrp;
+//     } catch (error) {
+//       console.log(error);
+//     };
+//   }
+
+//   await allEncoding()
+//   .then( function() {
+//     for (let i = 0; i < arr.length; i++) {
+//       const value = arr[i][1];
+//       let description;
+//       if (!isNaN(value)) {
+//         let j = 0;
+//         try {
+//           while (typeof description == 'undefined') {
+//             if (encodingDescrp[j].Encoding == value) {
+//               description = encodingDescrp[j].Description;
+//             }
+//             j++;
+//           }
+//         } catch(e) {
+//           console.log(e);
+//         }
+//         if (output.has(description)) {
+//           output.set(description, output.get(description)! + 1)
+//         }
+//         else {
+//           output.set(description, 1);
+//         }
+//         n++;
+//       }
+//     }
+//     output.forEach((v, d) => {
+//       output.set(d, Math.round(v/n * 100) / 100);
+//     })
+//   });
+//   console.log("donut output: ", output)
+//   return output;
+// }
+
 async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
-  let output = new Map<string, number>();
-  let n = 0;
-
-  var encodingDescrp: any;
-  // TODO: FACTORIZE INTO A FUNCTION OUTSIDE 
-  async function allEncoding() {
-    let query = { Variable: variable }
-    try {
-      encodingDescrp = await db.collection('description-code').find(query).toArray()
-      return encodingDescrp;
-    } catch (error) {
-      console.log(error);
-    };
-  }
-
-  await allEncoding()
-  .then( function() {
-    for (let i = 0; i < arr.length; i++) {
-      const value = arr[i][1];
-      let description;
-      if (!isNaN(value)) {
-        let j = 0;
-        try {
-          while (typeof description == 'undefined') {
-            if (encodingDescrp[j].Encoding == value) {
-              description = encodingDescrp[j].Description;
-            }
-            j++;
-          }
-        } catch(e) {
-          console.log(e);
-          console.log("j: ", j)
-          console.log("value: ", value)
-        }
-        if (output.has(description)) {
-          output.set(description, output.get(description)! + 1)
-        }
-        else {
-          output.set(description, 1);
-        }
-        n++;
-      }
+  var output = new Map<string, number>();
+  let totalCounts = 0
+  const query = { Variable: variable }
+  const encodingDescrp = await db.collection('description-code').find(query).toArray()
+  console.log("encoding descrp: ", encodingDescrp)
+  arr.forEach(([year, val]) => {
+    if (!isNaN(val)) {
+      let currCount = output.get(val.toString())
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1)
+      totalCounts += 1
     }
-    output.forEach((v, d) => {
-      output.set(d, Math.round(v/n * 100) / 100);
-    })
   });
-  return output;
+
+  output.forEach((val, description) => {
+    output.set(description, Math.round(val/totalCounts * 100) / 100);
+  })
+
+  // Get description for encoded variables 
+  if (encodingDescrp.length > 0) {
+    var outputDescription = new Map<string, number>();
+    encodingDescrp.forEach(element => {
+      let percentage = output.get(element.Encoding.toString());
+      outputDescription.set(element.Description, (typeof percentage == 'undefined' ? 0 : percentage))
+    });
+    output = outputDescription
+  }
+  return output
 }
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_YEAR, 0], [LATEST_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values 
  *          are arrays of two values. The first value is the proportion 

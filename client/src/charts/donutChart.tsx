@@ -2,23 +2,24 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
 interface DonutChartProps {
-  innerRadius: number,
-  outerRadius: number,
   data: any,
-  height: number,
-  width: number
 }
 
 function DonutChart(props: DonutChartProps) {
   const ref: React.MutableRefObject<null> = useRef(null);
+  const innerRadius = 150
+  const outerRadius = 200
+  const height = 500
+  const width = 500
+
   const createPie = d3
     .pie()
     .value(d => d.valueOf())
     .sort(null);
   const createArc: d3.Arc<any, any> = d3
     .arc()
-    .innerRadius(props.innerRadius - 50)
-    .outerRadius(props.outerRadius - 50);
+    .innerRadius(innerRadius - 50)
+    .outerRadius(outerRadius - 50);
   const colors = d3.scaleOrdinal(d3.schemeCategory10);
   const format = d3.format(".2f");
 
@@ -83,10 +84,10 @@ function DonutChart(props: DonutChartProps) {
     //still need to add polylines but still unsure if we want it 
 
   return (
-    <svg width={props.width} height={props.height}>
+    <svg width={width} height={height}>
       <g style={{ display: "block", width: "100%", marginLeft: "auto", marginRight: "auto" }}
         ref={ref}
-        transform={`translate(${props.outerRadius} ${props.outerRadius})`}
+        transform={`translate(${outerRadius} ${outerRadius})`}
       />
     </svg>
   );

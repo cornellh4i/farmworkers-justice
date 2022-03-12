@@ -1,28 +1,33 @@
 import * as dfd from "danfojs-node";
 
+// Necessary - ensure there are no commas in the dataset; Ctrl + A, change format to "Number"
+// Need to npm install to update with "danfojs-node"
+// TO RUN - cd into db; npx ts-node preprocess.ts
+
 const latestFY: number = 2020;
 const earliestFY: number = (latestFY + 1) - 10;
 const notNecessaryVariables: string[] = [];
-let df: dfd.DataFrame | dfd.Series;
 
 async function preprocess() {
 	let df1 = await dfd.readCSV("./data/NAWS_A2E191.csv")
 					.then((df: dfd.DataFrame) => {return df;});
-	let df2 = await  dfd.readCSV("./data/NAWS_F2Y191.csv")
+	let df2 = await dfd.readCSV("./data/NAWS_F2Y191.csv")
 					.then((df: dfd.DataFrame) => {return df;});
 
-	df = dfd.concat({dfList : [df1, df2], axis : 1})
+	let df: dfd.DataFrame | dfd.Series = dfd.concat(
+		{dfList : [df1, df2], axis : 1})
 	dfd.toCSV(df, { filePath: "combined.csv" });
-	console.log(df.shape)
 
-		// df = df.drop({columns: notNecessaryVariables});
-		// for (let i = 0; i < df.columns.length; i++) {
-		// 	df = df.asType(df.columns[i], "int32");
-		// }
-		// df = df.replace("", "null");
-		// df = df.asType(df.columns[], "int32");
-		df = df.query(df['FY'].ge(earliestFY) && df['FY'].le(latestFY));
-		console.log(df.shape)
+	// df = df.drop({columns: notNecessaryVariables});
+
+	// WARNING - very inefficient and slow; how to optimize?
+	for (let i = 0; i < df.columns.length; i++) {
+		let columnToCast: any = df.columns[i];
+		df = df.asType(columnToCast, "int32");
+	}
+
+	// Verified this works
+	df = df.query(df['FY'].ge(earliestFY).and(df['FY'].le(latestFY))); 
 }
 
 preprocess()

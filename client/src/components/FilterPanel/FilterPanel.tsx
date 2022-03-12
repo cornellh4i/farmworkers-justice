@@ -10,9 +10,6 @@ import Stack from '@mui/material/Stack';
 import './FilterPanel.scss'
 import { propsToClassKey } from "@mui/styles";
 
-//handlechange: disable
-//handeldelete: enable
-
 const FilterEnum = {
   GENDER: "GENDER",
   CURRSTAT: "CURRSTAT",
@@ -21,10 +18,10 @@ const FilterEnum = {
 }
 
 interface FilterPanelProps {
-  setMapFilterSelected : Function
+  setMapFilterSelected: Function
 }
 
-function FilterPanel(props : FilterPanelProps) {
+function FilterPanel(props: FilterPanelProps) {
   const [gender, setGender] = useState('');
   const [currstat, setCurrStat] = useState('');
   const [flc, setFlc] = useState('');
@@ -35,7 +32,7 @@ function FilterPanel(props : FilterPanelProps) {
   const [filter1, setFilter1] = useState<null | string[]>(null);
   const [filter2, setFilter2] = useState<null | string[]>(null);
 
-  function handleFilterChange(filterName: string, event: { target: { value: string; }} ) {
+  function handleFilterChange(filterName: string, event: { target: { value: string; } }) {
     if (filterName === FilterEnum.GENDER) {
       setGender(event.target.value);
     } else if (filterName === FilterEnum.CURRSTAT) {
@@ -47,41 +44,41 @@ function FilterPanel(props : FilterPanelProps) {
       props.setMapFilterSelected(event.target.value);
     }
 
-    if(filter1 === null || filter1[1] === filterName) {
+    if (filter1 === null || filter1[1] === filterName) {
       setFilter1([event.target.value, filterName]);
     } else if (filter2 === null || filter2[1] === filterName) {
       setFilter2([event.target.value, filterName]);
     }
   };
 
-  function handleDeleteFilter1(){
-    if(filter1![1] === FilterEnum.GENDER){
+  function handleDeleteFilter1() {
+    if (filter1![1] === FilterEnum.GENDER) {
       setGender('');
-    } else if(filter1![1] === FilterEnum.CURRSTAT){
+    } else if (filter1![1] === FilterEnum.CURRSTAT) {
       setCurrStat('');
-    } else if(filter1![1] === FilterEnum.FLC){
+    } else if (filter1![1] === FilterEnum.FLC) {
       setFlc('');
-    } else if (filter1![1] === FilterEnum.REGION6){
+    } else if (filter1![1] === FilterEnum.REGION6) {
       setRegion6('');
       props.setMapFilterSelected(null);
     }
 
-    if(filter2 !== null){
+    if (filter2 !== null) {
       setFilter1(filter2);
       setFilter2(null);
-    } else{
+    } else {
       setFilter1(null);
     }
   };
 
-  function handleDeleteFilter2(){
-    if(filter2![1] === FilterEnum.GENDER){
+  function handleDeleteFilter2() {
+    if (filter2![1] === FilterEnum.GENDER) {
       setGender('');
-    } else if(filter2![1] === FilterEnum.CURRSTAT){
+    } else if (filter2![1] === FilterEnum.CURRSTAT) {
       setCurrStat('');
-    } else if(filter2![1] === FilterEnum.FLC){
+    } else if (filter2![1] === FilterEnum.FLC) {
       setFlc('');
-    } else if (filter2![1] === FilterEnum.REGION6){
+    } else if (filter2![1] === FilterEnum.REGION6) {
       setRegion6('');
       props.setMapFilterSelected(null);
     }
@@ -89,12 +86,15 @@ function FilterPanel(props : FilterPanelProps) {
   };
 
   return (
-    <div>
+
+    <div className="filter-panel-container">
+
       <Grid container spacing={1}>
         <Grid item xs={1}>
           <FormControl fullWidth>
             <InputLabel id="gender-select-label">Gender</InputLabel>
             <Select
+              className="test"
               labelId="gender-select-label"
               id="gender-select"
               value={gender}
@@ -122,7 +122,6 @@ function FilterPanel(props : FilterPanelProps) {
               <MenuItem value={"Green Card"}>Green Card</MenuItem>
               <MenuItem value={"Other Work Authorization"}>Other Work Authorization</MenuItem>
               <MenuItem value={"Unauthorized"}>Unauthorized</MenuItem>
-
             </Select>
           </FormControl>
         </Grid>
@@ -162,22 +161,30 @@ function FilterPanel(props : FilterPanelProps) {
             </Select>
           </FormControl>
         </Grid>
-      </Grid> 
+      </Grid>
+
+
+
       < div className="chip">
-        { filter1 === null ?
-          null:
-          <Stack direction="row" spacing={1} sx={{marginRight: '1rem'}}>
-            <Chip label={filter1[0]} onDelete={handleDeleteFilter1} />
+        <h3 className="filter-applied-text">Filters applied:</h3>
+        {filter1 === null ?
+          null :
+          <Stack direction="row" spacing={1} sx={{ marginRight: '1rem' }}>
+            <Chip label={filter1[0]} onDelete={handleDeleteFilter1} sx={{ backgroundColor: '#D2E0F1' }} />
           </Stack>
         }
-        { filter2 === null ?
-          null:
+        {filter2 === null ?
+          null :
           <Stack direction="row" spacing={1} >
-            <Chip label={filter2[0]} onDelete={handleDeleteFilter2} />
+            <Chip label={filter2[0]} onDelete={handleDeleteFilter2} sx={{ backgroundColor: '#FFD999' }} />
           </Stack>
         }
       </div>
     </div>
+
+
+
+
   )
 }
 

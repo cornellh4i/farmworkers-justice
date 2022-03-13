@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
+import DataHighlight from '../src/charts/DataHighlight';
 import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
@@ -20,6 +21,8 @@ function App() {
   const [donutData, setdonutData] = useState<{}>({});
   const [FLCData, setFLCData] = useState<{}>({});
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
+  const [dataHighlightData, setDataHighlightData] = useState<{percentage: number, description: string}>({percentage: 0, description: ""});
+
 
   useEffect(() => {
     getData();
@@ -41,11 +44,16 @@ function App() {
     // const donutOut = await donutResponse.json();
     // setdonutData(donutOut.data);
 
-    const urlFLC = `${API_URL}/G01`;
-    const FLCResponse = await fetch(urlFLC);
-    const FLCOut = await FLCResponse.json();
-    setFLCData(FLCOut.data);
-    setTimeSeriesData(FLCOut.timeSeriesData)
+    // const urlFLC = `${API_URL}/G01`;
+    // const FLCResponse = await fetch(urlFLC);
+    // const FLCOut = await FLCResponse.json();
+    // setFLCData(FLCOut.data);
+    // setTimeSeriesData(FLCOut.timeSeriesData)
+
+    const urlDataHighlight = `${API_URL}/FOREIGNB`;
+    const DataHighlightResponse = await fetch(urlDataHighlight);
+    const DataHighlightOut = await DataHighlightResponse.json();
+    setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -55,6 +63,7 @@ function App() {
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         <Route path='/map' element={<Map regionEncoding = {"1"} />} />
+        <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
         Respondent Age
       </h3>

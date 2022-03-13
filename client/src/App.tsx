@@ -4,11 +4,12 @@ import Map from '../src/charts/Map';
 // import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-// import Donut from './charts/donutChart'
-// import Table from './charts/Table'
-// import LineGraph from './charts/lineGraph'
-// import { Button } from 'react-bootstrap';
+import Donut from './charts/donutChart'
+import Table from './charts/Table'
+import LineGraph from './charts/lineGraph'
+import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import Line from './charts/lineGraph';
 
 
 const API_URL = process.env.REACT_APP_API;
@@ -51,9 +52,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="visualizations/:categoryEncoding" element={<Minipage />} />
-        {/* <Route path='/map' element={<Map mapFilterSelected="East" />} /> */}
-      {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
+        <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
+        <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
+        <Route path='/map' element={<Map regionEncoding = {"1"} />} />
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
         Respondent Age
       </h3>
       <Histogram

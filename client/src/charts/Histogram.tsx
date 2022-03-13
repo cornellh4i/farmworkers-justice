@@ -43,14 +43,14 @@ function Histogram(props: histogramProp) {
     getData();
   }, []);
 
-
+  const dataSum = data.length;
   const svg = d3.select("svg#histogram");
   const width = 600
   const height = 600
   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-  const chartWidth = width - margin.left - margin.right;
+  const chartWidth = width-50 - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
-  //let annotations = svg.append("g").attr("id", "annotations");
+  let annotations = svg.append("g").attr("id", "annotations");
   let chartArea = svg.append("g").attr("id", "points")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -121,13 +121,27 @@ function Histogram(props: histogramProp) {
     });
   });
 
-  console.log(total)
+  for(let j = 0; j < total.length; j++){
+    total[j] = (total[j] / dataSum);
+  }
+  
 
-  max = Math.ceil(max / 10) * 10 + 10
+  console.log(total)
+  max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
   console.log("max: " + max)
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
 
-  //let leftAxis = d3.axisLeft(totalScale);
+  
+  // let leftAxis = d3.axisLeft(totalScale)
+  //                 .ticks(5)
+  //                 .tickValues([1,2,3,4,5])
+
+  // let yAxis = svg.append("g")
+  //                 .call(leftAxis);
+  // yAxis.attr("transform", `translate(${margin.left - 10},${margin.top})`)
+ 
+    
+
   // let leftGridlines = d3.axisLeft(totalScale)
   //   .tickSize(-chartWidth - 10)
   //   .tickFormat(d => "");
@@ -135,6 +149,7 @@ function Histogram(props: histogramProp) {
   //   .attr("class", "y axis")
   //   .attr("transform", `translate(${margin.left - 10},${margin.top})`)
   //   .call(leftAxis)
+    
   // annotations.append("g")
   //   .attr("class", "y gridlines")
   //   .attr("transform", `translate(${margin.left},${margin.top})`)
@@ -152,47 +167,59 @@ function Histogram(props: histogramProp) {
   // annotations.append("g")
   //   .attr("class", "x gridlines")
   //   .attr('transform', `translate(${margin.left},${chartHeight + margin.top})`)
-  //   .call(bottomGridlines);
+    // .call(bottomGridlines);
   // annotations.append("text")
   //   .attr("class", "x label")
   //   .attr("text-anchor", "middle")
   //   .attr("x", dataScale(maxValue / 2) + margin.left)
   //   .attr("y", chartHeight + margin.bottom + 5);
-  // //.text("Age Groups");
-
+    //.text("Age Groups");
+  //let percScale = []
+  var percentFormat = d3.format(".0%")
+  chartArea.append("g")
+    .attr("transform", "translate(50,0)")
+    .call(d3.axisLeft(totalScale).tickFormat(d3.format(".0%")));
+ 
+    
   // annotations.append("text")
   //   .attr("class", "y label")
   //   .attr("text-anchor", "middle")
   //   .attr("x", -height / 2 + margin.right)
   //   .attr("y", dataScale(3))
   //   .attr("transform", "rotate(-90)");
-  //.text("Population Totals");
+    // .text("Population Totals");
   Object.keys(total).forEach((key: any, index) => {
     let end = binRanges[key]["end"]
     let start = binRanges[key]["start"]
 
     let diff = end - start
-
-
+    
+    
     chartArea.append("rect")
       .attr("class", "histogram")
-
+      .attr("transform", "translate(50,0)") 
       .attr("x", dataScale(index * 10))
       .attr("y", totalScale(total[key]))
+      
       .attr("height", chartHeight - totalScale(total[key]))
       .attr("width", dataScale(10));
 
     chartArea.append("text")
       .attr("text-anchor", "middle")
+      .attr("transform", "translate(50,0)") 
       .attr("font-size", "15px")
       .attr("x", dataScale(index * 10 + 5))
       .attr('y', totalScale(total[key]) - 10)
-      .text((start === null ? " " : start) + " - " + (end === null ? " " : end));
-  });
+      .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key]*100) + "%");
+    // let percScale = 
+    
+  
+    });
+  
 
   return (
     <div>
-      {props.variableDescription}
+      {/* {props.variableDescription} */}
       <svg id="histogram" height={600} width={600}></svg>
     </div>
 

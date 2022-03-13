@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import Histogram from '../src/charts/Histogram';
+// import { useEffect, useState } from "react";
+// import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
-import * as d3 from "d3";
+// import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
@@ -15,38 +15,38 @@ import Line from './charts/lineGraph';
 const API_URL = process.env.REACT_APP_API;
 
 function App() {
-  const [tableData, setTableData] = useState<{}>({});
-  const [histogramData, setHistogramData] = useState<Array<number>>([]);
-  const [donutData, setdonutData] = useState<{}>({});
-  const [FLCData, setFLCData] = useState<{}>({});
-  const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
+  // const [tableData, setTableData] = useState<{}>({});
+  // const [histogramData, setHistogramData] = useState<Array<number>>([]);
+  // const [donutData, setdonutData] = useState<{}>({});
+  // const [FLCData, setFLCData] = useState<{}>({});
+  // const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  async function getData() {
-    // const urlHistogram = `${API_URL}/AGE`;
-    // const histogramResponse = await fetch(urlHistogram);
-    // const histogramOut = await histogramResponse.json();
-    // setHistogramData(histogramOut.data);
+  // async function getData() {
+  //   const urlHistogram = `${API_URL}/AGE`;
+  //   const histogramResponse = await fetch(urlHistogram);
+  //   const histogramOut = await histogramResponse.json();
+  //   setHistogramData(histogramOut.data);
 
-    // const urlTable = `${API_URL}/B01`;
-    // const tableResponse = await fetch(urlTable);
-    // const tableOut = await tableResponse.json();
-    // setTableData(tableOut.data);
+  //   const urlTable = `${API_URL}/B01`;
+  //   const tableResponse = await fetch(urlTable);
+  //   const tableOut = await tableResponse.json();
+  //   setTableData(tableOut.data);
 
-    // const urlDonut = `${API_URL}/B07`;
-    // const donutResponse = await fetch(urlDonut);
-    // const donutOut = await donutResponse.json();
-    // setdonutData(donutOut.data);
+  //   const urlDonut = `${API_URL}/B07`;
+  //   const donutResponse = await fetch(urlDonut);
+  //   const donutOut = await donutResponse.json();
+  //   setdonutData(donutOut.data);
 
-    const urlFLC = `${API_URL}/G01`;
-    const FLCResponse = await fetch(urlFLC);
-    const FLCOut = await FLCResponse.json();
-    setFLCData(FLCOut.data);
-    setTimeSeriesData(FLCOut.timeSeriesData)
-  }
+  //   const urlFLC = `${API_URL}/FLC`;
+  //   const FLCResponse = await fetch(urlFLC);
+  //   const FLCOut = await FLCResponse.json();
+  //   setFLCData(FLCOut.data);
+  //   setTimeSeriesData(FLCOut.timeSeriesData)
+  // }
 
   return (
     <BrowserRouter>

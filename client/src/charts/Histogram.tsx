@@ -1,9 +1,7 @@
 import * as d3 from "d3";
 import './Histogram.scss';
 import { useEffect } from 'react';
-import { bin, stratify } from "d3";
 
-//
 interface binProp {
   "start": null | number,
   "end": null | number
@@ -26,7 +24,6 @@ interface histogramBinRangesProp {
 
 const API_URL = process.env.REACT_APP_API;
 var data: number[] = [];
-//TODO: HANDLE D50MTCOD,G01,G03 AS SPECIAL CASES WITH ENCODING TRANSLATION
 
 
 function Histogram(props: histogramProp) {
@@ -37,7 +34,6 @@ function Histogram(props: histogramProp) {
     const histogramResponse = await fetch(urlHistogram);
     const histogramOut = await histogramResponse.json();
     data = histogramOut.data;
-    //console.log(data)
   }
   useEffect(() => {
     getData();
@@ -50,7 +46,6 @@ function Histogram(props: histogramProp) {
   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
   const chartWidth = width-50 - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
-  let annotations = svg.append("g").attr("id", "annotations");
   let chartArea = svg.append("g").attr("id", "points")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -59,7 +54,6 @@ function Histogram(props: histogramProp) {
   var title = props.variableDescription
   var binRanges = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
     h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
-  //console.log(binRanges);
 
 
   let maxValue: number = Math.max(...data);
@@ -69,23 +63,14 @@ function Histogram(props: histogramProp) {
   let total: number[] = []
   let max = 0;
   let i = 0;
-  //console.log(binRanges[0]["end"])
-
-  // TODO: DO WE NEED TO ALLOCATE THIS MUCH ARRAY MEMORY FOR TOTAL?
   let x = 0;
 
+
   for (x = 0; x < binRanges.length; x++) {
-    //console.log(binRanges[x])
+
     total[x] = 0;
   }
-  //console.log(total)
 
-  // for (i = 10; i <= maxValue + 10; i += 10) {
-  //   total[i] = 0;
-  // }
-
-  // TODO: USE ONE LOOP (SHOULD BE POSSIBLE)
-  // change to use binranges
   data.forEach(d => {
     Object.keys(total).forEach((key: any) => {
       let start = "start";
@@ -126,68 +111,15 @@ function Histogram(props: histogramProp) {
   }
   
 
-  console.log(total)
   max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
   console.log("max: " + max)
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
-
-  
-  // let leftAxis = d3.axisLeft(totalScale)
-  //                 .ticks(5)
-  //                 .tickValues([1,2,3,4,5])
-
-  // let yAxis = svg.append("g")
-  //                 .call(leftAxis);
-  // yAxis.attr("transform", `translate(${margin.left - 10},${margin.top})`)
- 
-    
-
-  // let leftGridlines = d3.axisLeft(totalScale)
-  //   .tickSize(-chartWidth - 10)
-  //   .tickFormat(d => "");
-  // annotations.append("g")
-  //   .attr("class", "y axis")
-  //   .attr("transform", `translate(${margin.left - 10},${margin.top})`)
-  //   .call(leftAxis)
-    
-  // annotations.append("g")
-  //   .attr("class", "y gridlines")
-  //   .attr("transform", `translate(${margin.left},${margin.top})`)
-  //   .call(leftGridlines);
-
-  //let bottomAxis = d3.axisBottom(dataScale).tickFormat(d3.format(''));
-  // let bottomGridlines = d3
-  //   .axisBottom(dataScale)
-  //   .tickSize(-chartHeight)
-  //   .tickFormat(d => "");
-  // annotations.append("g")
-  //   .attr("class", "x axis")
-  //   .attr('transform', `translate(${margin.left},${chartHeight + margin.top + 10})`)
-  //   .call(bottomAxis);
-  // annotations.append("g")
-  //   .attr("class", "x gridlines")
-  //   .attr('transform', `translate(${margin.left},${chartHeight + margin.top})`)
-    // .call(bottomGridlines);
-  // annotations.append("text")
-  //   .attr("class", "x label")
-  //   .attr("text-anchor", "middle")
-  //   .attr("x", dataScale(maxValue / 2) + margin.left)
-  //   .attr("y", chartHeight + margin.bottom + 5);
-    //.text("Age Groups");
-  //let percScale = []
   var percentFormat = d3.format(".0%")
   chartArea.append("g")
     .attr("transform", "translate(50,0)")
     .call(d3.axisLeft(totalScale).tickFormat(d3.format(".0%")));
- 
-    
-  // annotations.append("text")
-  //   .attr("class", "y label")
-  //   .attr("text-anchor", "middle")
-  //   .attr("x", -height / 2 + margin.right)
-  //   .attr("y", dataScale(3))
-  //   .attr("transform", "rotate(-90)");
-    // .text("Population Totals");
+
+
   Object.keys(total).forEach((key: any, index) => {
     let end = binRanges[key]["end"]
     let start = binRanges[key]["start"]
@@ -211,15 +143,10 @@ function Histogram(props: histogramProp) {
       .attr("x", dataScale(index * 10 + 5))
       .attr('y', totalScale(total[key]) - 10)
       .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key]*100) + "%");
-    // let percScale = 
-    
-  
     });
   
-
   return (
     <div>
-      {/* {props.variableDescription} */}
       <svg id="histogram" height={600} width={600}></svg>
     </div>
 

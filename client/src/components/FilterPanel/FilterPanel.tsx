@@ -11,8 +11,8 @@ import './FilterPanel.scss'
 import { propsToClassKey } from "@mui/styles";
 
 const FilterEnum = {
-  GENDER: "Gender",
-  CURRSTAT: "CURRSTAT",
+  GENDER: "GENDER",
+  CURRSTAT: "currstat",
   FLC: "FLC",
   REGION6: "REGION6"
 }

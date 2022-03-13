@@ -40,7 +40,6 @@ function Map(props : MapProp) {
     const newStateIDs = regionToStatesData["regionToStates"].find((el: RegionToStatesProps) =>
       el.regionEncoding === newRegionEncoding).stateIDs;
     setStateIDs(newStateIDs)
-    console.log(props.mapFilterSelected)
   }, [props.mapFilterSelected, props.collapseIndex])
     
   const us = require("./us-smaller.json")

@@ -12,7 +12,8 @@ interface encodingProp {
 enum VizType {
   Donut = "donut",
   Histogram = "histogram",
-  Table = "table"
+  Table = "table",
+  Data = 'data'
 }
 
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
@@ -151,7 +152,9 @@ function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 
   function iterateFunc(v: [number, number]) {
-    recentVals.push(v[1])
+    if (!isNaN(v[1])) {
+      recentVals.push(v[1])
+    }
   }
   function errorFunc(error: any) {
     console.log(error);
@@ -274,6 +277,31 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 }
 
+
+/**
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_YEAR, 0], [LATEST_YEAR, 1]]
+ * @param variable is the variable that is being aggregated. EX: GENDER
+ * @returns an object with attributes percentage and description. 
+ *          The percentage represents the proprotion of respondents answering the chosen option. 
+ *          The description is the binary data option to display
+ */
+ async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
+  let query = { Variable: variable }
+  let displayCount = 0
+  let totalCount = 0
+  const binaryData = await db.collection('binary-data').findOne(query)
+  arr.forEach(([year, value]) => {
+    if (!isNaN(value)) {
+      if (value === binaryData!.DisplayEncoding) {
+        displayCount++
+      }
+      totalCount++
+    }
+  });
+  return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
+}
+
+
 /**
  * Takes a string variable
  * @param variable is a variable that is being queried. EX: GENDER
@@ -353,6 +381,9 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
     else if (vizType === VizType.Donut) {
       output = await aggregateDonutChart(queryResult, variable, db);
       output = Object.fromEntries(output);
+    }
+    else if (vizType === VizType.Data) {
+      output = await getDataHighlights(queryResult, variable, db);
     }
   }
   else {

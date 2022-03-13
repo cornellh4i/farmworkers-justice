@@ -1,5 +1,5 @@
 {
-    "GENDER": [
+    "Gender": [
         {
             "filter-encoding": 0,
             "filter-value": "Male"
@@ -45,7 +45,7 @@
             "filter-value": "California"
         }
     ],
-    "CURRSTAT": [
+    "currstat": [
         {
             "filter-encoding": 1,
             "filter-value": "Citizen"

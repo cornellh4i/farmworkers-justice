@@ -25,7 +25,7 @@
                     "variable-description": "What country did you live in before coming to the US? (if foreign born)"
                 },
                 {
-                    "variable-encoding": "CURRSTAT",
+                    "variable-encoding": "currstat",
                     "variable-description": "Current Work Authorization Status (Immigration status)"
                 },
                 {
@@ -33,19 +33,19 @@
                     "variable-description": "Foreign Born"
                 },
                 {
-                    "variable-encoding": "INDIGENOUS",
+                    "variable-encoding": "Indigenous",
                     "variable-description": "Indigenous definition that include race, language and child language."
                 },
                 {
-                    "variable-encoding": "Migrant",
+                    "variable-encoding": "MIGRANT",
                     "variable-description": "Migrant"
                 },
                 {
-                    "variable-encoding": "MIXEDFAM",
+                    "variable-encoding": "MixedFam",
                     "variable-description": "Farmworker is unauthorized but has US Citizen children"
                 },
                 {
-                    "variable-encoding": "ADULTOTHERINDG",
+                    "variable-encoding": "AdultOtherIndg",
                     "variable-description": "Has other adult language indigenous."
                 },
                 {
@@ -71,11 +71,11 @@
                     "variable-description": "Number of Parents in Household"
                 },
                     {
-                    "variable-encoding": "Gender",
+                    "variable-encoding": "GENDER",
                     "variable-description": "Gender"
                 },
                     {
-                    "variable-encoding": "Married",
+                    "variable-encoding": "MARRIED",
                     "variable-description": "Married"
                 }
             ]

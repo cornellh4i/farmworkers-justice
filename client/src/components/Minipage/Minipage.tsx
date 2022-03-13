@@ -14,6 +14,8 @@ function Minipage() {
     const [currentCollapseIndex, setCurrentCollapseIndex] = useState<number | null>(null)
     const [encodings, setEncodings] = useState<Array<string>>([])
     const [mapFilterSelected, setMapFilterSelected] = useState<null | string>(null);
+    const [filter1Selected, setFilter1Selected] = useState<null | string[]>(null);
+    const [filter2Selected, setFilter2Selected] = useState<null | string[]>(null);
 
 
 
@@ -31,19 +33,22 @@ function Minipage() {
         for (let i = 0; i < variables.length; i++) {
             allEncodings.push(variables[i]["variable-encoding"])
         }
-        setEncodings(allEncodings) 
+        setEncodings(allEncodings)
     }
 
     useEffect(() => {
         getVariablesEncoding(categoryIndex)
     }, [])
-    
 
+
+    // this is where we're lost
     return (
         <div>
-            <FilterPanel setMapFilterSelected={setMapFilterSelected}/>
-            {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable} 
-                index={index} encoding={encodings[index]}  mapFilterSelected={mapFilterSelected} 
+            <FilterPanel setMapFilterSelected={setMapFilterSelected} setFilter1Selected={setFilter1Selected} setFilter2Selected={setFilter2Selected} />
+
+
+            {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable}
+                index={index} encoding={encodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
                 currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
         </div>
     )

@@ -13,11 +13,14 @@ interface DropdownProp {
   index: number
   categoryVariable: string
   encoding: string
-  mapFilterSelected : null | string
+  mapFilterSelected: null | string
   setCurrentCollapseIndex: Function
   currentCollapseIndex: number | null
+  filter1Selected: null | string[]
+  filter2Selected: null | string[]
 }
 
+const API_URL = process.env.REACT_APP_API;
 
 function Dropdown(props: DropdownProp) {
   const [collapse, setCollapse] = useState(false)
@@ -32,11 +35,32 @@ function Dropdown(props: DropdownProp) {
     }
   }
 
+  async function getData(url: string) {
+    const response = await fetch(url);
+    const output = await response.json();
+
+    return output
+  }
+
   useEffect(() => {
     if (props.currentCollapseIndex !== props.index) {
       setCollapse(false);
     }
   }, [props.currentCollapseIndex])
+
+  useEffect(() => {
+    // '/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2'
+    var url;
+    if (props.filter1Selected === null && props.filter2Selected === null) {
+      url = `${API_URL}/${props.categoryVariable}`;
+    } else if (props.filter2Selected === null) {
+      url = `${API_URL}/${props.categoryVariable}/${props.filter1Selected![1]}/${props.filter1Selected![0]}`;
+    } else {
+      url = `${API_URL}/${props.categoryVariable}/${props.filter1Selected![1]}/${props.filter1Selected![0]}/${props.filter2Selected[1]}/${props.filter2Selected[0]}}`;
+    }
+    getData(url)
+  }, [])
+
 
   return (
     <div>
@@ -52,7 +76,7 @@ function Dropdown(props: DropdownProp) {
             <Collapse in={collapse} timeout="auto" unmountOnExit>
               <div>
                 {props.encoding}
-                {props.mapFilterSelected === null? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex}/>}
+                {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
               </div>
             </Collapse>
           </Grid>

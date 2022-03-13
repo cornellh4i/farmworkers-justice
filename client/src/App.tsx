@@ -1,5 +1,5 @@
-// import { useEffect, useState } from "react";
-// import Histogram from '../src/charts/Histogram';
+import { useEffect, useState } from "react";
+import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import DataHighlight from '../src/charts/DataHighlight';
 import * as d3 from "d3";
@@ -23,11 +23,11 @@ function App() {
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
   const [dataHighlightData, setDataHighlightData] = useState<{percentage: number, description: string}>({percentage: 0, description: ""});
 
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
-  // async function getData() {
+  async function getData() {
   //   const urlHistogram = `${API_URL}/AGE`;
   //   const histogramResponse = await fetch(urlHistogram);
   //   const histogramOut = await histogramResponse.json();
@@ -61,7 +61,6 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
-        <Route path='/map' element={<Map regionEncoding = {"1"} />} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
         Respondent Age

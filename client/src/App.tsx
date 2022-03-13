@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import Histogram from '../src/charts/Histogram';
+// import { useEffect, useState } from "react";
+// import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import DataHighlight from '../src/charts/DataHighlight';
 import * as d3 from "d3";
@@ -23,26 +23,25 @@ function App() {
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
   const [dataHighlightData, setDataHighlightData] = useState<{percentage: number, description: string}>({percentage: 0, description: ""});
 
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // async function getData() {
+  //   const urlHistogram = `${API_URL}/AGE`;
+  //   const histogramResponse = await fetch(urlHistogram);
+  //   const histogramOut = await histogramResponse.json();
+  //   setHistogramData(histogramOut.data);
 
-  async function getData() {
-    // const urlHistogram = `${API_URL}/AGE`;
-    // const histogramResponse = await fetch(urlHistogram);
-    // const histogramOut = await histogramResponse.json();
-    // setHistogramData(histogramOut.data);
+  //   const urlTable = `${API_URL}/B01`;
+  //   const tableResponse = await fetch(urlTable);
+  //   const tableOut = await tableResponse.json();
+  //   setTableData(tableOut.data);
 
-    // const urlTable = `${API_URL}/B01`;
-    // const tableResponse = await fetch(urlTable);
-    // const tableOut = await tableResponse.json();
-    // setTableData(tableOut.data);
-
-    // const urlDonut = `${API_URL}/B07`;
-    // const donutResponse = await fetch(urlDonut);
-    // const donutOut = await donutResponse.json();
-    // setdonutData(donutOut.data);
+  //   const urlDonut = `${API_URL}/B07`;
+  //   const donutResponse = await fetch(urlDonut);
+  //   const donutOut = await donutResponse.json();
+  //   setdonutData(donutOut.data);
 
     // const urlFLC = `${API_URL}/G01`;
     // const FLCResponse = await fetch(urlFLC);

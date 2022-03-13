@@ -10,7 +10,11 @@
     "build": "cd client && npm run build"
   },
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.4.4"
+  },
   "devDependencies": {
     "sass": "^1.49.8"
   }

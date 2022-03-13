@@ -15,6 +15,7 @@ enum VizType {
   Table = "table"
 }
 
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -260,7 +261,6 @@ async function getVizType(variable: string, db: Db) {
   }
 }
 
-
 /**
  * @param variable is a variable to generate queries for
  * @param vizType is the visualization type of the variable
@@ -286,6 +286,16 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   const output = await aggregateTimeSeries(queryResult, variable)
   return output;
 }
+
+/**
+ * @returns the the data stored inside of naws/variable-info
+ */
+function collectVarInfo(){
+  const dbo = require("./db/conn");
+  var db = dbo.getDb();
+  return db.collection("variable-info");
+}
+export {collectVarInfo};
 
 
 /**
@@ -330,7 +340,6 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   }
   return output;
 }
-
 
 module.exports = () => {
   const express = require("express");

@@ -28,7 +28,6 @@ export function getVariablesByCategory(categoryIndex: number) {
 
 }
 
-
 function Homepage() {
   return (
     <div>

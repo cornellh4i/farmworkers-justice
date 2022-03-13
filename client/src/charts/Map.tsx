@@ -3,16 +3,25 @@ import * as topojson from "topojson-client";
 import * as geojson from "geojson";
 
 import { GeometryObject, Topology } from 'topojson-specification';
+import './Map.scss'
 
 interface mapProp {
-  height : number;
-  width : number;
+  regionEncoding : string;
+}
+
+interface regionToStatesProps {
+  regionEncoding: string,
+  stateIDs: Array<string>
 }
 
 function Map (props : mapProp) {
+  // Encoding from local JSON file
+  const regionToStatesData = require('../local-json/mapRegionEncoding.json'); 
+  var stateIDs = regionToStatesData["regionToStates"].find((el: regionToStatesProps) =>
+    el.regionEncoding === props.regionEncoding).stateIDs;
   const svg = d3.select("#usmap");
-  const width = props.width
-  const height = props.height;
+  const width = 990; // modify this later
+  const height = 770; // modify this later
   const margin = { top: 20, right: 20, bottom: 20, left:20};
   const mapWidth = width - margin.left - margin.right;
   const mapHeight = height - margin.top - margin.bottom;
@@ -28,17 +37,18 @@ function Map (props : mapProp) {
     .style('opacity', 50)
     map.selectAll("path.state").data(states.features)
     .join("path")
-    .attr("class", "state")
     .attr("note", d => d.id!)  
     .attr("d", path)
-    .on("mousedown", function clicked(s) {
-      if(s != null && (s.target! as HTMLTextAreaElement).getAttribute('note') === "06") {
-        div.text("california");
+    .attr("class", function(d) {
+      for (let i = 0; i < stateIDs.length; i++) {
+        if (d.id === stateIDs[i]) { return "highlighted"; }
       }
-  })});
+      return "state";
+    })
+  });
 
   return (
-  <svg id="usmap" height = {props.height} width = {props.width} ></svg>
+  <svg id="usmap" height={height} width={width} ></svg>
   )
 }
 

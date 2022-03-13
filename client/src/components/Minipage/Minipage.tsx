@@ -19,14 +19,6 @@ function Minipage() {
 
 
 
-    // function onCollapse(index: number) {
-    //     if (index === dropdownIndex) {
-    //         setDropdownIndex(null) // closing collapse
-    //     } else {
-    //         setDropdownIndex(index);
-    //     }
-    // }
-
     function getVariablesEncoding(categoryIndex: number) {
         var variables = variablesInCategories["categories"][categoryIndex]["variables"]
         var allEncodings: string[] = []
@@ -41,12 +33,9 @@ function Minipage() {
     }, [])
 
 
-    // this is where we're lost
     return (
         <div>
             <FilterPanel setMapFilterSelected={setMapFilterSelected} setFilter1Selected={setFilter1Selected} setFilter2Selected={setFilter2Selected} />
-
-
             {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable}
                 index={index} encoding={encodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
                 currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}

@@ -1,4 +1,4 @@
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 // import * as d3 from "d3";
@@ -21,11 +21,11 @@ function App() {
   // const [FLCData, setFLCData] = useState<{}>({});
   // const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
 
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
-  // async function getData() {
+  async function getData() {
   //   const urlHistogram = `${API_URL}/AGE`;
   //   const histogramResponse = await fetch(urlHistogram);
   //   const histogramOut = await histogramResponse.json();
@@ -46,7 +46,7 @@ function App() {
   ////    const FLCOut = await FLCResponse.json();
   ////    setFLCData(FLCOut.data);
   //   setTimeSeriesData(FLCOut.timeSeriesData)
-  // }
+  }
 
   return (
     <BrowserRouter>

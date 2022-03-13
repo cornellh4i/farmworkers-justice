@@ -20,10 +20,20 @@ interface DropdownProp {
   filter2Selected: null | string[]
 }
 
+interface FetchedDataProps {
+  data: any, 
+  vizType: string, 
+  timeSeriesData: {year: number, value: number}[] 
+}
+
 const API_URL = process.env.REACT_APP_API;
 
 function Dropdown(props: DropdownProp) {
   const [collapse, setCollapse] = useState(false)
+  const [visualizationType, setVisualizationType] = useState("")
+  const [visualizationData, setVisualizationData] = useState<any>(null)
+  const [timeSeriesData, setTimeSeriesData] = useState<{year: number, value: number}[]>([])
+
 
   function onClickCollapse() {
     if (props.currentCollapseIndex === props.index) {
@@ -37,7 +47,12 @@ function Dropdown(props: DropdownProp) {
 
   async function getData(url: string) {
     const response = await fetch(url);
-    const output = await response.json();
+    const output: FetchedDataProps = await response.json();
+    setVisualizationType(output.vizType)
+    setVisualizationData(output.data)
+    setTimeSeriesData(output.timeSeriesData)
+
+    console.log("fetched data: ", output.data)
 
     return output
   }
@@ -46,20 +61,21 @@ function Dropdown(props: DropdownProp) {
     if (props.currentCollapseIndex !== props.index) {
       setCollapse(false);
     }
+
   }, [props.currentCollapseIndex])
 
   useEffect(() => {
-    // '/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2'
     var url;
     if (props.filter1Selected === null && props.filter2Selected === null) {
-      url = `${API_URL}/${props.categoryVariable}`;
+      url = `${API_URL}/${props.encoding}`;
     } else if (props.filter2Selected === null) {
-      url = `${API_URL}/${props.categoryVariable}/${props.filter1Selected![1]}/${props.filter1Selected![0]}`;
+      url = `${API_URL}/${props.encoding}/${props.filter1Selected![1]}/${props.filter1Selected![0]}`;
     } else {
-      url = `${API_URL}/${props.categoryVariable}/${props.filter1Selected![1]}/${props.filter1Selected![0]}/${props.filter2Selected[1]}/${props.filter2Selected[0]}}`;
+      url = `${API_URL}/${props.encoding}/${props.filter1Selected![1]}/${props.filter1Selected![0]}/${props.filter2Selected[1]}/${props.filter2Selected[0]}}`;
     }
+    console.log("url: ", url)
     getData(url)
-  }, [])
+  }, [props.filter1Selected, props.filter2Selected])
 
 
   return (

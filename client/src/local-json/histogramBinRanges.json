@@ -6,27 +6,39 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 19 
+                    "start-encoding": null,
+                    "end": 19,
+                    "end-encoding": null
                 },
                 {
                     "start": 20,
-                    "end": 29 
+                    "start-encoding": null,
+                    "end": 29,
+                    "end-encoding": null
                 },
                 {
                     "start": 30,
-                    "end": 39 
+                    "start-encoding": null,
+                    "end": 39,
+                    "end-encoding": null
                 },
                 {
                     "start": 40,
-                    "end": 49 
+                    "start-encoding": null,
+                    "end": 49,
+                    "end-encoding": null
                 },
                 {
                     "start": 50,
-                    "end": 59 
+                    "start-encoding": null,
+                    "end": 59,
+                    "end-encoding": null
                 },
                 {
                     "start": 60,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -36,23 +48,33 @@
             "bin-ranges": [
                 {
                     "start": null,
-                    "end": 1985
+                    "start-encoding": null,
+                    "end": 1985,
+                    "end-encoding": null
                 },
                 {
                     "start": 1986,
-                    "end": 1995
+                    "start-encoding": null,
+                    "end": 1995,
+                    "end-encoding": null
                 },
                 {
                     "start": 1996,
-                    "end": 2005
+                    "start-encoding": null,
+                    "end": 2005,
+                    "end-encoding": null
                 },
                 {
                     "start": 2006,
-                    "end": 2015
+                    "start-encoding": null,
+                    "end": 2015,
+                    "end-encoding": null
                 },
                 {
                     "start": 2016,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -62,23 +84,33 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 4
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
                 },
                 {
                     "start": 5,
-                    "end": 9
+                    "start-encoding": null,
+                    "end": 9,
+                    "end-encoding": null
                 },
                 {
                     "start": 10,
-                    "end": 14
+                    "start-encoding": null,
+                    "end": 14,
+                    "end-encoding": null
                 },
                 {
                     "start": 15,
-                    "end": 19
+                    "start-encoding": null,
+                    "end": 19,
+                    "end-encoding": null
                 },
                 {
                     "start": 20,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -88,23 +120,33 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 4
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
                 },
                 {
                     "start": 5,
-                    "end": 8
+                    "start-encoding": null,
+                    "end": 8,
+                    "end-encoding": null
                 },
                 {
                     "start": 9,
-                    "end": 12
+                    "start-encoding": null,
+                    "end": 12,
+                    "end-encoding": null
                 },
                 {
                     "start": 13,
-                    "end": 16
+                    "start-encoding": null,
+                    "end": 16,
+                    "end-encoding": null
                 },
                 {
                     "start": 17,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -114,31 +156,45 @@
             "bin-ranges": [
                 {
                     "start": null,
-                    "end": 175
+                    "start-encoding": null,
+                    "end": 175,
+                    "end-encoding": null
                 },
                 {
                     "start": 176,
-                    "end": 200
+                    "start-encoding": null,
+                    "end": 200,
+                    "end-encoding": null
                 },
                 {
                     "start": 201,
-                    "end": 225
+                    "start-encoding": null,
+                    "end": 225,
+                    "end-encoding": null
                 },
                 {
                     "start": 226,
-                    "end": 250
+                    "start-encoding": null,
+                    "end": 250,
+                    "end-encoding": null
                 },
                 {
                     "start": 251,
-                    "end": 275
+                    "start-encoding": null,
+                    "end": 275,
+                    "end-encoding": null
                 },
                 {
                     "start": 276,
-                    "end": 300
+                    "start-encoding": null,
+                    "end": 300,
+                    "end-encoding": null
                 },
                 {
                     "start": 301,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -148,23 +204,33 @@
             "bin-ranges": [
                 {
                     "start": 0,
-                    "end": 4
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
                 },
                 {
                     "start": 5,
-                    "end": 8
+                    "start-encoding": null,
+                    "end": 8,
+                    "end-encoding": null
                 },
                 {
                     "start": 9,
-                    "end": 12
+                    "start-encoding": null,
+                    "end": 12,
+                    "end-encoding": null
                 },
                 {
                     "start": 13,
-                    "end": 16
+                    "start-encoding": null,
+                    "end": 16,
+                    "end-encoding": null
                 },
                 {
                     "start": 17,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -174,27 +240,39 @@
             "bin-ranges": [
                 {
                     "start": null,
-                    "end": 39
+                    "start-encoding": null,
+                    "end": 39,
+                    "end-encoding": null
                 },
                 {
                     "start": 40,
-                    "end": 44
+                    "start-encoding": null,
+                    "end": 44,
+                    "end-encoding": null
                 },
                 {
                     "start": 45,
-                    "end": 49
+                    "start-encoding": null,
+                    "end": 49,
+                    "end-encoding": null
                 },
                 {
                     "start": 50,
-                    "end": 54
+                    "start-encoding": null,
+                    "end": 54,
+                    "end-encoding": null
                 },
                 {
                     "start": 55,
-                    "end": 59
+                    "start-encoding": null,
+                    "end": 59,
+                    "end-encoding": null
                 },
                 {
                     "start": 60,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },
@@ -240,27 +318,39 @@
             "bin-ranges": [
                 {
                     "start": null,
-                    "end": 7.24
+                    "start-encoding": null,
+                    "end": 7.24,
+                    "end-encoding": null
                 },
                 {
                     "start": 7.25,
-                    "end": 7.99
+                    "start-encoding": null,
+                    "end": 7.99,
+                    "end-encoding": null
                 },
                 {
                     "start": 8.00,
-                    "end": 8.99
+                    "start-encoding": null,
+                    "end": 8.99,
+                    "end-encoding": null
                 },
                 {
                     "start": 9.00,
-                    "end": 9.99
+                    "start-encoding": null,
+                    "end": 9.99,
+                    "end-encoding": null
                 },
                 {
                     "start": 10.00,
-                    "end": 10.99
+                    "start-encoding": null,
+                    "end": 10.99,
+                    "end-encoding": null
                 },
                 {
                     "start": 11,
-                    "end": null
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
                 }
             ]
         },

@@ -62,9 +62,12 @@ function App() {
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
+        <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
+        
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
-        Respondent Age
-      </h3>
+          Respondent Age
+        </h3> 
       <Histogram
         height={600}
         width={600}
@@ -80,6 +83,7 @@ function App() {
         <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
         </h3>
+
         <Donut
           data={donutData}
           width={500}
@@ -87,17 +91,13 @@ function App() {
           innerRadius={150}
           outerRadius={200}
         />
-      </div>
-      <Donut
-        data={FLCData}
-        width={500}
-        height={500}
-        innerRadius={150}
-        outerRadius={200}
-      />
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Average Value per Year from 2009 to 2018
-      </h3>
+        <Donut
+          data={FLCData}
+          width={500}
+          height={500}
+          innerRadius={150}
+          outerRadius={200}
+        />
       <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
         <LineGraph
           data={timeSeriesData}

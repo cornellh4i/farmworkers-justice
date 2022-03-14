@@ -21,9 +21,9 @@ interface DropdownProp {
 }
 
 interface FetchedDataProps {
-  data: any, 
-  vizType: string, 
-  timeSeriesData: {year: number, value: number}[] 
+  data: any,
+  vizType: string,
+  timeSeriesData: { year: number, value: number }[]
 }
 
 interface FilterEncodingProp {
@@ -39,7 +39,7 @@ function Dropdown(props: DropdownProp) {
   const [collapse, setCollapse] = useState(false)
   const [visualizationType, setVisualizationType] = useState("")
   const [visualizationData, setVisualizationData] = useState<any>(null)
-  const [timeSeriesData, setTimeSeriesData] = useState<{year: number, value: number}[]>([])
+  const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
 
 
   function onClickCollapse() {
@@ -63,7 +63,7 @@ function Dropdown(props: DropdownProp) {
       setTimeSeriesData(output.timeSeriesData)
       console.log("Variable: ", props.variable)
       console.log("fetched data: ", output.data)
-    } catch(error) {
+    } catch (error) {
       console.log("Failed to fetch: ", props.variable)
     }
   }
@@ -86,19 +86,20 @@ function Dropdown(props: DropdownProp) {
     if (props.filter1Selected === null && props.filter2Selected === null) {
       url = `${API_URL}/${props.variable}`;
     } else if (props.filter2Selected === null) {
-      const filterEncoding = filterEncodings[props.filter1Selected![1]].find((el: FilterEncodingProp) => 
+      const filterEncoding = filterEncodings[props.filter1Selected![1]].find((el: FilterEncodingProp) =>
         el["filter-value"] === props.filter1Selected![0])["filter-encoding"];
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filterEncoding}`;
     } else {
-      const filter1Encoding = filterEncodings[props.filter1Selected![1]].find((el: FilterEncodingProp) => 
+      const filter1Encoding = filterEncodings[props.filter1Selected![1]].find((el: FilterEncodingProp) =>
         el["filter-value"] === props.filter1Selected![0])["filter-encoding"];
-      const filter2Encoding = filterEncodings[props.filter2Selected![1]].find((el: FilterEncodingProp) => 
+      const filter2Encoding = filterEncodings[props.filter2Selected![1]].find((el: FilterEncodingProp) =>
         el["filter-value"] === props.filter2Selected![0])["filter-encoding"];
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filter1Encoding}/${props.filter2Selected[1]}/${filter2Encoding}`;
     }
     console.log("url: ", url)
     getData(url)
   }, [props.filter1Selected, props.filter2Selected])
+
 
 
   return (
@@ -114,7 +115,9 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" unmountOnExit>
               <div>
-                {props.variable}
+                {
+                  //getVisualization(props.variable)
+                }
                 {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
               </div>
             </Collapse>

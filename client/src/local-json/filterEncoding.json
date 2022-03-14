@@ -1,0 +1,66 @@
+{
+    "GENDER": [
+        {
+            "filter-encoding": 0,
+            "filter-value": "Male"
+        },
+        {
+            "filter-encoding": 1,
+            "filter-value": "Female"
+        }
+    ],
+    "FLC": [
+        {
+            "filter-encoding": 0,
+            "filter-value": "Grower/Nurs./Packh/Oth"
+        },
+        {
+            "filter-encoding": 1,
+            "filter-value": "Farm-labor Contractor"
+        }
+    ],
+    "REGION6": [
+        {
+            "filter-encoding": 1,
+            "filter-value": "East"
+        },
+        {
+            "filter-encoding": 2,
+            "filter-value": "South East"
+        },
+        {
+            "filter-encoding": 3,
+            "filter-value": "Midwest"
+        },
+        {
+            "filter-encoding": 4,
+            "filter-value": "South West"
+        },
+        {
+            "filter-encoding": 5,
+            "filter-value": "North West"
+        },
+        {
+            "filter-encoding": 6,
+            "filter-value": "California"
+        }
+    ],
+    "CURRSTAT": [
+        {
+            "filter-encoding": 1,
+            "filter-value": "Citizen"
+        },
+        {
+            "filter-encoding": 2,
+            "filter-value": "Green Card"
+        },
+        {
+            "filter-encoding": 3,
+            "filter-value": "Other Work Authorization"
+        },
+        {
+            "filter-encoding": 4,
+            "filter-value": "Unauthorized"
+        }
+    ]
+}

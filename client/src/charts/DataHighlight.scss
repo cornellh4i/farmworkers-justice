@@ -1,0 +1,17 @@
+.data-highlight-container {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    span {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .percentage {
+        font-size: 48px;
+        color: #FF820C;
+        margin: 1rem;
+    }
+}

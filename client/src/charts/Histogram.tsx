@@ -58,7 +58,6 @@ function Histogram(props: histogramProp) {
 
   let maxValue: number = Math.max(...data);
   maxValue = Math.ceil(maxValue / 10) * 10;
-  console.log("max val: " + maxValue)
   const dataScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
   let total: number[] = []
   let max = 0;
@@ -112,7 +111,6 @@ function Histogram(props: histogramProp) {
   
 
   max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
-  console.log("max: " + max)
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
   var percentFormat = d3.format(".0%")
   chartArea.append("g")

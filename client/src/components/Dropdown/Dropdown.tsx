@@ -51,6 +51,7 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" unmountOnExit>
               <div>
+
                 {props.encoding}
                 {props.mapFilterSelected === null? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex}/>}
               </div>

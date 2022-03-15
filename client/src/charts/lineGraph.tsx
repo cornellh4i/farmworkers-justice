@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import * as d3 from "d3";
+import "@fontsource/rubik";
 
 interface LineGraphProp {
   data: any;
@@ -28,9 +29,9 @@ function LineGraph(props: LineGraphProp) {
   const svg = d3.select(svgRef.current)
     .attr('width', w)
     .attr('height', h)
-    .style('background', '#d3d3d3')
-    .style('margin-top', '50')
-    .style('margin-left', '50')
+    .style('background', 'white')
+    .style('margin-top', '100')
+    .style('margin-left', '100')
     .style('overflow', 'visible');
   const xScale = d3.scaleLinear()
     .domain((props.data.length !== 0)? 
@@ -61,16 +62,20 @@ function LineGraph(props: LineGraphProp) {
     .attr("text-anchor", "end")
     .attr("x", w / 2)
     .attr("y", h + 50)
-    .text("years");
+    .style('font-family', 'Rubik')
+    .text("Years");    
   svg.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "end")
-    .attr("y", -50)
+    .attr("y", -60)
     .attr("x", -w/2 + ((variableDescription.length * 8)/2))
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
+    .style('font-family', 'Rubik')
     .text(variableDescription); 
   svg.append("text")
+    .attr("y", -10)
+    .style('font-family', 'Rubik')
     .text(() => {
       if(toExclude.includes(props.variableEncoding)) {
         return variableDescription;
@@ -83,7 +88,9 @@ function LineGraph(props: LineGraphProp) {
     .join('path')
     .attr('d', d => generatedScaleLine(d))
     .attr('fill', 'none')
-    .attr('stroke', 'black')
+    .attr('stroke', '#FF820C')
+    .attr('stroke-width', '4')
+  
   return (
     <svg ref={svgRef}></svg>
   )

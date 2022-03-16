@@ -12,10 +12,13 @@ function DonutChart(props: DonutChartProps) {
   const height = 500
   const width = 500
 
+  //ceating the pie layout
   const createPie = d3
     .pie()
     .value(d => d.valueOf())
     .sort(null);
+  
+    //determining size of arcs
   const createArc: d3.Arc<any, any> = d3
     .arc()
     .innerRadius(innerRadius - 50)
@@ -81,8 +84,31 @@ function DonutChart(props: DonutChartProps) {
     .style("fill", "black")
     .style("font-size", 12)
     .text(d => formatText(d.index));
-    //still need to add polylines but still unsure if we want it 
 
+  
+    const legendG = groupWithUpdate
+      .append("legend")
+      .merge(groupWithData.select("legend"))
+      .attr("transform", function(d,i){
+        return "translate(" + (width - 110) + "," + (i * 15 + 20) + ")";
+      })
+      .attr("class", "legend");   
+    
+    legendG.append("rect")
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("fill", function(d, i) {
+        return colors(i.toString());
+      });
+    
+    legendG.append("text")
+      .text(function(d){
+        return d.value + "  " + d.data;
+      })
+      .style("font-size", 12)
+      .attr("y", 10)
+      .attr("x", 11);
+    
   return (
     <svg width={width} height={height}>
       <g style={{ display: "block", width: "100%", marginLeft: "auto", marginRight: "auto" }}

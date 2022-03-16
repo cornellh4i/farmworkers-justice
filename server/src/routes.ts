@@ -288,6 +288,17 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   return output;
 }
 
+async function getUniqueVariables(db: Db) {
+  const variablesInfo = db.collection('variable-info').find({});
+  var uniqueVariables: string[] = []
+  await variablesInfo.forEach(variableInfo => {
+    uniqueVariables.push(variableInfo.Variable)
+  });
+  console.log(uniqueVariables)
+  return uniqueVariables
+  
+}
+
 async function preprocess() {
 	const latestFY: number = 2020;
 	const earliestFY: number = (latestFY + 1) - 10;
@@ -412,6 +423,14 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
+  router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    getUniqueVariables(dbo.getDb())
+    // preprocess()
+  });
+
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
@@ -453,15 +472,6 @@ module.exports = () => {
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
-  });
-
-  router.get('/preprocessing', 
-  async (req: Express.Request, res: Express.Response) => {
-    // const dbo = require("./db/conn");
-    // const db = dbo.getDb().collection('variable-info');
-    // console.log("HHEHHERHERHHERHRE")
-    // console.log("MY FOSJSIDFJDSFJKLDSFJKSDFJSDF", db);
-    preprocess()
   });
 
   return router;

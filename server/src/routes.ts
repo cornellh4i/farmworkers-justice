@@ -426,12 +426,23 @@ module.exports = () => {
   router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     getUniqueVariables(dbo.getDb())
-    let { PythonShell } = require('python-shell')
-    PythonShell.run('preprocessing.py', null, function (err: Error) {
-      if (err) throw err;
-      console.log('finished');
+    const {spawn} = require('child_process');
+
+    var dataToSend: any;
+    // spawn new child process to call the python script
+    // switch this to python if your terminal uses python insteal of py
+    const python = spawn('py', ['preprocessing.py']);
+    // collect data from script
+    python.stdout.on('data', function (data: any) {
+     console.log('Pipe data from python script ...');
+     dataToSend = data.toString();
     });
-    
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code: any) => {
+      console.log(`child process close all stdio with code ${code}`);
+      // send data to browser
+      res.send(dataToSend)
+    });
   });
 
 

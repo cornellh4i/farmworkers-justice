@@ -294,7 +294,6 @@ async function getUniqueVariables(db: Db) {
   await variablesInfo.forEach(variableInfo => {
     uniqueVariables.push(variableInfo.Variable)
   });
-  console.log(uniqueVariables)
   return uniqueVariables
   
 }
@@ -427,7 +426,12 @@ module.exports = () => {
   router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     getUniqueVariables(dbo.getDb())
-    // preprocess()
+    let { PythonShell } = require('python-shell')
+    PythonShell.run('preprocessing.py', null, function (err: Error) {
+      if (err) throw err;
+      console.log('finished');
+    });
+    
   });
 
 

@@ -1,0 +1,174 @@
+[
+    {
+        "variable-encoding": "G01",
+        "variable-description": "What was your total income last year in USD?",
+        "ranges": [
+            {
+                "encoding": 0,
+                "start": null,
+                "end": null
+            },
+            {
+                "encoding": 1,
+                "start": 0,
+                "end": 499
+            },
+            {
+                "encoding": 2,
+                "start": 500,
+                "end": 999
+            },
+            {
+                "encoding": 3,
+                "start": 1000,
+                "end": 2499
+            },
+            {
+                "encoding": 4,
+                "start": 2500,
+                "end": 4999
+            },
+            {
+                "encoding": 5,
+                "start": 5000,
+                "end": 7499
+            },
+            {
+                "encoding": 6,
+                "start": 7500,
+                "end": 9999
+            },
+            {
+                "encoding": 7,
+                "start": 10000,
+                "end": 12499
+            },
+            {
+                "encoding": 8,
+                "start": 12500,
+                "end": 14999
+            },
+            {
+                "encoding": 9,
+                "start": 15000,
+                "end": 17499
+            },
+            {
+                "encoding": 10,
+                "start": 17500,
+                "end": 19999
+            },
+            {
+                "encoding": 11,
+                "start": 20000,
+                "end": 24999
+            },
+            {
+                "encoding": 12,
+                "start": 25000,
+                "end": 29999
+            },
+            {
+                "encoding": 13,
+                "start": 30000,
+                "end": 34999
+            },
+            {
+                "encoding": 14,
+                "start": 35000,
+                "end": 39999
+            },
+            {
+                "encoding": 15,
+                "start": 40000,
+                "end": 44999
+            }
+        ]
+    },
+    {
+        "variable-encoding": "G03",
+        "variable-description": "What was your family's total income last year in USD?",
+        "ranges": [
+            {
+                "encoding": 0,
+                "start": null,
+                "end": null
+            },
+            {
+                "encoding": 1,
+                "start": 0,
+                "end": 499
+            },
+            {
+                "encoding": 2,
+                "start": 500,
+                "end": 999
+            },
+            {
+                "encoding": 3,
+                "start": 1000,
+                "end": 2499
+            },
+            {
+                "encoding": 4,
+                "start": 2500,
+                "end": 4999
+            },
+            {
+                "encoding": 5,
+                "start": 5000,
+                "end": 7499
+            },
+            {
+                "encoding": 6,
+                "start": 7500,
+                "end": 9999
+            },
+            {
+                "encoding": 7,
+                "start": 10000,
+                "end": 12499
+            },
+            {
+                "encoding": 8,
+                "start": 12500,
+                "end": 14999
+            },
+            {
+                "encoding": 9,
+                "start": 15000,
+                "end": 17499
+            },
+            {
+                "encoding": 10,
+                "start": 17500,
+                "end": 19999
+            },
+            {
+                "encoding": 11,
+                "start": 20000,
+                "end": 24999
+            },
+            {
+                "encoding": 12,
+                "start": 25000,
+                "end": 29999
+            },
+            {
+                "encoding": 13,
+                "start": 30000,
+                "end": 34999
+            },
+            {
+                "encoding": 14,
+                "start": 35000,
+                "end": 39999
+            },
+            {
+                "encoding": 15,
+                "start": 40000,
+                "end": 44999
+            }
+        ]
+    }
+]

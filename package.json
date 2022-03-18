@@ -11,6 +11,11 @@
   },
   "license": "ISC",
   "dependencies": {
-    "react-bootstrap": "^2.0.4"
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.4.4"
+  },
+  "devDependencies": {
+    "sass": "^1.49.8"
   }
 }

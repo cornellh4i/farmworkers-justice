@@ -1,0 +1,442 @@
+{
+    "histogram-variables": [
+        {
+            "variable-encoding": "AGE",
+            "variable-description": "Respondent Age",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": null,
+                    "end": 19,
+                    "end-encoding": null
+                },
+                {
+                    "start": 20,
+                    "start-encoding": null,
+                    "end": 29,
+                    "end-encoding": null
+                },
+                {
+                    "start": 30,
+                    "start-encoding": null,
+                    "end": 39,
+                    "end-encoding": null
+                },
+                {
+                    "start": 40,
+                    "start-encoding": null,
+                    "end": 49,
+                    "end-encoding": null
+                },
+                {
+                    "start": 50,
+                    "start-encoding": null,
+                    "end": 59,
+                    "end-encoding": null
+                },
+                {
+                    "start": 60,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "A08",
+            "variable-description": "In what year did you/they first enter the US to live or work? (if foreign-born)",
+            "bin-ranges": [
+                {
+                    "start": null,
+                    "start-encoding": null,
+                    "end": 1985,
+                    "end-encoding": null
+                },
+                {
+                    "start": 1986,
+                    "start-encoding": null,
+                    "end": 1995,
+                    "end-encoding": null
+                },
+                {
+                    "start": 1996,
+                    "start-encoding": null,
+                    "end": 2005,
+                    "end-encoding": null
+                },
+                {
+                    "start": 2006,
+                    "start-encoding": null,
+                    "end": 2015,
+                    "end-encoding": null
+                },
+                {
+                    "start": 2016,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "B11",
+            "variable-description": "How many years have you done farmwork",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
+                },
+                {
+                    "start": 5,
+                    "start-encoding": null,
+                    "end": 9,
+                    "end-encoding": null
+                },
+                {
+                    "start": 10,
+                    "start-encoding": null,
+                    "end": 14,
+                    "end-encoding": null
+                },
+                {
+                    "start": 15,
+                    "start-encoding": null,
+                    "end": 19,
+                    "end-encoding": null
+                },
+                {
+                    "start": 20,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "C09Weeks",
+            "variable-description": "Number of weeks at current job",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
+                },
+                {
+                    "start": 5,
+                    "start-encoding": null,
+                    "end": 8,
+                    "end-encoding": null
+                },
+                {
+                    "start": 9,
+                    "start-encoding": null,
+                    "end": 12,
+                    "end-encoding": null
+                },
+                {
+                    "start": 13,
+                    "start-encoding": null,
+                    "end": 16,
+                    "end-encoding": null
+                },
+                {
+                    "start": 17,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "FWRDays",
+            "variable-description": "Actual Farm Work Days",
+            "bin-ranges": [
+                {
+                    "start": null,
+                    "start-encoding": null,
+                    "end": 175,
+                    "end-encoding": null
+                },
+                {
+                    "start": 176,
+                    "start-encoding": null,
+                    "end": 200,
+                    "end-encoding": null
+                },
+                {
+                    "start": 201,
+                    "start-encoding": null,
+                    "end": 225,
+                    "end-encoding": null
+                },
+                {
+                    "start": 226,
+                    "start-encoding": null,
+                    "end": 250,
+                    "end-encoding": null
+                },
+                {
+                    "start": 251,
+                    "start-encoding": null,
+                    "end": 275,
+                    "end-encoding": null
+                },
+                {
+                    "start": 276,
+                    "start-encoding": null,
+                    "end": 300,
+                    "end-encoding": null
+                },
+                {
+                    "start": 301,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "NWWeeks",
+            "variable-description": "Number of non-work weeks last year",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": null,
+                    "end": 4,
+                    "end-encoding": null
+                },
+                {
+                    "start": 5,
+                    "start-encoding": null,
+                    "end": 8,
+                    "end-encoding": null
+                },
+                {
+                    "start": 9,
+                    "start-encoding": null,
+                    "end": 12,
+                    "end-encoding": null
+                },
+                {
+                    "start": 13,
+                    "start-encoding": null,
+                    "end": 16,
+                    "end-encoding": null
+                },
+                {
+                    "start": 17,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "D04",
+            "variable-description": "How many hours did you work last week at your current farm job?",
+            "bin-ranges": [
+                {
+                    "start": null,
+                    "start-encoding": null,
+                    "end": 39,
+                    "end-encoding": null
+                },
+                {
+                    "start": 40,
+                    "start-encoding": null,
+                    "end": 44,
+                    "end-encoding": null
+                },
+                {
+                    "start": 45,
+                    "start-encoding": null,
+                    "end": 49,
+                    "end-encoding": null
+                },
+                {
+                    "start": 50,
+                    "start-encoding": null,
+                    "end": 54,
+                    "end-encoding": null
+                },
+                {
+                    "start": 55,
+                    "start-encoding": null,
+                    "end": 59,
+                    "end-encoding": null
+                },
+                {
+                    "start": 60,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "D50MTCOD",
+            "variable-description": "How much do you pay for housing each month?",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": 0,
+                    "end": 299,
+                    "end-encoding": 2
+                },
+                {
+                    "start": 300,
+                    "start-encoding": 3,
+                    "end": 399,
+                    "end-encoding": 3
+                },
+                {
+                    "start": 400,
+                    "start-encoding": 4,
+                    "end": 499,
+                    "end-encoding": 4
+                },
+                {
+                    "start": 500,
+                    "start-encoding": 5,
+                    "end": 599,
+                    "end-encoding": 5
+                },
+                {
+                    "start": 600,
+                    "start-encoding": 6,
+                    "end": null,
+                    "end-encoding": 6
+                }
+            ]
+        },
+        {
+            "variable-encoding": "WageT1",
+            "variable-description": "Wage for work task",
+            "bin-ranges": [
+                {
+                    "start": null,
+                    "start-encoding": null,
+                    "end": 7.24,
+                    "end-encoding": null
+                },
+                {
+                    "start": 7.25,
+                    "start-encoding": null,
+                    "end": 7.99,
+                    "end-encoding": null
+                },
+                {
+                    "start": 8.00,
+                    "start-encoding": null,
+                    "end": 8.99,
+                    "end-encoding": null
+                },
+                {
+                    "start": 9.00,
+                    "start-encoding": null,
+                    "end": 9.99,
+                    "end-encoding": null
+                },
+                {
+                    "start": 10.00,
+                    "start-encoding": null,
+                    "end": 10.99,
+                    "end-encoding": null
+                },
+                {
+                    "start": 11,
+                    "start-encoding": null,
+                    "end": null,
+                    "end-encoding": null
+                }
+            ]
+        },
+        {
+            "variable-encoding": "G01",
+            "variable-description": "What was your total income last year in USD?",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": 0,
+                    "end": 0,
+                    "end-encoding": 0
+                },
+                {
+                    "start": 0,
+                    "start-encoding": 1,
+                    "end": 9999,
+                    "end-encoding": 6
+                },
+                {
+                    "start": 10000,
+                    "start-encoding": 7,
+                    "end": 19999,
+                    "end-encoding": 10
+                },
+                {
+                    "start": 20000,
+                    "start-encoding": 11,
+                    "end": 29999,
+                    "end-encoding": 12
+                },
+                {
+                    "start": 30000,
+                    "start-encoding": 13,
+                    "end": 39999,
+                    "end-encoding": 14
+                },
+                {
+                    "start": 40000,
+                    "start-encoding": 15,
+                    "end": null,
+                    "end-encoding": 15
+                }
+            ]
+        },
+        {
+            "variable-encoding": "G03",
+            "variable-description": "What was your family's total income last year in USD?",
+            "bin-ranges": [
+                {
+                    "start": 0,
+                    "start-encoding": 0,
+                    "end": 0,
+                    "end-encoding": 0
+                },
+                {
+                    "start": 0,
+                    "start-encoding": 1,
+                    "end": 9999,
+                    "end-encoding": 6
+                },
+                {
+                    "start": 10000,
+                    "start-encoding": 7,
+                    "end": 19999,
+                    "end-encoding": 10
+                },
+                {
+                    "start": 20000,
+                    "start-encoding": 11,
+                    "end": 29999,
+                    "end-encoding": 12
+                },
+                {
+                    "start": 30000,
+                    "start-encoding": 13,
+                    "end": 39999,
+                    "end-encoding": 14
+                },
+                {
+                    "start": 40000,
+                    "start-encoding": 15,
+                    "end": null,
+                    "end-encoding": 15
+                }
+            ]
+        }
+    ]
+}

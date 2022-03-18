@@ -1,0 +1,21 @@
+.chip {
+    display: flex;
+    margin: 1rem;
+    align-items: center;
+    
+}
+
+.filter-panel-container {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.filter-applied-text{
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    color: #414955;
+    margin-right: 1rem;
+}
+

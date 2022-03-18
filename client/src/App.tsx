@@ -1,61 +1,83 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
+import DataHighlight from '../src/charts/DataHighlight';
 import * as d3 from "d3";
-import Line, { timeSeriesProp } from './charts/lineGraph'
+import Homepage from './components/Homepage/Homepage'
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
-
+import LineGraph from './charts/lineGraph'
+import { Button } from 'react-bootstrap';
+import Minipage from './components/Minipage/Minipage'
+import Line from './charts/lineGraph';
 
 
 const API_URL = process.env.REACT_APP_API;
+const LATEST_ODD_YEAR = 2017;
+const LATEST_EVEN_YEAR = 2018;
+
 
 function App() {
-  const [data, setData] = useState("No data :(");
   const [tableData, setTableData] = useState<{}>({});
-  const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
-  const [donutData, setdonutData] = useState<{}>({});
   const [histogramData, setHistogramData] = useState<Array<number>>([]);
+  const [donutData, setdonutData] = useState<{}>({});
+  const [FLCData, setFLCData] = useState<{}>({});
+  const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
+  const [dataHighlightData, setDataHighlightData] = useState<{percentage: number, description: string}>({percentage: 0, description: ""});
 
   useEffect(() => {
     getData();
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/histogram/AGE`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    setHistogramData(histogramOut.msg);
+  //   const urlHistogram = `${API_URL}/AGE`;
+  //   const histogramResponse = await fetch(urlHistogram);
+  //   const histogramOut = await histogramResponse.json();
+  //   setHistogramData(histogramOut.data);
 
-    const urlTimeSeries = `${API_URL}/timeSeries/FOREIGNB`;
-    const timeSeriesResponse = await fetch(urlTimeSeries);
-    const timeSeriesOut = await timeSeriesResponse.json();
-    setTimeSeriesData(timeSeriesOut.msg);
+    //   const urlTable = `${API_URL}/B01`;
+    //   const tableResponse = await fetch(urlTable);
+    //   const tableOut = await tableResponse.json();
+    //   setTableData(tableOut.data);
 
-    const urlDonut = `${API_URL}/donut/B07`;
-    const donutResponse = await fetch(urlDonut);
-    const donutOut = await donutResponse.json();
-    setdonutData(donutOut.msg);
+    //   const urlDonut = `${API_URL}/B07`;
+    //   const donutResponse = await fetch(urlDonut);
+    //   const donutOut = await donutResponse.json();
+    //   setdonutData(donutOut.data);
+    // 
+    // const urlFLC = `${API_URL}/NUMFEMPL`;
+    // const FLCResponse = await fetch(urlFLC);
+    // const FLCOut = await FLCResponse.json();
+    // setFLCData(FLCOut.data);
+    // setTimeSeriesData(FLCOut.timeSeriesData)
 
-    const urlTable = `${API_URL}/table/B01`;
-    const tableResponse = await fetch(urlTable);
-    const tableOut = await tableResponse.json();
-    setTableData(tableOut.msg);
-
+    const urlDataHighlight = `${API_URL}/FOREIGNB`;
+    const DataHighlightResponse = await fetch(urlDataHighlight);
+    const DataHighlightOut = await DataHighlightResponse.json();
+    setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
-    <>
-      <Table
-        data={tableData}
-      />
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Respondent Age
-      </h3>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
+        <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
+        <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
+        <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
+        
+        {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
+          Respondent Age
+        </h3> 
       <Histogram
         height={600}
         width={600}
         data={histogramData} />
+      <Table
+        data={tableData}
+      />
       <Map
         height={770}
         width={990}
@@ -64,6 +86,7 @@ function App() {
         <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
         </h3>
+
         <Donut
           data={donutData}
           width={500}
@@ -71,18 +94,22 @@ function App() {
           innerRadius={150}
           outerRadius={200}
         />
-      </div>
-      <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>
-        Average Value per Year from 2009 to 2018
-      </h3>
+        <Donut
+          data={FLCData}
+          width={500}
+          height={500}
+          innerRadius={150}
+          outerRadius={200}
+        />
       <div style={{ marginBottom: "30px", marginLeft: "200px" }}>
-        <Line
+        <LineGraph
           data={timeSeriesData}
           width={500}
           height={400}
         />
-      </div>
-    </>
+      </div> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 

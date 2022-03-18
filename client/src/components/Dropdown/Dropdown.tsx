@@ -111,19 +111,13 @@ function Dropdown(props: DropdownProp) {
     getData(url)
     console.log("viz type: ", visualizationType)
     if (visualizationType == "histogram") {
-      return <Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} />;
+      return <Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} data={visualizationData} />;
     }
     //histogram: in what year did you/
     if (visualizationType == "donut") {
       return <Donut innerRadius={200} outerRadius={300} data={visualizationData} height={600} width={600} />
     }
     if (visualizationType == "table") { //issue: cannot pass in props for id, other stuff, only tableprops not row props 
-
-      // let tableData: DataTable.rowProp = {
-      //   id = props.index;
-      //   response_description= props.categoryVariable;
-      //   //response = ? [number, number]
-      // }
       return <DataTable data={visualizationData} />
     }
     // data? 

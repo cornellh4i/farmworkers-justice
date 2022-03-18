@@ -13,6 +13,7 @@ interface histogramProp {
   categoryEncoding: number;
   variableEncoding: string;
   variableDescription: string;
+  data: number[]
 }
 
 interface histogramBinRangesProp {
@@ -23,23 +24,23 @@ interface histogramBinRangesProp {
 
 
 const API_URL = process.env.REACT_APP_API;
-var data: number[] = [];
+//var data: number[] = [];
 
 
 function Histogram(props: histogramProp) {
 
-  async function getData() {
-    const variableEncoding = props.variableEncoding
-    const urlHistogram = `${API_URL}/${variableEncoding}`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    data = histogramOut.data;
-  }
-  useEffect(() => {
-    getData();
-  }, []);
+  // async function getData() {
+  //   const variableEncoding = props.variableEncoding
+  //   const urlHistogram = `${API_URL}/${variableEncoding}`;
+  //   const histogramResponse = await fetch(urlHistogram);
+  //   const histogramOut = await histogramResponse.json();
+  //   data = histogramOut.data;
+  // }
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
-  const dataSum = data.length;
+  const dataSum = props.data.length;
   const svg = d3.select("svg#histogram");
   const width = 600
   const height = 600
@@ -56,7 +57,7 @@ function Histogram(props: histogramProp) {
     h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
 
 
-  let maxValue: number = Math.max(...data);
+  let maxValue: number = Math.max(...props.data);
   maxValue = Math.ceil(maxValue / 10) * 10;
   const dataScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
   let total: number[] = []
@@ -70,7 +71,7 @@ function Histogram(props: histogramProp) {
     total[x] = 0;
   }
 
-  data.forEach(d => {
+  props.data.forEach(d => {
     Object.keys(total).forEach((key: any) => {
       let start = "start";
       let end = "end";

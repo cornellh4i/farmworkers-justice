@@ -28,10 +28,10 @@ function App() {
   }, []);
 
   async function getData() {
-    //   const urlHistogram = `${API_URL}/AGE`;
-    //   const histogramResponse = await fetch(urlHistogram);
-    //   const histogramOut = await histogramResponse.json();
-    //   setHistogramData(histogramOut.data);
+    const urlHistogram = `${API_URL}/AGE`;
+    const histogramResponse = await fetch(urlHistogram);
+    const histogramOut = await histogramResponse.json();
+    setHistogramData(histogramOut.data);
 
     //   const urlTable = `${API_URL}/B01`;
     //   const tableResponse = await fetch(urlTable);

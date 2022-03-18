@@ -7,6 +7,9 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Map from './../../charts/Map';
 import { useEffect, useState } from 'react';
+import Histogram from './../../charts/Histogram';
+import Donut from './../../charts/donutChart'
+import DataTable from './../../charts/Table'
 
 
 interface DropdownProp {
@@ -61,8 +64,10 @@ function Dropdown(props: DropdownProp) {
       setVisualizationType(output.vizType)
       setVisualizationData(output.data)
       setTimeSeriesData(output.timeSeriesData)
-      console.log("Variable: ", props.variable)
-      console.log("fetched data: ", output.data)
+      //getVisualization(visualizationType, visualizationData)
+      //console.log("Variable: ", props.variable)
+      //console.log("fetched data: ", output.data)
+      console.log("viz type: ", visualizationType)
     } catch (error) {
       console.log("Failed to fetch: ", props.variable)
     }
@@ -100,7 +105,34 @@ function Dropdown(props: DropdownProp) {
     getData(url)
   }, [props.filter1Selected, props.filter2Selected])
 
+  function getVisualization() {
+    // fetch does work, just takes close to a minute to fetch all the viz types and load all the data, hist still looks funky
+    const url = `${API_URL}/${props.variable}`;
+    getData(url)
+    console.log("viz type: ", visualizationType)
+    if (visualizationType == "histogram") {
+      return <Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} />;
+    }
+    //histogram: in what year did you/
+    if (visualizationType == "donut") {
+      return <Donut innerRadius={200} outerRadius={300} data={visualizationData} height={600} width={600} />
+    }
+    if (visualizationType == "table") { //issue: cannot pass in props for id, other stuff, only tableprops not row props 
 
+      // let tableData: DataTable.rowProp = {
+      //   id = props.index;
+      //   response_description= props.categoryVariable;
+      //   //response = ? [number, number]
+      // }
+      return <DataTable data={visualizationData} />
+    }
+    // data? 
+  }
+
+  //for hist: 
+  //variable - encoding 
+  //cateogyrvari - description 
+  //index - categoryencoding 
 
   return (
     <div>
@@ -115,9 +147,9 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" unmountOnExit>
               <div>
-                {
-                  //getVisualization(props.variable)
-                }
+                {props.variable}
+                {/* {<Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} />} */}
+                {getVisualization()}
                 {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
               </div>
             </Collapse>

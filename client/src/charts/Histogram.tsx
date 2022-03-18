@@ -10,7 +10,7 @@ interface binProp {
 }
 
 interface histogramProp {
-  categoryEncoding: string;
+  categoryEncoding: number;
   variableEncoding: string;
   variableDescription: string;
 }
@@ -44,7 +44,7 @@ function Histogram(props: histogramProp) {
   const width = 600
   const height = 600
   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-  const chartWidth = width-50 - margin.left - margin.right;
+  const chartWidth = width - 50 - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   let chartArea = svg.append("g").attr("id", "points")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -105,10 +105,10 @@ function Histogram(props: histogramProp) {
     });
   });
 
-  for(let j = 0; j < total.length; j++){
+  for (let j = 0; j < total.length; j++) {
     total[j] = (total[j] / dataSum);
   }
-  
+
 
   max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
   const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
@@ -123,26 +123,26 @@ function Histogram(props: histogramProp) {
     let start = binRanges[key]["start"]
 
     let diff = end - start
-    
-    
+
+
     chartArea.append("rect")
       .attr("class", "histogram")
-      .attr("transform", "translate(50,0)") 
+      .attr("transform", "translate(50,0)")
       .attr("x", dataScale(index * 10))
       .attr("y", totalScale(total[key]))
-      
+
       .attr("height", chartHeight - totalScale(total[key]))
       .attr("width", dataScale(10));
 
     chartArea.append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", "translate(50,0)") 
+      .attr("transform", "translate(50,0)")
       .attr("font-size", "15px")
       .attr("x", dataScale(index * 10 + 5))
       .attr('y', totalScale(total[key]) - 10)
-      .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key]*100) + "%");
-    });
-  
+      .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key] * 100) + "%");
+  });
+
   return (
     <div>
       <svg id="histogram" height={600} width={600}></svg>

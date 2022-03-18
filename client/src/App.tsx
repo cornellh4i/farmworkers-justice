@@ -36,10 +36,10 @@ function App() {
   //   const histogramOut = await histogramResponse.json();
   //   setHistogramData(histogramOut.data);
 
-    //   const urlTable = `${API_URL}/B01`;
-    //   const tableResponse = await fetch(urlTable);
-    //   const tableOut = await tableResponse.json();
-    //   setTableData(tableOut.data);
+      const urlTable = `${API_URL}/B01`;
+      const tableResponse = await fetch(urlTable);
+      const tableOut = await tableResponse.json();
+      setTableData(tableOut.data);
 
     //   const urlDonut = `${API_URL}/B07`;
     //   const donutResponse = await fetch(urlDonut);
@@ -51,6 +51,7 @@ function App() {
     // const FLCOut = await FLCResponse.json();
     // setFLCData(FLCOut.data);
     // setTimeSeriesData(FLCOut.timeSeriesData)
+    
 
     const urlDataHighlight = `${API_URL}/FOREIGNB`;
     const DataHighlightResponse = await fetch(urlDataHighlight);
@@ -66,6 +67,7 @@ function App() {
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        <Route path='/table' element={<Table data={tableData} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
         
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

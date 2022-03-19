@@ -294,7 +294,8 @@ async function getUniqueVariables(db: Db) {
   await variablesInfo.forEach(variableInfo => {
     uniqueVariables.push(variableInfo.Variable)
   });
-  return uniqueVariables
+  console.log(uniqueVariables)
+  return uniqueVariables;
   
 }
 
@@ -431,7 +432,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('py', ['preprocessing.py']);
+    const python = spawn('python', ['preprocessing.py']);
     // collect data from script
     python.stdout.on('data', function (data: any) {
      console.log('Pipe data from python script ...');

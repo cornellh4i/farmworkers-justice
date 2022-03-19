@@ -16,7 +16,8 @@ function Table(props: tableProp) {
     let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
         {
-            name: "Ethnicity",
+            name: "Category",
+            //do we want to hard code titles?
             selector: row => row.response_description
         },
         {
@@ -37,7 +38,7 @@ function Table(props: tableProp) {
     }
 
     return (
-        <DataTable title="Ethnicity of Respondents" columns={columns} data={entries}
+        <DataTable columns={columns} data={entries}
         />
     )
 

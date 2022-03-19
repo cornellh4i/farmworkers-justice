@@ -28,7 +28,7 @@ const API_URL = process.env.REACT_APP_API;
 
 
 function Histogram(props: histogramProp) {
-
+  // fetch data in dropdown instead
   // async function getData() {
   //   const variableEncoding = props.variableEncoding
   //   const urlHistogram = `${API_URL}/${variableEncoding}`;

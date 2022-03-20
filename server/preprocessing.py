@@ -1,52 +1,45 @@
+import sys
 import pandas as pd
-import pymongo
+from pymongo import MongoClient
+
+# Do we need to pass these in from routes?
+latestFY = 2020
+# latestFY = int(sys.argv[2])
+earliestFY = (latestFY + 1) - 10
 
 def preprocessing():
-    latestFY = 2020
-    earliestFY = (latestFY + 1) - 10
+    """
+    Returns the preprocessed dataframe
+
+    This method
+        (1) Concatenates into a single csv file
+        (2) Drops the unnecessary columns
+        (3) Retains rows of data from earliestFY to latestFY
+        (4) Converts the columns to numeric type
+        (5) Sends the data to a MongoDB collection labeled "naws-preprocessed"
+    """
+
+    readNewData()
+
     df = pd.read_csv("./src/db/combined.csv")
 
-    # Need to find way to import from getUniqueVariables() function
-    necessaryVariables = [
-    'Crop',       'G03',      'NH05',     'NQ10ix',
-    'FOREIGNB',   'MARRIED',  'A21B',     'Crowded1',
-    'FWRDays',    'B07',      'HHPARENT', 'B21e',
-    'D11',        'G04C',     'NQ10mx',   'HHKID',
-    'G01',        'B11',      'A09',      'B21d',
-    'D04',        'B21z',     'G04fx',    'G04N',
-    'B17',        'MixedFam', 'NH02',     'AdultOtherIndg',
-    'NH03',       'NP01F',    'NQ10dx',   'NQ10ex',
-    'NQ10jx',     'D33A',     'GENDER',   'FLC',
-    'Indigenous', 'NS04',     'G04B',     'G04K',
-    'NQ10gx',     'NQ10hx',   'MIGRANT',  'B24',
-    'NUMFEMPL',   'FAMPOV',   'WageT1',   'NQ10fx',
-    'A21A',       'D23',      'NS09',     'D34x',
-    'E02',        'G04E',     'A23A5',    'BLWAGE',
-    'B08',        'A08',      'B02',      'B21c',
-    'AGE',        'C09Weeks', 'B21b',     'B22b',
-    'NH04',       'A21c2',    'D26',      'NS01',
-    'B21a',       'B21f',     'B23b',     'NWWeeks',
-    'NH10',       'NQ10lx',   'currstat', 'A23C5',
-    'NQ01x',      'G04H',     'NQ03Bx',   'Streams',
-    'G04D',       'Task',     'G04J',     'G04gx',
-    'G04M',       'G04px',    'A23A3',    'NH06',
-    'B01',        'D37',      'D50MTCOD', 'G04I',
-    'G04L',       'NH01',     'NQ10bx',   'NQ10cx',
-    'A07',        'E01x',     'FY',       'FWID',
-    ]
+    # Need to answer why FY and FWID is not a necessary variable
+    necessaryVariables = sys.argv[1].split(",")
+    necessaryVariables.append("FY")
+    necessaryVariables.append("FWID")
 
-    # necessaryVariables = ast.literal_eval(sys.argv[1])
-
-    necessaryVariables2 = ["value"]*len(necessaryVariables)
+    # Processes dropping the variables that are not in necessaryVariables
+    necessaryVariablesFinal = ["value"]*len(necessaryVariables)
 
     for i in range(len(necessaryVariables)):
-        necessaryVariables2[i] = necessaryVariables[i].lower()
+        necessaryVariablesFinal[i] = necessaryVariables[i].lower()
 
     dropped_df = pd.DataFrame()
     for (columnName, columnData) in df.iteritems():
-        if columnName.lower() in necessaryVariables2:
+        if columnName.lower() in necessaryVariablesFinal:
             dropped_df[columnName] = columnData.values
 
+    # Reassign df to the proper dataframe
     df = dropped_df
     
     df = df[(df['FY'] >= earliestFY) & (df['FY'] <= latestFY)]
@@ -62,13 +55,23 @@ def preprocessing():
     return df
 
 def readNewData():
+    """
+    Reads new data and concatenates into a single csv file
+    """
     df1 = pd.read_csv("./src/db/data/NAWS_A2E191.csv")
     df2 = pd.read_csv("./src/db/data/NAWS_F2Y191.csv")
     df3 = df1.merge(df2)
     df3.to_csv("./src/db/combined.csv")
 
 def sendToMongo(df):
-    myclient = pymongo.MongoClient("mongodb+srv://h4i:Justice4Farmworkers@clusterfj.7tofb.mongodb.net/naws?retryWrites=true&w=majority")
+    """
+    Inserts a dataframe to the appropriate MongoDB collection
+
+    Parameter df: dataframe to send to MongoDB
+    Precondition: df is an object of type Pandas.DataFrame
+    """
+    myclient = MongoClient("mongodb+srv://h4i:Justice4Farmworkers@clusterfj.7tofb.mongodb.net/naws?retryWrites=true&w=majority")
+    # myclient = MongoClient(sys.argv[2])
     db = myclient["naws"]
     collection = db["naws-preprocessed"]
     df.reset_index(inplace = True)

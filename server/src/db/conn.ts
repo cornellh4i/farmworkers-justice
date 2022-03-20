@@ -7,6 +7,7 @@ const { MongoClient } = require("mongodb");
 
 // NEED TO FIX
 const ATLAS_URI  = process.env.ATLAS_URI;
+console.log(ATLAS_URI)
 const client = new MongoClient(ATLAS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

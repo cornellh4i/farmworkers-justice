@@ -1,0 +1,55 @@
+
+.categoryCardContainer {
+  position: relative;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 5%;
+
+  .categoryHeader{
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: bold;
+  }
+  .greyLine {
+    border: 3px solid #E0E0E0;
+    align-items: center;
+    display: flex;
+  }
+  .orangeLine {    
+    border: 5px solid #FF820C;
+    align-items: center;
+    display: flex;
+  }
+
+  .cardImageStyle{
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .body {
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    color: #3E4955;
+
+  }
+  .variables-list-collapse {
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    color: #FF820C;
+
+  }
+  .variables-list {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    color: #000000;
+    padding-left: 20px
+  }
+
+}

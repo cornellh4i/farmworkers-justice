@@ -1,0 +1,449 @@
+{
+    "categories": [
+        {
+            "category-description": "Birthplace, Work Authorization, and Migrant Types",
+            "category-encoding": 0,
+            "variables": [
+                {
+                    "variable-encoding": "A08",
+                    "variable-description": "In what year did you/they first enter the US to live or work? (if foreign-born)"
+                },
+                {
+                    "variable-encoding": "B02",
+                    "variable-description": "Race"
+                },
+                {
+                    "variable-encoding": "A07",
+                    "variable-description": "Where were you/they born?"
+                },
+                {
+                    "variable-encoding": "Streams",
+                    "variable-description": "Streams by Zone Eastern Midwest and Western"
+                },
+                {
+                    "variable-encoding": "B17",
+                    "variable-description": "What country did you live in before coming to the US? (if foreign born)"
+                },
+                {
+                    "variable-encoding": "CURRSTAT",
+                    "variable-description": "Current Work Authorization Status (Immigration status)"
+                },
+                {
+                    "variable-encoding": "FOREIGNB",
+                    "variable-description": "Foreign Born"
+                },
+                {
+                    "variable-encoding": "INDIGENOUS",
+                    "variable-description": "Indigenous definition that include race, language and child language."
+                },
+                {
+                    "variable-encoding": "Migrant",
+                    "variable-description": "Migrant"
+                },
+                {
+                    "variable-encoding": "MIXEDFAM",
+                    "variable-description": "Farmworker is unauthorized but has US Citizen children"
+                },
+                {
+                    "variable-encoding": "ADULTOTHERINDG",
+                    "variable-description": "Has other adult language indigenous."
+                },
+                {
+                    "variable-encoding": "B01",
+                    "variable-description": "Ethnicity"
+                }
+            ]
+        },
+        {   
+            "category-description": "Demographics, Family Size, Children, and Household Structure",
+            "category-encoding": 1,
+            "variables": [
+                {
+                    "variable-encoding": "AGE",
+                    "variable-description": "Respondent Age"
+                },
+                    {
+                    "variable-encoding": "HHKID",
+                    "variable-description": "Number of Children in Household"
+                },
+                    {
+                    "variable-encoding": "HHPARENT",
+                    "variable-description": "Number of Parents in Household"
+                },
+                    {
+                    "variable-encoding": "Gender",
+                    "variable-description": "Gender"
+                },
+                    {
+                    "variable-encoding": "Married",
+                    "variable-description": "Married"
+                }
+            ]
+        },
+        {
+            "category-description": "Language, Education, and English Skills",
+            "category-encoding": 2,
+            "variables": [
+                {
+                    "variable-encoding": "A09",
+                    "variable-description": "What is the highest grade in school that you/they completed?"
+                },
+                {
+                    "variable-encoding": "B07",
+                    "variable-description": "How well do you speak English?"
+                },
+                {
+                    "variable-encoding": "B08",
+                    "variable-description": "How well do you read English?"
+                },
+                {
+                    "variable-encoding": "B21a",
+                    "variable-description": "Do you speak English?"
+                },
+                {
+                    "variable-encoding": "B21b",
+                    "variable-description": "Do you speak Spanish?"
+                },
+                {
+                    "variable-encoding": "B21c",
+                    "variable-description": "Do you speak Creole?"
+                },
+                {
+                    "variable-encoding": "B21d",
+                    "variable-description": "Do you speak Mixtec?"
+                },
+                {
+                    "variable-encoding": "B21e",
+                    "variable-description": "Do you speak Kanjobal?"
+                },
+                {
+                    "variable-encoding": "B21f",
+                    "variable-description": "Do you speak Zapotec?"
+                },
+                {
+                    "variable-encoding": "B21z",
+                    "variable-description": "Do you speak other languages?"
+                },
+                {
+                    "variable-encoding": "B22b",
+                    "variable-description": "How well do you speak Spanish?"
+                },
+                {
+                    "variable-encoding": "B23b",
+                    "variable-description": "How well do you read Spanish?"
+                },
+                {
+                    "variable-encoding": "B24",
+                    "variable-description": "In what language are you most comfortable conversing?"
+                }
+            ]
+        },
+        {
+            "category-description": "Housing Characteristics and Distance to Work",
+            "category-encoding": 3,
+            "variables": [
+                {
+                    "variable-encoding": "D33A",
+                    "variable-description": "While you are working for your employer, what is your living arrangement?"
+                },
+                {
+                    "variable-encoding": "D34x",
+                    "variable-description": "What kind of living quarters do you live in now?"
+                },
+                {
+                    "variable-encoding": "D37",
+                    "variable-description": "At your current job, how do you get to work?"
+                },
+                {
+                    "variable-encoding": "D50MTCOD",
+                    "variable-description": "How much do you pay for housing each month?"
+                },
+                {
+                    "variable-encoding": "Crowded1",
+                    "variable-description": "Household is crowded, based on U.S. census bureau definition"
+                }
+            ]
+        },
+        {
+            "category-description": "Employment Patterns and Farm Job Characteristics",
+            "category-encoding": 4,
+            "variables": [
+                {
+                    "variable-encoding": "C09Weeks",
+                    "variable-description": "Number of weeks at current job"
+                },
+                {
+                    "variable-encoding": "Crop",
+                    "variable-description": "Crop at time of interview"
+                },
+                {
+                    "variable-encoding": "FWRDays",
+                    "variable-description": "Actual Farm Work Days"
+                },
+                {
+                    "variable-encoding": "NWWeeks",
+                    "variable-description": "Number of non-work weeks last year"
+                },
+                {
+                    "variable-encoding": "Task",
+                    "variable-description": "Work task"
+                },
+                {
+                    "variable-encoding": "D04",
+                    "variable-description": "How many hours did you work last week at your current farm job?"
+                },
+                {
+                    "variable-encoding": "D11",
+                    "variable-description": "How are you paid?"
+                },
+                {
+                    "variable-encoding": "WageT1",
+                    "variable-description": "Wage for work task"
+                },
+                {
+                    "variable-encoding": "FLC",
+                    "variable-description": "Employer is a Farm Labor Contractor"
+                },
+                {
+                    "variable-encoding": "BLWAGE",
+                    "variable-description": "Below minimum wage"
+                },
+                {
+                    "variable-encoding": "D23",
+                    "variable-description": "Are you covered by worker's compensation?"
+                },
+                {
+                    "variable-encoding": "D26",
+                    "variable-description": "Are you covered by unemployment insurance?"
+                },
+                {
+                    "variable-encoding": "E01x",
+                    "variable-description": "Have you been covered by a union contract at any time in the last two years?"
+                },
+                {
+                    "variable-encoding": "NP01F",
+                    "variable-description": "In the last 12 months, have you loaded, mixed, or applied pesticides"
+                },
+                {
+                    "variable-encoding": "NS01",
+                    "variable-description": "Does your employer provide (every day) clean drinking water and disposable drinking cups?"
+                },
+                {
+                    "variable-encoding": "NS04",
+                    "variable-description": "Does your employer provide a toilet?"
+                },
+                {
+                    "variable-encoding": "NS09",
+                    "variable-description": "Does your employer provide water to wash hands?"
+                }
+            ]
+        },
+        {
+            "category-description": "Employment Experience",
+            "category-encoding": 5,
+            "variables": [
+                {
+                    "variable-encoding": "B11",
+                    "variable-description": "How many years have you done farmwork"
+                },
+                {
+                    "variable-encoding": "NUMFEMPL",
+                    "variable-description": "Number of employers in work grid"
+                },
+                {
+                    "variable-encoding": "E02",
+                    "variable-description": "How long do you expect to continue doing farm work in the US?"
+                }
+            ]
+        },
+        {
+            "category-description": "Non-Crop Work Activities During the Year",
+            "category-encoding": 6,
+            "variables": []
+        },
+        {
+            "category-description": "Income, Assets, and Use of Assistance Programs",
+            "category-encoding": 7,
+            "variables": [
+                {
+                    "variable-encoding": "G01",
+                    "variable-description": "What was your total income last year in USD?"
+                },
+                {
+                    "variable-encoding": "G03",
+                    "variable-description": "What was your family's total income last year in USD?"
+                },
+                {
+                    "variable-encoding": "G04B",
+                    "variable-description": "In the last two years, has anyone in your household used food stamps?"
+                },
+                {
+                    "variable-encoding": "G04C",
+                    "variable-description": "In the last two years, has anyone in your household used disability insurance?"
+                },
+                {
+                    "variable-encoding": "G04D",
+                    "variable-description": "In the last two years, has anyone in your household used unemployment insurance?"
+                },
+                {
+                    "variable-encoding": "G04E",
+                    "variable-description": "In the last two years, has anyone in your household used social security?"
+                },
+                {
+                    "variable-encoding": "G04fx",
+                    "variable-description": "In the last two years, has anyone in your household used veteran's pay?"
+                },
+                {
+                    "variable-encoding": "G04gx",
+                    "variable-description": "In the last two years, has anyone in your household used general assistance/welfare?"
+                },
+                {
+                    "variable-encoding": "G04H",
+                    "variable-description": "In the last two years, has anyone in your household used low income housing?"
+                },
+                {
+                    "variable-encoding": "G04I",
+                    "variable-description": "In the last two years, has anyone in your household used public health clinic?"
+                },
+                {
+                    "variable-encoding": "G04J",
+                    "variable-description": "In the last two years, has anyone in your household used medicaid?"
+                },
+                {
+                    "variable-encoding": "G04K",
+                    "variable-description": "In the last two years, has anyone in your household used WIC?"
+                },
+                {
+                    "variable-encoding": "G04L",
+                    "variable-description": "In the last two years, has anyone in your household used disaster relief?"
+                },
+                {
+                    "variable-encoding": "G04M",
+                    "variable-description": "In the last two years, has anyone in your household used legal services?"
+                },
+                {
+                    "variable-encoding": "G04N",
+                    "variable-description": "In the last two years, has anyone in your household used other social programs?"
+                },
+                {
+                    "variable-encoding": "G04px",
+                    "variable-description": "In the last two years, has anyone in your household used Temporary assistance for needy families (TANF)?"
+                },
+                {
+                    "variable-encoding": "FAMPOV",
+                    "variable-description": "Family Income Below Poverty line"
+                }
+            ]
+        },
+        {
+            "category-description": "Health Care in the United States",
+            "category-encoding": 8,
+            "variables": [
+                {
+                    "variable-encoding": "NH01",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had asthma?"
+                }, 
+                {
+                    "variable-encoding": "NH02",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had diabetes?"
+                }, 
+                {
+                    "variable-encoding": "NH03",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had high blood pressure?"
+                }, 
+                {
+                    "variable-encoding": "NH04",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had tuberculosis?"
+                }, 
+                {
+                    "variable-encoding": "NH05",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had heart disease?"
+                }, 
+                {
+                    "variable-encoding": "NH06",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had urinary tract infections?"
+                }, 
+                {
+                    "variable-encoding": "NH10",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had other conditions?"
+                }, 
+                {
+                    "variable-encoding": "NQ03Bx",
+                    "variable-description": "The last time you used a health care provider, where did you go?"
+                }, 
+                {
+                    "variable-encoding": "NQ10bx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Don't know where health services are available."
+                }, 
+                {
+                    "variable-encoding": "NQ10cx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Health center not open when needed."
+                }, 
+                {
+                    "variable-encoding": "NQ10dx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not have the service needed."
+                }, 
+                {
+                    "variable-encoding": "NQ10ex",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not speak my language."
+                }, 
+                {
+                    "variable-encoding": "NQ10fx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Don't feel welcome."
+                }, 
+                {
+                    "variable-encoding": "NQ10gx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not understand my problems."
+                }, 
+                {
+                    "variable-encoding": "NQ10hx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Will lose my job."
+                }, 
+                {
+                    "variable-encoding": "NQ10ix",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Too expensive."
+                }, 
+                {
+                    "variable-encoding": "NQ10jx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Other."
+                }, 
+                {
+                    "variable-encoding": "NQ10lx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? I'm 'undocumented' they don't treat me well."
+                }, 
+                {
+                    "variable-encoding": "NQ10mx",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? I do not know. I've never needed it."
+                }, 
+                {
+                    "variable-encoding": "A21A",
+                    "variable-description": "Does the Farmworker have health insurance?"
+                }, 
+                {
+                    "variable-encoding": "A21B",
+                    "variable-description": "Does the spouse have health insurance?"
+                }, 
+                {
+                    "variable-encoding": "A21c2",
+                    "variable-description": "Do the children have health insurance?"
+                }, 
+                {
+                    "variable-encoding": "A23A3",
+                    "variable-description": "Farmworker has employer-provided health insurance"
+                }, 
+                {
+                    "variable-encoding": "A23A5",
+                    "variable-description": "Farmworker has government-provided health insurance"
+                }, 
+                {
+                    "variable-encoding": "A23C5",
+                    "variable-description": "Children have government-provided health insurance"
+                }, 
+                {
+                    "variable-encoding": "NQ01x",
+                    "variable-description": "In the last two years, have you used any type of health care services?"
+                } 
+            ]
+        }
+    ]
+}

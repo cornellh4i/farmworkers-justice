@@ -12,6 +12,7 @@ import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import AdminLanding from './components/AdminLanding/AdminLanding'
 import Line from './charts/lineGraph';
 
 
@@ -65,6 +66,7 @@ function App() {
         <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        <Route path="/admin" element={<AdminLanding />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

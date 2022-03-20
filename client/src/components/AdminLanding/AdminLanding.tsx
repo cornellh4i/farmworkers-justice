@@ -1,10 +1,14 @@
 import { useParams } from 'react-router-dom';
 
-function AdminLandingPage() {
+function AdminLanding() {
   return (
-    <div>
-
-    </div>
+    <form>
+      <label>
+        password:
+        <input type="text" name="password" />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
   )
 }
-export default AdminLandingPage
+export default AdminLanding

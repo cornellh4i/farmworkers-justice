@@ -5,7 +5,10 @@ import * as d3 from "d3";
 import Line, { timeSeriesProp } from './charts/lineGraph'
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
-import { Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+
 
 
 const API_URL = process.env.REACT_APP_API;

@@ -32,23 +32,32 @@ def preprocessing():
     'G04M',       'G04px',    'A23A3',    'NH06',
     'B01',        'D37',      'D50MTCOD', 'G04I',
     'G04L',       'NH01',     'NQ10bx',   'NQ10cx',
-    'A07',        'E01x',     'FY'
+    'A07',        'E01x',     'FY',       'FWID',
     ]
 
-    # Math is not checking out, need to investigate
-    columnsToDrop = list(filter(
-        lambda x: x not in necessaryVariables, df.columns))
-    df = df.drop(columnsToDrop, axis = 1)
+    # necessaryVariables = ast.literal_eval(sys.argv[1])
 
-    df = df.fillna('')
+    necessaryVariables2 = ["value"]*len(necessaryVariables)
+
+    for i in range(len(necessaryVariables)):
+        necessaryVariables2[i] = necessaryVariables[i].lower()
+
+    dropped_df = pd.DataFrame()
+    for (columnName, columnData) in df.iteritems():
+        if columnName.lower() in necessaryVariables2:
+            dropped_df[columnName] = columnData.values
+
+    df = dropped_df
     
     df = df[(df['FY'] >= earliestFY) & (df['FY'] <= latestFY)]
 
-    df.astype("int32")
+    for (columnName, columnData) in df.iteritems():
+       if columnData.dtype != "object":
+            df[columnName] = pd.to_numeric(columnData.values)
 
-    df.to_csv("./src/db/preprocessed.csv")
-    
     sendToMongo(df)
+    
+    df.to_csv("./src/db/preprocessed.csv")
 
     return df
 
@@ -59,10 +68,11 @@ def readNewData():
     df3.to_csv("./src/db/combined.csv")
 
 def sendToMongo(df):
-    myclient = pymongo.MongoClient("")
-    mydb = myclient["naws-preprocessed"]
-    mycol = df.columns
-
-    x = mycol.insert_many(mydb)
+    myclient = pymongo.MongoClient("mongodb+srv://h4i:Justice4Farmworkers@clusterfj.7tofb.mongodb.net/naws?retryWrites=true&w=majority")
+    db = myclient["naws"]
+    collection = db["naws-preprocessed"]
+    df.reset_index(inplace = True)
+    data_dict = df.to_dict("records")
+    collection.insert_many(data_dict)
 
 preprocessing()

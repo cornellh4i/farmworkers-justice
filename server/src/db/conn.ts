@@ -6,7 +6,7 @@ import { cursorTo } from "readline";
 const { MongoClient } = require("mongodb");
 
 // NEED TO FIX
-const ATLAS_URI: string  = "mongodb+srv://h4i:Justice4Farmworkers@clusterfj.7tofb.mongodb.net/naws?retryWrites=true&w=majority";
+const ATLAS_URI  = process.env.ATLAS_URI;
 const client = new MongoClient(ATLAS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

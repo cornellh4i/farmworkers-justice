@@ -426,13 +426,13 @@ module.exports = () => {
   // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
   router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    getUniqueVariables(dbo.getDb())
+    let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const {spawn} = require('child_process');
 
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py']);
+    const python = spawn('python', ['preprocessing.py', variables]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
      console.log('Pipe data from python script ...');

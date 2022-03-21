@@ -1,5 +1,6 @@
 import "@fontsource/rubik";
 import './Dropdown.scss';
+import { unmountComponentAtNode } from 'react-dom'
 import Grid from '@mui/material/Grid';
 import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
@@ -10,11 +11,12 @@ import { useEffect, useState } from 'react';
 import Histogram from './../../charts/Histogram';
 import Donut from './../../charts/donutChart'
 import DataTable from './../../charts/Table'
+import DataHighlight from './../../charts/DataHighlight'
 
 
 interface DropdownProp {
   index: number
-  categoryVariable: string
+  variableDescription: string
   variable: string
   mapFilterSelected: null | string
   setCurrentCollapseIndex: Function
@@ -43,6 +45,7 @@ function Dropdown(props: DropdownProp) {
   const [visualizationType, setVisualizationType] = useState("")
   const [visualizationData, setVisualizationData] = useState<any>(null)
   const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
+  const [VisualizationComponent , setVisualizationComponent] = useState(<></>);
 
 
   function onClickCollapse() {
@@ -55,39 +58,40 @@ function Dropdown(props: DropdownProp) {
     }
   }
 
-  async function getData(url: string) {
-    var response;
-    var output: FetchedDataProps;
-    try {
-      response = await fetch(url);
-      output = await response.json();
-      setVisualizationType(output.vizType)
-      setVisualizationData(output.data)
-      setTimeSeriesData(output.timeSeriesData)
-      //getVisualization(visualizationType, visualizationData)
-      //console.log("Variable: ", props.variable)
-      //console.log("fetched data: ", output.data)
-      console.log("viz type: ", visualizationType)
-    } catch (error) {
-      console.log("Failed to fetch: ", props.variable)
-      // failed to fetch: B02
-    }
-  }
 
   useEffect(() => {
     if (props.currentCollapseIndex !== props.index) {
       setCollapse(false);
     }
-
   }, [props.currentCollapseIndex])
 
-  // TODO: GET DATA AFTER THE FIRST RENDER (IT'S NOW ONLY FETCHING WHEN FILTER CHANGES)
-  useEffect(() => {
-    const url = `${API_URL}/${props.variable}`;
-    getData(url)
-  }, [])
 
   useEffect(() => {
+    async function getData(url: string) {
+      var response;
+      var output: FetchedDataProps;
+      try {
+        response = await fetch(url);
+        output = await response.json();
+        setVisualizationType(output.vizType)
+        setVisualizationData(output.data)
+        setTimeSeriesData(output.timeSeriesData)
+        //TODO: RENDER TIME SERIES
+        console.log("fetched data for variable ", props.variable, " : ", output.data)
+        if (output.vizType === "histogram") {
+          setVisualizationComponent(<Histogram categoryEncoding={props.index} variableEncoding={props.variable} data={output.data} />)
+        } else if (output.vizType === "donut") {
+          setVisualizationComponent(<Donut innerRadius={100} outerRadius={200} data={output.data} height={600} width={600} />)
+        } else if (output.vizType === "table") {
+          setVisualizationComponent(<DataTable data={output.data} />)
+        } else {
+          // console.log("did not allocate visualization component: ", props.variable)
+        }
+      } catch (error) {
+        console.log("Failed to fetch: ", props.variable)
+      }
+    }
+
     var url;
     if (props.filter1Selected === null && props.filter2Selected === null) {
       url = `${API_URL}/${props.variable}`;
@@ -102,27 +106,12 @@ function Dropdown(props: DropdownProp) {
         el["filter-value"] === props.filter2Selected![0])["filter-encoding"];
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filter1Encoding}/${props.filter2Selected[1]}/${filter2Encoding}`;
     }
-    console.log("url: ", url)
+    console.log("filter fetch url: ", url)
     getData(url)
-  }, [props.filter1Selected, props.filter2Selected])
+    // unmountComponentAtNode(document.getElementById('#visualizationComponent')!)
+  
 
-  function getVisualization() {
-    // fetch does work, just takes close to a minute to fetch all the viz types and load all the data, hist still looks funky
-    const url = `${API_URL}/${props.variable}`;
-    getData(url)
-    console.log("viz type: ", visualizationType)
-    if (visualizationType === "histogram") {
-      return <Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} data={visualizationData} />;
-    }
-    //histogram: in what year did you/
-    if (visualizationType === "donut") {
-      return <Donut innerRadius={100} outerRadius={200} data={visualizationData} height={600} width={600} />
-    }
-    if (visualizationType === "table") {
-      return <DataTable data={visualizationData} />
-    }
-    // data? 
-  }
+  }, [props.filter1Selected, props.filter2Selected])
 
 
   return (
@@ -132,15 +121,37 @@ function Dropdown(props: DropdownProp) {
           <Grid item xs={9}>
             <ListItemButton onClick={onClickCollapse}>
               <h4 className="variableHeader">
-                {props.categoryVariable}
+                {props.variableDescription}
               </h4>
               {collapse ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={collapse} timeout="auto" unmountOnExit>
-              <div>
+            <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
+              <div id="visualizationComponent">
                 {props.variable}
-                {/* {<Histogram categoryEncoding={props.index} variableEncoding={props.variable} variableDescription={props.categoryVariable} />} */}
-                {getVisualization()}
+                {VisualizationComponent}
+                {/* {visualizationType === "histogram" ? 
+                  <Histogram categoryEncoding={props.index} variableEncoding={props.variable} data={visualizationData} />
+                  :
+                  <>
+                    {visualizationType === "donut" ? 
+                      <Donut innerRadius={100} outerRadius={200} data={visualizationData} height={600} width={600} />
+                      :
+                      <>
+                        {visualizationType === "table" ?
+                          <DataTable data={visualizationData} />
+                          :
+                          <>
+                            {visualizationType === "data" ?
+                              <DataHighlight percentage={visualizationData.percentage} description={visualizationData.description}/>
+                              :
+                              null
+                              }
+                          </>
+                        }
+                      </>
+                    }
+                  </>
+                } */}
                 {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
               </div>
             </Collapse>

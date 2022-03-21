@@ -55,14 +55,20 @@ async function queryVal(variable: string, db: Db, filter_key1?: string, filter_v
     query = {}
   }
   var filtered_array: Array<[number, number]> = []
+  var result: any[] = [];
   // TODO: USE PROJECTION
-  var result = await db.collection('naws_main').find(query).toArray();
+  try {
+    result = await db.collection('naws_main').find(query).toArray();
+  } catch(e) {
+    console.log("error in queryVal with query: ", query, " for variable: ", variable)
+  }
   function iterateFunc(doc: any) {
     let lst : [number, number] = [doc.FY, doc[variable]];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
-    console.log(error);
+    // console.log(error);
+    console.log("error in queryVal for variable: ", variable)
   }
   result.forEach(iterateFunc, errorFunc);
   return filtered_array
@@ -182,9 +188,12 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
     let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
+      if (typeof encodingDescrp == 'undefined') {
+        console.log("check on code: ", variable)
+      }
       return encodingDescrp;
     } catch (error) {
-      console.log(error);
+      console.log("error in aggregatedonut for variable: ", variable);
     };
   }
 
@@ -203,7 +212,8 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
             j++;
           }
         } catch(e) {
-          console.log(e);
+          // console.log(e);
+          console.log("erroring for encoding: ", value, " for variable: ", variable)
         }
         if (output.has(description)) {
           output.set(description, output.get(description)! + 1)
@@ -241,6 +251,9 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
     let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
+      if (typeof encodingDescrp == 'undefined') {
+        console.log("check on code: ", variable)
+      }
       return encodingDescrp;
     } catch (error) {
       console.log(error);
@@ -254,11 +267,15 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
       let description;
       if (!isNaN(value)) {
         let j = 0;
-        while (typeof description == 'undefined') {
-          if (encodingDescrp[j].Encoding == value) {
-            description = encodingDescrp[j].Description;
+        try { 
+          while (typeof description == 'undefined') {
+            if (encodingDescrp[j].Encoding == value) {
+              description = encodingDescrp[j].Description;
+            }
+            j++;
           }
-          j++;
+        } catch(e) {
+          console.log("erroring for encoding: ", value, " for variable: ", variable)
         }
         if (sum.has(description)) {
           sum.set(description, sum.get(description)! + 1)
@@ -290,14 +307,19 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   let displayCount = 0
   let totalCount = 0
   const binaryData = await db.collection('binary-data').findOne(query)
-  arr.forEach(([year, value]) => {
-    if (!isNaN(value)) {
-      if (value === binaryData!.DisplayEncoding) {
-        displayCount++
+  try{
+    arr.forEach(([year, value]) => {
+      if (!isNaN(value)) {
+        if (value === binaryData!.DisplayEncoding) {
+          displayCount++
+        }
+        totalCount++
       }
-      totalCount++
-    }
-  });
+    });
+  } catch(e) {
+    console.log("Error in getDataHighlights")
+  }
+  
   return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
 }
 
@@ -405,9 +427,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
+    // console.log("variable: ", req.params.variable)
+    // console.log("output: ", output)
+    // console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
@@ -419,9 +441,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
+    // console.log("variable: ", req.params.variable)
+    // console.log("output: ", output)
+    // console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
 
   });
@@ -434,9 +456,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
+    // console.log("variable: ", req.params.variable)
+    // console.log("output: ", output)
+    // console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 

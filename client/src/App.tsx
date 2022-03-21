@@ -28,15 +28,15 @@ function App() {
   }, []);
 
   async function getData() {
-    const urlHistogram = `${API_URL}/AGE`;
+    const urlHistogram = `${API_URL}/A08`;
     const histogramResponse = await fetch(urlHistogram);
     const histogramOut = await histogramResponse.json();
     setHistogramData(histogramOut.data);
 
-    //   const urlTable = `${API_URL}/B01`;
-    //   const tableResponse = await fetch(urlTable);
-    //   const tableOut = await tableResponse.json();
-    //   setTableData(tableOut.data);
+      const urlTable = `${API_URL}/B01`;
+      const tableResponse = await fetch(urlTable);
+      const tableOut = await tableResponse.json();
+      setTableData(tableOut.data);
 
     //   const urlDonut = `${API_URL}/B07`;
     //   const donutResponse = await fetch(urlDonut);
@@ -49,10 +49,10 @@ function App() {
     // setFLCData(FLCOut.data);
     // setTimeSeriesData(FLCOut.timeSeriesData)
 
-    const urlDataHighlight = `${API_URL}/Indigenous`;
-    const DataHighlightResponse = await fetch(urlDataHighlight);
-    const DataHighlightOut = await DataHighlightResponse.json();
-    setDataHighlightData(DataHighlightOut.data);
+    // const urlDataHighlight = `${API_URL}/Indigenous`;
+    // const DataHighlightResponse = await fetch(urlDataHighlight);
+    // const DataHighlightOut = await DataHighlightResponse.json();
+    // setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -62,8 +62,8 @@ function App() {
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
-        {/* <Route path="histogram" element={<Histogram categoryEncoding={2} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} /> */}
-        {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
+        <Route path="histogram" element={<Histogram data={histogramData} categoryEncoding={2} variableEncoding={"A08"} />} />
+        <Route path='/table' element={<Table data={tableData}/> } />
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
           Respondent Age

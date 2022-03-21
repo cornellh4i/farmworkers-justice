@@ -2,9 +2,7 @@ import sys
 import pandas as pd
 from pymongo import MongoClient
 
-# Do we need to pass these in from routes?
 latestFY = 2020
-# latestFY = int(sys.argv[2])
 earliestFY = (latestFY + 1) - 10
 
 def preprocessing():
@@ -26,7 +24,6 @@ def preprocessing():
     # Need to answer why FY and FWID is not a necessary variable
     necessaryVariables = sys.argv[1].split(",")
     necessaryVariables.append("FY")
-    necessaryVariables.append("FWID")
 
     # Processes dropping the variables that are not in necessaryVariables
     necessaryVariablesFinal = ["value"]*len(necessaryVariables)
@@ -70,8 +67,7 @@ def sendToMongo(df):
     Parameter df: dataframe to send to MongoDB
     Precondition: df is an object of type Pandas.DataFrame
     """
-    myclient = MongoClient("mongodb+srv://h4i:Justice4Farmworkers@clusterfj.7tofb.mongodb.net/naws?retryWrites=true&w=majority")
-    # myclient = MongoClient(sys.argv[2])
+    myclient = MongoClient(sys.argv[2])
     db = myclient["naws"]
     collection = db["naws-preprocessed"]
     df.reset_index(inplace = True)

@@ -1,7 +1,6 @@
 import Express from "express";
 import { Db } from "mongodb";
 import { find } from "tslint/lib/utils";
-import * as dfd from "danfojs-node";
 
 interface encodingProp {
   _id: Object;
@@ -299,70 +298,6 @@ async function getUniqueVariables(db: Db) {
   
 }
 
-async function preprocess() {
-	const latestFY: number = 2020;
-	const earliestFY: number = (latestFY + 1) - 10;
-
-	var startTime: any  = new Date();
-
-	let df1 = await dfd.readCSV("./data/NAWS_A2E191.csv")
-					.then((df: dfd.DataFrame) => {return df;});
-	let df2 = await dfd.readCSV("./data/NAWS_F2Y191.csv")
-					.then((df: dfd.DataFrame) => {return df;});
-
-	let df: dfd.DataFrame | dfd.Series = dfd.concat(
-		{dfList : [df1, df2], axis : 1})
-	dfd.toCSV(df, { filePath : "./combined.csv" });
-	console.log(df.shape);
-
-	console.log("Here")
-	// get necessaryVariables
-	// let varInfo = await collectVarInfo();
-	// console.log("Passed")
-
-	// // put all necessary variables into hashmap for constant time lookup
-	// let necessaryVariables: any = {}
-	// for (let i = 0; i < varInfo.length(); i++){
-	// 	necessaryVariables[varInfo[i].variable] = true;
-	// }
-
-	// console.log(necessaryVariables);
-
-	// // notnecessaryvariables is all the columns of the df less the necessary variables; this for loop also casts the columns to int32
-	// for (let i = 0; i < df.columns.length; i++) {
-	// 	let selectedColumn: any = df.columns[i];
-
-	// 	if (!necessaryVariables[selectedColumn]) {
-	// 		notNecessaryVariables.push(selectedColumn);
-	// 	}
-
-	// 	// Note that "STREAMS" and "MIGTYPE2" are strings
-	// 	if (selectedColumn !== "STREAMS" || selectedColumn !== "MIGTYPE2") {
-	// 		df = df.asType(selectedColumn, "int32");
-	// 	}
-	// }
-
-	// df = df.drop({columns : notNecessaryVariables});
-
-	console.log(df.shape)
-
-	// Verified this works
-	let fiscal: any = "FY"
-	df = df.asType(fiscal, "int32");
-	df = df.query(df['FY'].ge(earliestFY).and(df['FY'].le(latestFY)));
-
-	console.log(df.shape)
-
-	var endTime: any = new Date();
-
-	console.log(endTime - startTime);
-
-	// Fill in missing numbers with null
-	// df = df.fillNa(null);
-
-	dfd.toCSV(df, { filePath : "./preprocessed.csv" });
-	return df;
-}
 
 // /**
 //  * @returns the the data stored inside of naws/variable-info
@@ -427,12 +362,14 @@ module.exports = () => {
   router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
+    const ATLAS_URI = process.env.ATLAS_URI;
+
     const {spawn} = require('child_process');
 
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ]);
+    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
      console.log('Pipe data from python script ...');

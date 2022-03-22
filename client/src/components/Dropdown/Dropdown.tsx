@@ -84,8 +84,10 @@ function Dropdown(props: DropdownProp) {
           setVisualizationComponent(<Donut innerRadius={100} outerRadius={200} data={output.data} height={600} width={600} />)
         } else if (output.vizType === "table") {
           setVisualizationComponent(<DataTable data={output.data} />)
+        } else if (output.vizType === "data") {
+          setVisualizationComponent(<DataHighlight data={output.data} />)
         } else {
-          // console.log("did not allocate visualization component: ", props.variable)
+          console.log("visualization type not covered ")
         }
       } catch (error) {
         console.log("Failed to fetch: ", props.variable)

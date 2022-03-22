@@ -72,6 +72,7 @@ def sendToMongo(df):
     collection = db["naws-preprocessed"]
     df.reset_index(inplace = True)
     data_dict = df.to_dict("records")
+    collection.delete_many({ })
     collection.insert_many(data_dict)
 
 preprocessing()

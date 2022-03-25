@@ -3,6 +3,8 @@ import React, { ComponentProps } from 'react';
 import { Input } from 'reactstrap'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Grid from '@mui/material/Grid';
+
 
 const API_URL = process.env.REACT_APP_API;
 // const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -41,17 +43,28 @@ function AdminLanding() {
     console.log("handle change set password: ", event.target.value)
   }
   return (
-    <div>
-    <form >
-      <label>
-        password:
-        <input type="password" value={password} name="password" placeholder="Enter password" onChange={handleChange} />
-      </label>
-      <input type="button" value="Submit" onClick={handleSubmit} />
-    </form>
-    {warning}
+    <div className="adminLandingContainer">
+      <form>
+        <h2 className="adminLandingContent">
+          <label>
+            <Grid container direction="column" alignItems="center"
+              justifyContent="center" style={{ minHeight: '100vh' }}>
+              <Grid item xs={6}>
+                PASSWORD:
+              </Grid>
+              <Grid item xs={6}>
+                <input type="password" value={password} name="password" placeholder="Enter password" onChange={handleChange} />
+              </Grid>
+              <Grid item xs={6}>
+                <input type="button" value="Submit" onClick={handleSubmit} />
+              </Grid>
+            </Grid>
+
+          </label>
+
+        </h2>
+      </form>
     </div>
-  
 
   )
 }

@@ -5,37 +5,55 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import Map from './../../charts/Map';
+import { useEffect, useState } from 'react';
 
 
 interface DropdownProp {
-  dropdownOpen: boolean
-  dropdownIndex: number
+  index: number
   categoryVariable: string
   encoding: string
-  onCollapse: Function
+  mapFilterSelected : null | string
+  setCurrentCollapseIndex: Function
+  currentCollapseIndex: number | null
 }
 
 
-function CategoryCard(props: DropdownProp) {
+function Dropdown(props: DropdownProp) {
+  const [collapse, setCollapse] = useState(false)
 
-  function onClickCustom() {
-    props.onCollapse(props.dropdownIndex)
+  function onClickCollapse() {
+    if (props.currentCollapseIndex === props.index) {
+      setCollapse(false)
+      props.setCurrentCollapseIndex(null)
+    } else {
+      setCollapse(true)
+      props.setCurrentCollapseIndex(props.index)
+    }
   }
+
+  useEffect(() => {
+    if (props.currentCollapseIndex !== props.index) {
+      setCollapse(false);
+    }
+  }, [props.currentCollapseIndex])
 
   return (
     <div>
       <div className="dropdownContainer">
         <Grid container >
           <Grid item xs={9}>
-            <ListItemButton onClick={onClickCustom}>
+            <ListItemButton onClick={onClickCollapse}>
               <h4 className="variableHeader">
                 {props.categoryVariable}
               </h4>
-              {props.dropdownOpen ? <ExpandLess /> : <ExpandMore />}
+              {collapse ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={props.dropdownOpen} timeout="auto" unmountOnExit>
+            <Collapse in={collapse} timeout="auto" unmountOnExit>
               <div>
+
                 {props.encoding}
+                {props.mapFilterSelected === null? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex}/>}
               </div>
             </Collapse>
           </Grid>
@@ -46,6 +64,6 @@ function CategoryCard(props: DropdownProp) {
   )
 }
 
-export default CategoryCard;
+export default Dropdown;
 
 

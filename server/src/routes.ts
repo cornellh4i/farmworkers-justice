@@ -36,7 +36,7 @@ interface timeSeriesEncodingsProp {
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
  * @param db is the database instance being used to filter data 
- * @param latestYearsQuery is true to limit data to only the latest two years (for histograms and donut charts)
+ * @param latestYearsQuery is true to limit data to only the latest two years (for histograms, data highlights, table, donut charts)
  * @param filter_key1, @param filter_key2 are selected filter option. EX: GENDER, FLC, REGION6
  * @param filter_value1, @param filter_value2 are the selected filter value corresponding to filter_key
  * @returns a nested array where each element corresponds to each document of 
@@ -84,30 +84,31 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ *        it assumes that the number of distinct years is even
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
- *          as {year: 2009, value: 0.54}. The value represents the percentage
- *          of how often a variable appears in that year. 
+ *          as {year: 2009, value: 0.54}. The year is representative of two years (2019 & 2010 in the example)
+ *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
+ *          The value represents the percentage of how often a variable appears in those two years. 
  *          An average value is returned for variables: B11, G01, G03, FWRDays, 
  *          and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, number][], variable: string) {
-  const minYear: number = Math.min(...arr.map(function (a) { return a[0]; }))
-  const maxYear: number = Math.max(...arr.map(function (a) { return a[0]; }))
+  const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
+  const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2 
   let output = new Array<{ year: number, value: number }>();
   let totalEachYear = new Map<number, number>();
-  let i;
-  for (i = 0; i < maxYear - minYear + 1; i++) {
-    output[i] = { year: minYear + i, value: 0 };
-    totalEachYear.set(minYear + i, 0)
+  for (let i = 0; i <= (maxYear - minYear - 1)/2; i++) {
+    output[i] = { year: minYear + i*2, value: 0 };
+    totalEachYear.set(minYear + i*2, 0)
   }
 
   if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
     arr.forEach((v) => {
-      const yr: number = v[0];
+      const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = yr - minYear;
+      const yrIdx: number = Math.floor((yr - minYear)/2) // Have odd then even years in one group
       if (!isNaN(value)) {
         output[yrIdx].value += value;
         totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
@@ -115,9 +116,9 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
     })
   } else if (variable === "G01" || variable === "G03") {
     arr.forEach((v) => {
-      const yr: number = v[0];
+      const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = yr - minYear;
+      const yrIdx: number = Math.floor((yr - minYear)/2) 
       const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
         e["variable-encoding"] === variable);
       
@@ -133,17 +134,20 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
     }) 
   } else {
     arr.forEach((v) => {
-      const yr: number = v[0];
+      const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = yr - minYear;
+      const yrIdx: number = Math.floor((yr - minYear)/2) 
       if (!isNaN(value)) {
-        if (value === 1 || value === 0) { // Only consider Yes & No answers for the rest of the variables 
+        if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
           output[yrIdx].value += value;
+
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
     })
   }
+  console.log("output before division: ", output)
+  console.log("total each year before division: ", totalEachYear)
 
   output.forEach((d) => {
     d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100) / 100
@@ -352,6 +356,16 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   }
   const output = aggregateTimeSeries(queryResult, variable)
   return output;
+  // var query = {}
+  // let output = new Array<{ year: number, value: number }>();
+
+  // if (typeof filterKey2 !== 'undefined' && typeof filterKey1 !== 'undefined') {
+  //     query = { $and: [{ [filterKey1]: filterValue1 }, { [filterKey2]: filterValue2 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }    
+  // } else if (typeof filterKey1 !== 'undefined') {
+  //     query = { $and: [{ [filterKey1]: filterValue1 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }    
+  // } else {
+  //     query = { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}
+  // }
 }
 
 
@@ -378,7 +392,6 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
     queryResult = await queryVal(variable, db, true)
   }
   var output;
-  console.log("query result: ", queryResult)
   if (vizType !== null) {
     if (vizType === VizType.Histogram) {
       output = aggregateHistogram(queryResult); 
@@ -410,14 +423,14 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
     const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType)
+    // const output = await main(req.params.variable, dbo.getDb(), vizType)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    console.log("output: ", output)
+    // console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: null, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {

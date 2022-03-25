@@ -36,27 +36,27 @@ function App() {
   //   const histogramOut = await histogramResponse.json();
   //   setHistogramData(histogramOut.data);
 
-      const urlTable = `${API_URL}/B01`;
-      const tableResponse = await fetch(urlTable);
-      const tableOut = await tableResponse.json();
-      setTableData(tableOut.data);
+      // const urlTable = `${API_URL}/B01`;
+      // const tableResponse = await fetch(urlTable);
+      // const tableOut = await tableResponse.json();
+      // setTableData(tableOut.data);
 
     //   const urlDonut = `${API_URL}/B07`;
     //   const donutResponse = await fetch(urlDonut);
     //   const donutOut = await donutResponse.json();
     //   setdonutData(donutOut.data);
     // 
-    // const urlFLC = `${API_URL}/NUMFEMPL`;
-    // const FLCResponse = await fetch(urlFLC);
-    // const FLCOut = await FLCResponse.json();
-    // setFLCData(FLCOut.data);
-    // setTimeSeriesData(FLCOut.timeSeriesData)
+    const urlFLC = `${API_URL}/NUMFEMPL`;
+    const FLCResponse = await fetch(urlFLC);
+    const FLCOut = await FLCResponse.json();
+    setFLCData(FLCOut.data);
+    setTimeSeriesData(FLCOut.timeSeriesData)
     
 
-    const urlDataHighlight = `${API_URL}/FOREIGNB`;
-    const DataHighlightResponse = await fetch(urlDataHighlight);
-    const DataHighlightOut = await DataHighlightResponse.json();
-    setDataHighlightData(DataHighlightOut.data);
+    // const urlDataHighlight = `${API_URL}/FOREIGNB`;
+    // const DataHighlightResponse = await fetch(urlDataHighlight);
+    // const DataHighlightOut = await DataHighlightResponse.json();
+    // setDataHighlightData(DataHighlightOut.data);
   }
 
   return (

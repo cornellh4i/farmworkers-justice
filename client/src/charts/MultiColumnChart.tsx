@@ -1,8 +1,5 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
-
-
-import * as d3 from "d3";
 import "@fontsource/rubik";
 
 
@@ -12,32 +9,21 @@ function MultiColumnChart() {
           type: 'column'
         },
         title: {
-          text: 'Monthly Average Rainfall'
+          text: 'What languages do you speak?'
         },
         subtitle: {
-          text: 'Source: WorldClimate.com'
+          text: 'Source: Farmworkers\' Justice'
         },
         xAxis: {
           categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
+            ''
           ],
           crosshair: true
         },
         yAxis: {
           min: 0,
           title: {
-            text: 'Rainfall (mm)'
+            text: 'Percentage of Respondents'
           }
         },
         // tooltip: {
@@ -56,25 +42,45 @@ function MultiColumnChart() {
         },
         series: [{
         type: 'column',
-          name: 'Tokyo',
-          data: [49.9]
+          name: 'English',
+          data: [20.9]
       
         }, {
             type: 'column',
-          name: 'New York',
-          data: [83.6]
+          name: 'Spanish',
+          data: [68.6]
       
         }, {
             type: 'column',
-          name: 'London',
-          data: [48.9]
+          name: 'Creole',
+          data: [34.9]
       
         }, {
           type: 'column',
-          name: 'Berlin',
-          data: [42.4]
+          name: 'Mixtec',
+          data: [17.4]
       
-        }]
+        },
+        {
+          type: 'column',
+          name: 'Kanjobal',
+          data: [12.4]
+      
+        },
+        {
+          type: 'column',
+          name: 'Zapotec',
+          data: [10.4]
+      
+        },
+        {
+          type: 'column',
+          name: 'Other',
+          data: [29.4]
+      
+        }
+        
+      ]
       }
 
       return (
@@ -86,19 +92,4 @@ function MultiColumnChart() {
     </div>
     )
 }
-      
-  
-  
 export default MultiColumnChart;
-
-// example input: 
-      // [{
-      //   variable: "new york", 
-      //   data: [values ....]
-      // }, 
-      // {
-        //   variable: "berlin", 
-        //   data: [values ....]
-        // }, 
-        // ...
-      // ]

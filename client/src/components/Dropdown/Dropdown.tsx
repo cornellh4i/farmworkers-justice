@@ -81,7 +81,7 @@ function Dropdown(props: DropdownProp) {
         if (output.vizType === "histogram") {
           setVisualizationComponent(<Histogram categoryEncoding={props.index} variableEncoding={props.variable} data={output.data} />)
         } else if (output.vizType === "donut") {
-          setVisualizationComponent(<Donut innerRadius={100} outerRadius={200} data={output.data} height={600} width={600} />)
+          setVisualizationComponent(<Donut data={output.data} />)
         } else if (output.vizType === "table") {
           setVisualizationComponent(<DataTable data={output.data} />)
         } else if (output.vizType === "data") {

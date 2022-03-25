@@ -10,10 +10,13 @@ import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
 
-
 const API_URL = process.env.REACT_APP_API;
+const LATEST_ODD_YEAR = 2017;
+const LATEST_EVEN_YEAR = 2018;
+
 
 function App() {
   const [tableData, setTableData] = useState<{}>({});
@@ -33,21 +36,21 @@ function App() {
     const histogramOut = await histogramResponse.json();
     setHistogramData(histogramOut.data);
 
-      const urlTable = `${API_URL}/B01`;
-      const tableResponse = await fetch(urlTable);
-      const tableOut = await tableResponse.json();
-      setTableData(tableOut.data);
+    const urlTable = `${API_URL}/B01`;
+    const tableResponse = await fetch(urlTable);
+    const tableOut = await tableResponse.json();
+    setTableData(tableOut.data);
 
-    //   const urlDonut = `${API_URL}/B07`;
-    //   const donutResponse = await fetch(urlDonut);
-    //   const donutOut = await donutResponse.json();
-    //   setdonutData(donutOut.data);
-
-    // const urlFLC = `${API_URL}/G01`;
-    // const FLCResponse = await fetch(urlFLC);
-    // const FLCOut = await FLCResponse.json();
-    // setFLCData(FLCOut.data);
-    // setTimeSeriesData(FLCOut.timeSeriesData)
+    const urlDonut = `${API_URL}/B02`;
+    const donutResponse = await fetch(urlDonut);
+    const donutOut = await donutResponse.json();
+    setdonutData(donutOut.data);
+    
+    const urlFLC = `${API_URL}/NUMFEMPL`;
+    const FLCResponse = await fetch(urlFLC);
+    const FLCOut = await FLCResponse.json();
+    setFLCData(FLCOut.data);
+    setTimeSeriesData(FLCOut.timeSeriesData)
 
     // const urlDataHighlight = `${API_URL}/Indigenous`;
     // const DataHighlightResponse = await fetch(urlDataHighlight);
@@ -64,7 +67,9 @@ function App() {
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
         <Route path="histogram" element={<Histogram data={histogramData} categoryEncoding={2} variableEncoding={"A08"} />} />
         <Route path='/table' element={<Table data={tableData}/> } />
-
+        <Route path='/donut' element={<DonutChart data={donutData} />} />
+        {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
+        
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
           Respondent Age
         </h3> 

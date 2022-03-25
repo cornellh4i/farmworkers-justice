@@ -97,8 +97,9 @@ function FilterPanel(props: FilterPanelProps) {
 
     <div className="filter-panel-container">
 
-      <Grid container spacing={1}>
-        <Grid item xs={1}>
+      <Grid container spacing={1} flexGrow={1}>
+        <Grid item md={1} sm={2} xs={2}>
+
           <FormControl fullWidth>
             <InputLabel id="gender-select-label">Gender</InputLabel>
             <Select
@@ -115,7 +116,7 @@ function FilterPanel(props: FilterPanelProps) {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2} sm={4} xs={4}>
           <FormControl fullWidth>
             <InputLabel id="currstat-select-label">Work Authorization Status</InputLabel>
             <Select
@@ -133,7 +134,7 @@ function FilterPanel(props: FilterPanelProps) {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item md={2} sm={4} xs={4}>
           <FormControl fullWidth>
             <InputLabel id="flc-select-label">Employer</InputLabel>
             <Select
@@ -149,7 +150,7 @@ function FilterPanel(props: FilterPanelProps) {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item md={1} sm={2} xs={2}>
           <FormControl fullWidth>
             <InputLabel id="region6-select-label">Region</InputLabel>
             <Select

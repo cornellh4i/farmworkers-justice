@@ -37,6 +37,7 @@ function LineGraph(props: LineGraphProp) {
     .domain((props.data.length !== 0)? 
       [props.data[0].year, props.data[Object.keys(props.data).length-1].year + 1] : 
       [2007, 2018]) //[2007, 2018] is a temp placeholder before props is updated
+
     .range([0, w])
   const yScale = d3.scaleLinear()
     .domain([findMinY(props.data), findMaxY(props.data)])

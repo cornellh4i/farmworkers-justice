@@ -20,6 +20,7 @@ const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
 const LATEST_ODD_YEAR = 2017;
 const LATEST_EVEN_YEAR = 2018;
 
+
 interface timeSeriesRangesProp {
   encoding: number,
   start: null | number, 
@@ -140,7 +141,6 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
           output[yrIdx].value += value;
-
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
@@ -180,64 +180,45 @@ function aggregateHistogram(arr: [number, number][]) {
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_ODD_YEAR, 0], [LATEST_EVEN_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values are the 
- *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR. 
+ *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
 async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
-  let output = new Map<string, number>();
-  let n = 0;
-
-  var encodingDescrp: any;
-  // TODO: FACTORIZE INTO A FUNCTION OUTSIDE 
-  async function allEncoding() {
-    let query = { Variable: variable }
-    try {
-      encodingDescrp = await db.collection('description-code').find(query).toArray()
-      return encodingDescrp;
-    } catch (error) {
-      console.log(error);
-    };
-  }
-
-  await allEncoding()
-  .then( function() {
-    for (let i = 0; i < arr.length; i++) {
-      const value = arr[i][1];
-      let description;
-      if (!isNaN(value)) {
-        let j = 0;
-        try {
-          while (typeof description == 'undefined') {
-            if (encodingDescrp[j].Encoding == value) {
-              description = encodingDescrp[j].Description;
-            }
-            j++;
-          }
-        } catch(e) {
-          console.log(e);
-        }
-        if (output.has(description)) {
-          output.set(description, output.get(description)! + 1)
-        }
-        else {
-          output.set(description, 1);
-        }
-        n++;
-      }
+  var output = new Map<string, number>();
+  let totalCounts = 0
+  const query = { Variable: variable }
+  const encodingDescrp = await db.collection('description-code').find(query).toArray()
+  console.log("encoding descrp: ", encodingDescrp)
+  arr.forEach(([year, val]) => {
+    if (!isNaN(val)) {
+      let currCount = output.get(val.toString())
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1)
+      totalCounts += 1
     }
-    output.forEach((v, d) => {
-      output.set(d, Math.round(v/n * 100) / 100);
-    })
   });
-  return output;
+
+  output.forEach((val, description) => {
+    output.set(description, Math.round(val/totalCounts * 100) / 100);
+  })
+
+  // Get description for encoded variables 
+  if (encodingDescrp.length > 0) {
+    var outputDescription = new Map<string, number>();
+    encodingDescrp.forEach(element => {
+      let percentage = output.get(element.Encoding.toString());
+      outputDescription.set(element.Description, (typeof percentage == 'undefined' ? 0 : percentage))
+    });
+    output = outputDescription
+  }
+  return output
 }
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns a dictionary where the keys are encoding descriptions and the values 
  *          are arrays of two values. The first value is the proportion 
@@ -356,16 +337,6 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   }
   const output = aggregateTimeSeries(queryResult, variable)
   return output;
-  // var query = {}
-  // let output = new Array<{ year: number, value: number }>();
-
-  // if (typeof filterKey2 !== 'undefined' && typeof filterKey1 !== 'undefined') {
-  //     query = { $and: [{ [filterKey1]: filterValue1 }, { [filterKey2]: filterValue2 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }    
-  // } else if (typeof filterKey1 !== 'undefined') {
-  //     query = { $and: [{ [filterKey1]: filterValue1 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }    
-  // } else {
-  //     query = { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}
-  // }
 }
 
 
@@ -423,14 +394,14 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
     const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    // const output = await main(req.params.variable, dbo.getDb(), vizType)
+    const output = await main(req.params.variable, dbo.getDb(), vizType)
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    // console.log("output: ", output)
+    console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: null, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {

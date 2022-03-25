@@ -10,8 +10,8 @@ import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
-
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -31,32 +31,31 @@ function App() {
   }, []);
 
   async function getData() {
-  //   const urlHistogram = `${API_URL}/AGE`;
-  //   const histogramResponse = await fetch(urlHistogram);
-  //   const histogramOut = await histogramResponse.json();
-  //   setHistogramData(histogramOut.data);
+    // const urlHistogram = `${API_URL}/AGE`;
+    // const histogramResponse = await fetch(urlHistogram);
+    // const histogramOut = await histogramResponse.json();
+    // setHistogramData(histogramOut.data);
+    
+    //   const urlTable = `${API_URL}/B01`;
+    //   const tableResponse = await fetch(urlTable);
+    //   const tableOut = await tableResponse.json();
+    //   setTableData(tableOut.data);
 
-      // const urlTable = `${API_URL}/B01`;
-      // const tableResponse = await fetch(urlTable);
-      // const tableOut = await tableResponse.json();
-      // setTableData(tableOut.data);
-
-    //   const urlDonut = `${API_URL}/B07`;
-    //   const donutResponse = await fetch(urlDonut);
-    //   const donutOut = await donutResponse.json();
-    //   setdonutData(donutOut.data);
-    // 
+    const urlDonut = `${API_URL}/B02`;
+    const donutResponse = await fetch(urlDonut);
+    const donutOut = await donutResponse.json();
+    setdonutData(donutOut.data);
+    
     const urlFLC = `${API_URL}/NUMFEMPL`;
     const FLCResponse = await fetch(urlFLC);
     const FLCOut = await FLCResponse.json();
     setFLCData(FLCOut.data);
     setTimeSeriesData(FLCOut.timeSeriesData)
-    
 
-    // const urlDataHighlight = `${API_URL}/FOREIGNB`;
-    // const DataHighlightResponse = await fetch(urlDataHighlight);
-    // const DataHighlightOut = await DataHighlightResponse.json();
-    // setDataHighlightData(DataHighlightOut.data);
+    const urlDataHighlight = `${API_URL}/FOREIGNB`;
+    const DataHighlightResponse = await fetch(urlDataHighlight);
+    const DataHighlightOut = await DataHighlightResponse.json();
+    setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -68,6 +67,7 @@ function App() {
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
         <Route path='/table' element={<Table data={tableData} />} />
+        <Route path='/donut' element={<DonutChart data={donutData} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
         
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

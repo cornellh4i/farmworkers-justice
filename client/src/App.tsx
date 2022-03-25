@@ -46,16 +46,16 @@ function App() {
     //   const donutOut = await donutResponse.json();
     //   setdonutData(donutOut.data);
     // 
-    const urlFLC = `${API_URL}/NUMFEMPL`;
-    const FLCResponse = await fetch(urlFLC);
-    const FLCOut = await FLCResponse.json();
-    setFLCData(FLCOut.data);
-    setTimeSeriesData(FLCOut.timeSeriesData)
+    // const urlFLC = `${API_URL}/NUMFEMPL`;
+    // const FLCResponse = await fetch(urlFLC);
+    // const FLCOut = await FLCResponse.json();
+    // setFLCData(FLCOut.data);
+    // setTimeSeriesData(FLCOut.timeSeriesData)
 
-    const urlDataHighlight = `${API_URL}/FOREIGNB`;
-    const DataHighlightResponse = await fetch(urlDataHighlight);
-    const DataHighlightOut = await DataHighlightResponse.json();
-    setDataHighlightData(DataHighlightOut.data);
+    // const urlDataHighlight = `${API_URL}/FOREIGNB`;
+    // const DataHighlightResponse = await fetch(urlDataHighlight);
+    // const DataHighlightOut = await DataHighlightResponse.json();
+    // setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -87,7 +87,6 @@ function App() {
         <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
         </h3>
-
         <Donut
           data={donutData}
           width={500}

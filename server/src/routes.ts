@@ -29,14 +29,7 @@ interface timeSeriesEncodingsProp {
   "variable-description": string,
   "ranges": timeSeriesRangesProp[]
 }
-/**
- * checks if user intput password is equal to the admin password, 
- * returns true if they match, false otherwise.
- */
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-function checkAdminPassword(userInputPassword: string) {
-  return ADMIN_PASSWORD == userInputPassword;
-}
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -404,10 +397,6 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
-  router.get('/:checkAdminPassword', async (req: Express.Request, res: Express.Response) => {
-    //req: user password
-    //res: checkAdminPassword()
-  });
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph

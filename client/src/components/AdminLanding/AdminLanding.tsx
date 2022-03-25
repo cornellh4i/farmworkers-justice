@@ -9,8 +9,8 @@ function AdminLanding() {
 
   function handleSubmit(event: any) {
     // pass value to back end through fetch 
-    setPassword(event.value)
-    console.log(getPassword)
+    setPassword(event.target.value)
+    console.log("password: ", event.target.value) // not going here? 
 
   }
   function handleChange(event: any) {

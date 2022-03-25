@@ -124,7 +124,7 @@ legend.append("rect") // make a matching color rect
 
 legend.append("text") // add the text
 // .text(d => formatText(d.index))
-.text(d => formatText(d.index) + " - " + String(((d.data.valueOf()/arrSum)*100).toFixed(2)) + "%")
+.text(d => formatText(d.index) + " - " + String(((d.data.valueOf()/arrSum)*100).toFixed(1)) + "%")
 .style("font-size", 12)
 .attr('x', d => outerRadius)
 .attr('y', d => (d.index) * labelHeight)

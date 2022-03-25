@@ -35,22 +35,23 @@ function LineGraph(props: LineGraphProp) {
     .style('overflow', 'visible');
   const xScale = d3.scaleLinear()
     .domain((props.data.length !== 0)? 
-      [props.data[0].year, props.data[Object.keys(props.data).length-1].year] : 
-      [2008, 2018]) //[2007, 2018] is a temp placeholder before props is updated
+      [props.data[0].year, props.data[Object.keys(props.data).length-1].year + 1] : 
+      [2007, 2018]) //[2007, 2018] is a temp placeholder before props is updated
+
     .range([0, w])
   const yScale = d3.scaleLinear()
     .domain([findMinY(props.data), findMaxY(props.data)])
     .range([h, 0])
 
   const generatedScaleLine = d3.line()
-    .x((d, i) => xScale(props.data[i].year))  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
+    .x((d, i) => xScale(props.data[i].year + 1))  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
     .y((d, i) => yScale(props.data[i].value))
     .curve(d3.curveCardinal)
   
   const xAxis = d3.axisBottom(xScale)
     .ticks(Object.keys(props.data).length)
-    .tickFormat(i => String(i))
-    // .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
+    // .tickFormat(i => String(i))
+    .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
   const yAxis = d3.axisLeft(yScale)
     .ticks(5);
   svg.append('g')

@@ -91,6 +91,7 @@ function FilterPanel(props: FilterPanelProps) {
 
       <Grid container spacing={1} flexGrow={1}>
         <Grid item md={1} sm={2} xs={2}>
+
           <FormControl fullWidth>
             <InputLabel id="gender-select-label">Gender</InputLabel>
             <Select

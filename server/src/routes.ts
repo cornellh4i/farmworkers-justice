@@ -172,11 +172,7 @@ function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 
   function iterateFunc(v: [number, number]) {
-<<<<<<< HEAD
     if (!isNaN(v[1])) {
-=======
-    if (!isNaN(v[1])){
->>>>>>> 10b208a85c085b5485bd18f2ffedb15ad8e7931e
       recentVals.push(v[1])
     }
   }
@@ -197,52 +193,6 @@ function aggregateHistogram(arr: [number, number][]) {
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
 async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
-<<<<<<< HEAD
-  let output = new Map<string, number>();
-  let n = 0;
-
-  var encodingDescrp: any;
-  // TODO: FACTORIZE INTO A FUNCTION OUTSIDE 
-  async function allEncoding() {
-    let query = { Variable: variable }
-    try {
-      encodingDescrp = await db.collection('description-code').find(query).toArray()
-      if (typeof encodingDescrp == 'undefined') {
-        console.log("check on code: ", variable)
-      }
-      return encodingDescrp;
-    } catch (error) {
-      console.log("error in aggregatedonut for variable: ", variable);
-    };
-  }
-
-  await allEncoding()
-  .then( function() {
-    for (let i = 0; i < arr.length; i++) {
-      const value = arr[i][1];
-      let description;
-      if (!isNaN(value)) {
-        let j = 0;
-        try {
-          while (typeof description == 'undefined') {
-            if (encodingDescrp[j].Encoding == value) {
-              description = encodingDescrp[j].Description;
-            }
-            j++;
-          }
-        } catch(e) {
-          // console.log(e);
-          console.log("erroring for encoding: ", value, " for variable: ", variable)
-        }
-        if (output.has(description)) {
-          output.set(description, output.get(description)! + 1)
-        }
-        else {
-          output.set(description, 1);
-        }
-        n++;
-      }
-=======
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }
@@ -253,7 +203,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       let currCount = output.get(val.toString())
       output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1)
       totalCounts += 1
->>>>>>> 10b208a85c085b5485bd18f2ffedb15ad8e7931e
     }
   });
 
@@ -349,7 +298,6 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   let displayCount = 0
   let totalCount = 0
   const binaryData = await db.collection('binary-data').findOne(query)
-<<<<<<< HEAD
   try{
     arr.forEach(([year, value]) => {
       if (!isNaN(value)) {
@@ -363,16 +311,6 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
     console.log("Error in getDataHighlights")
   }
   
-=======
-  arr.forEach(([year, value]) => {
-    if (!isNaN(value)) {
-      totalCount++;
-      if (value === binaryData!.DisplayEncoding) {
-        displayCount++
-      }
-    }
-  });
->>>>>>> 10b208a85c085b5485bd18f2ffedb15ad8e7931e
   return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
 }
 

@@ -2,15 +2,20 @@ import { useParams } from 'react-router-dom';
 import React, { ComponentProps } from 'react';
 import { Input } from 'reactstrap'
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 
 
 const API_URL = process.env.REACT_APP_API;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+// const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = "password";
+var attemptsLeft = 3;
 
 //https://reactjs.org/docs/forms.html 
 function AdminLanding() {
   const [password, setPassword] = useState("");
+  const [warning, setWarning] = useState("");
+  const navigate = useNavigate();
 
   function checkPassword(inputPassword: string) {
     return inputPassword === ADMIN_PASSWORD
@@ -24,13 +29,19 @@ function AdminLanding() {
   }
   async function handleSubmit(event: any) {
     console.log("password submitted: ", password)
+    console.log(ADMIN_PASSWORD)
     const haveAccess = checkPassword(password)
     console.log("have access: ", haveAccess)
-
-
-    // BASED ON WHETHER PASSWORD IS CORRECT, 
-    // IF CORRECT -> ROUTE TO ADMIN UPLOAD (ANOTHER COMPONENT)
-    // IF INCORRECT -> PUT A WARNING
+    if (haveAccess) {
+      navigate(`/adminUpload`);
+    }
+    else {
+      setWarning("Warning wrong password, " + attemptsLeft + " attempts left.");
+      attemptsLeft--;
+    }
+    if (attemptsLeft < 0) {
+      navigate(`/`);
+    }
   }
 
   function handleChange(event: any) {

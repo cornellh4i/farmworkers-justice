@@ -14,6 +14,7 @@ import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 import AdminLanding from './components/AdminLanding/AdminLanding'
 import Line from './charts/lineGraph';
+import AdminUpload from "./components/AdminUpload/AdminUpload";
 
 
 const API_URL = process.env.REACT_APP_API;
@@ -67,6 +68,7 @@ function App() {
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
         <Route path="/admin" element={<AdminLanding />} />
+        <Route path="/adminUpload" element={<AdminUpload/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

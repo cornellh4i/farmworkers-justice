@@ -152,11 +152,9 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       }
     })
   }
-  console.log("output before division: ", output)
-  console.log("total each year before division: ", totalEachYear)
 
   output.forEach((d) => {
-    d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100) / 100
+    d.value = (d.value / totalEachYear.get(d.year)!)
   })
   return output
 }
@@ -198,7 +196,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
-  console.log("encoding descrp: ", encodingDescrp)
   arr.forEach(([year, val]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
@@ -299,18 +296,18 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   let displayCount = 0
   let totalCount = 0
   const binaryData = await db.collection('binary-data').findOne(query)
-  try{
-    arr.forEach(([year, value]) => {
+  arr.forEach(([year, value]) => {
+    try{
       if (!isNaN(value)) {
         if (value === binaryData!.DisplayEncoding) {
           displayCount++
         }
         totalCount++
       }
-    });
-  } catch(e) {
-    console.log("Error in getDataHighlights")
-  }
+    } catch(e) {
+      console.log("Error in getDataHighlights for variable: ", variable, " on value: ", value)
+    }
+  });
   
   return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
 }
@@ -417,9 +414,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    // console.log("variable: ", req.params.variable)
-    // console.log("output: ", output)
-    // console.log("timeseries output: ", timeSeriesData)
+    console.log("variable: ", req.params.variable)
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 
@@ -431,9 +428,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    // console.log("variable: ", req.params.variable)
-    // console.log("output: ", output)
-    // console.log("timeseries output: ", timeSeriesData)
+    console.log("variable: ", req.params.variable)
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
 
   });
@@ -446,9 +443,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
-    // console.log("variable: ", req.params.variable)
-    // console.log("output: ", output)
-    // console.log("timeseries output: ", timeSeriesData)
+    console.log("variable: ", req.params.variable)
+    console.log("output: ", output)
+    console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
   });
 

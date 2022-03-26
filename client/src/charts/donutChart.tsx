@@ -40,7 +40,6 @@ function DonutChart(props: DonutChartProps) {
     }
 
     const arrSum = donutData.reduce((a,b) => a + b, 0)
-    console.log(arrSum)
     
     const data = createPie(donutData);
     const group = d3.select(ref.current);
@@ -99,7 +98,7 @@ function DonutChart(props: DonutChartProps) {
 
     const legend = groupWithUpdate
       .attr("class", "legend")
-      .merge(groupWithData.select("legend"))
+      .merge(groupWithData.select("rect.legend"))
       // .attr('transform', function(d, i) {                     // NEW
       //   var height = legendRectSize + legendSpacing;          // NEW
       //   var offset =  height * colors.domain().length / 2;     // NEW

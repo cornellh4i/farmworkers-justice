@@ -17,7 +17,7 @@
                     "variable-description": "Where were you/they born?"
                 },
                 {
-                    "variable-encoding": "Streams",
+                    "variable-encoding": "STREAMS",
                     "variable-description": "Streams by Zone Eastern Midwest and Western"
                 },
                 {
@@ -159,7 +159,7 @@
                     "variable-description": "How much do you pay for housing each month?"
                 },
                 {
-                    "variable-encoding": "Crowded1",
+                    "variable-encoding": "CROWDED1",
                     "variable-description": "Household is crowded, based on U.S. census bureau definition"
                 }
             ]
@@ -169,23 +169,23 @@
             "category-encoding": 4,
             "variables": [
                 {
-                    "variable-encoding": "C09Weeks",
+                    "variable-encoding": "C09WEEKS",
                     "variable-description": "Number of weeks at current job"
                 },
                 {
-                    "variable-encoding": "Crop",
+                    "variable-encoding": "CROP",
                     "variable-description": "Crop at time of interview"
                 },
                 {
-                    "variable-encoding": "FWRDays",
+                    "variable-encoding": "FWRDAYS",
                     "variable-description": "Actual Farm Work Days"
                 },
                 {
-                    "variable-encoding": "NWWeeks",
+                    "variable-encoding": "NWWEEKS",
                     "variable-description": "Number of non-work weeks last year"
                 },
                 {
-                    "variable-encoding": "Task",
+                    "variable-encoding": "TASK",
                     "variable-description": "Work task"
                 },
                 {
@@ -197,7 +197,7 @@
                     "variable-description": "How are you paid?"
                 },
                 {
-                    "variable-encoding": "WageT1",
+                    "variable-encoding": "WAGET1",
                     "variable-description": "Wage for work task"
                 },
                 {
@@ -221,7 +221,7 @@
                     "variable-description": "Have you been covered by a union contract at any time in the last two years?"
                 },
                 {
-                    "variable-encoding": "NP01F",
+                    "variable-encoding": "NP01f",
                     "variable-description": "In the last 12 months, have you loaded, mixed, or applied pesticides"
                 },
                 {
@@ -368,7 +368,7 @@
                     "variable-description": "Have you ever been told by a nurse or doctor that you had other conditions?"
                 }, 
                 {
-                    "variable-encoding": "NQ03Bx",
+                    "variable-encoding": "NQ03bx",
                     "variable-description": "The last time you used a health care provider, where did you go?"
                 }, 
                 {
@@ -416,11 +416,11 @@
                     "variable-description": "When you want to get health care in the US, what are the main difficulties you face? I do not know. I've never needed it."
                 }, 
                 {
-                    "variable-encoding": "A21A",
+                    "variable-encoding": "A21a",
                     "variable-description": "Does the Farmworker have health insurance?"
                 }, 
                 {
-                    "variable-encoding": "A21B",
+                    "variable-encoding": "A21b",
                     "variable-description": "Does the spouse have health insurance?"
                 }, 
                 {
@@ -428,15 +428,15 @@
                     "variable-description": "Do the children have health insurance?"
                 }, 
                 {
-                    "variable-encoding": "A23A3",
+                    "variable-encoding": "A23a3",
                     "variable-description": "Farmworker has employer-provided health insurance"
                 }, 
                 {
-                    "variable-encoding": "A23A5",
+                    "variable-encoding": "A23a5",
                     "variable-description": "Farmworker has government-provided health insurance"
                 }, 
                 {
-                    "variable-encoding": "A23C5",
+                    "variable-encoding": "A23c5",
                     "variable-description": "Children have government-provided health insurance"
                 }, 
                 {

@@ -339,6 +339,28 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   return output;
 }
 
+async function getUniqueVariables(db: Db) {
+  const variablesInfo = db.collection('variable-info').find({});
+  var uniqueVariables: string[] = []
+  await variablesInfo.forEach(variableInfo => {
+    uniqueVariables.push(variableInfo.Variable)
+  });
+  console.log(uniqueVariables)
+  return uniqueVariables;
+  
+}
+
+
+// /**
+//  * @returns the the data stored inside of naws/variable-info
+//  */
+// function collectVarInfo(){
+//   const dbo = require("./db/conn");
+//   var db = dbo.getDb();
+//   return db.collection("variable-info");
+// }
+// export { collectVarInfo };
+
 
 /**
  * @param variable is a variable to generate queries for
@@ -390,6 +412,32 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
+  router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
+    const ATLAS_URI = process.env.ATLAS_URI;
+
+    const {spawn} = require('child_process');
+
+    var dataToSend: any;
+    // spawn new child process to call the python script
+    // switch this to python if your terminal uses python insteal of py
+    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    // collect data from script
+    python.stdout.on('data', function (data: any) {
+     console.log('Pipe data from python script ...');
+     dataToSend = data.toString();
+    });
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code: any) => {
+      console.log(`child process close all stdio with code ${code}`);
+      // send data to browser
+      res.send(dataToSend)
+    });
+  });
+
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph

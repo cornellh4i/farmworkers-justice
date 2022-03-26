@@ -193,6 +193,7 @@ function aggregateHistogram(arr: [number, number][]) {
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
 async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
+  // TODO: HANDLE STREAMS SPECIAL CASE - NO ENCODING JUST STRING ENTRIES
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }

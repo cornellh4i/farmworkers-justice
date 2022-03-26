@@ -16,6 +16,7 @@
     "@mui/material": "^5.4.4"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.14",
     "sass": "^1.49.8"
   }
 }

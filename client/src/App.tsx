@@ -12,6 +12,7 @@ import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
+import MultiColumnChart from "./charts/MultiColumnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -66,6 +67,7 @@ function App() {
         <Route path = "/linegraph" element = {<Line data = {timeSeriesData} width = {500} height = {500} categoryEncoding = {"8"} variableEncoding = {"G01"} variableDescription = {"What was your total income last year in USD?"}/>} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
         <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}

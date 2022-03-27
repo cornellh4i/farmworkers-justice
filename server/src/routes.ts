@@ -1,5 +1,6 @@
 import Express from "express";
 import { Db } from "mongodb";
+import { arrayBuffer } from "stream/consumers";
 import { find } from "tslint/lib/utils";
 
 interface encodingProp {
@@ -216,6 +217,9 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   return output
 }
 
+
+
+
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
@@ -385,11 +389,57 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
+
+// TODO FIX BACK ARR TYPE
+async function aggregateColumnChart (arr:any, db: Db) {
+  var output = new Map<string, number>();
+
+  for(let i = 0; i < arr.length; i ++) {
+    var temp = calculatePercent(arr[i][1]);
+    output.set(arr[i][0], temp);
+  }
+
+  function calculatePercent(arr : [number, number][]){
+    var counterYes = 0;
+    var counterNo = 0;
+    
+    for (let i = 0; i < arr.length; i++){
+        if(arr[i][1] === 1){
+          counterYes += 1;
+        }
+        else if (arr[i][1] === 0) {
+          counterNo += 1;
+        }
+      } 
+      
+      return (counterYes / (counterYes + counterNo)) * 100;
+    }
+    return output;
+  }
+
+
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
   /**** Routes ****/
+  router.get('/column', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const db = dbo.getDb();
+    const arr = [["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
+
+    ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
+    ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
+    ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]];
+    
+    
+    const output = aggregateColumnChart(arr, db);
+    console.log(output)
+
+
+    res.json({ data: output }); 
+  });
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
@@ -435,3 +485,4 @@ module.exports = () => {
 
   return router;
 }
+

@@ -33,6 +33,10 @@ interface timeSeriesEncodingsProp {
   "ranges": timeSeriesRangesProp[]
 }
 
+interface fileRequest extends Request {
+  files: any
+}
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -412,8 +416,26 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
-  // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
-  router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
+  router.post('/updateData', async (req: fileRequest, res: Express.Response) => {
+    console.log("Hello I was posted")
+    let uploadFile = req.files.file;
+    const fileName = req.files.file.name;
+    uploadFile.mv(
+      `./db/data/${fileName}`,
+      function (e: Error) {
+        if (e) {
+          return res.status(500).send(e);
+        }
+
+        res.json({
+          file: `public/${req.files.file.name}`,
+        })
+      }
+    )
+  })
+
+  // This updateData route is placed before the :/variable route to prevent it from getting overriden 
+  router.get('/updateData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;

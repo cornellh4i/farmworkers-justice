@@ -346,6 +346,7 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
 }
 
 
+
 /**
  * @param variable is a variable to generate queries for
  * @param vizType is the visualization type of the variable
@@ -397,6 +398,13 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
+    console.log("check if backend called ", req.body)
+    res.json({ haveAccess: req.body.password === process.env.ADMIN_PASSWORD });
+
+  }
+  )
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph

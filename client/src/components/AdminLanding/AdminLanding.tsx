@@ -7,8 +7,8 @@ import Grid from '@mui/material/Grid';
 
 
 const API_URL = process.env.REACT_APP_API;
-// const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const ADMIN_PASSWORD = "password";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+//const ADMIN_PASSWORD = "password";
 var attemptsLeft = 3;
 
 //https://reactjs.org/docs/forms.html 
@@ -17,9 +17,10 @@ function AdminLanding() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
 
-  function checkPassword(inputPassword: string) {
-    return inputPassword === ADMIN_PASSWORD
-  }
+  // function checkPassword(inputPassword: string) {
+  //   return inputPassword === ADMIN_PASSWORD
+  // }
+
   async function handleKeypress(event: any) {
     if (event.keyCode === 13) {
       event.preventDefault();
@@ -29,10 +30,16 @@ function AdminLanding() {
   }
   async function handleSubmit(event: any) {
     console.log("password submitted: ", password)
-    console.log(ADMIN_PASSWORD)
-    const haveAccess = checkPassword(password)
-    console.log("have access: ", haveAccess)
-    if (haveAccess) {
+    //`${API_URL}/admin`
+    const haveAccess = await fetch(`${API_URL}/admin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: password })
+    });
+    // console.log("have access: ", haveAccess)
+    // const resp = await haveAccess.json();
+    // console.log("resp have acces: ", resp.haveAccess);
+    if (true) {
       navigate(`/adminUpload`);
     }
     else {

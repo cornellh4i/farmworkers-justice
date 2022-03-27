@@ -9,14 +9,5 @@
     "install": "cd client && npm install",
     "build": "cd client && npm run build"
   },
-  "license": "ISC",
-  "dependencies": {
-    "@emotion/react": "^11.8.1",
-    "@emotion/styled": "^11.8.1",
-    "@mui/material": "^5.4.4"
-  },
-  "devDependencies": {
-    "@types/jquery": "^3.5.14",
-    "sass": "^1.49.8"
-  }
+  "license": "ISC"
 }

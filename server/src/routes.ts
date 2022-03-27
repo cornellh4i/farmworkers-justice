@@ -146,8 +146,6 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       }
     })
   }
-  console.log("output before division: ", output)
-  console.log("total each year before division: ", totalEachYear)
 
   output.forEach((d) => {
     d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100) / 100
@@ -191,7 +189,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
-  console.log("encoding descrp: ", encodingDescrp)
   arr.forEach(([year, val]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
@@ -423,7 +420,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
      console.log('Pipe data from python script ...');

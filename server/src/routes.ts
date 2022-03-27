@@ -400,7 +400,12 @@ module.exports = () => {
   /**** Routes ****/
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     console.log("check if backend called ", req.body)
-    res.json({ haveAccess: req.body.password === process.env.ADMIN_PASSWORD });
+    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
+    var token = null
+    if (haveAccess){
+      token = "token"
+    }
+    res.json({ haveAccess: haveAccess, token: token});
 
   }
   )

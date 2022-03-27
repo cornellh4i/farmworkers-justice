@@ -26,6 +26,7 @@ function App() {
   const [FLCData, setFLCData] = useState<{}>({});
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
   const [dataHighlightData, setDataHighlightData] = useState<{ percentage: number, description: string }>({ percentage: 0, description: "" });
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     getData();
@@ -67,8 +68,8 @@ function App() {
         <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
-        <Route path="/admin" element={<AdminLanding />} />
-        <Route path="/adminUpload" element={<AdminUpload/>} />
+        <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
+        <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

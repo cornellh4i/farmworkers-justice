@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 
+interface AdminLandingProps {
+  setToken: Function
+}
 
 const API_URL = process.env.REACT_APP_API;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -12,19 +15,15 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 var attemptsLeft = 3;
 
 //https://reactjs.org/docs/forms.html 
-function AdminLanding() {
+function AdminLanding(props: AdminLandingProps) {
   const [password, setPassword] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
 
-  // function checkPassword(inputPassword: string) {
-  //   return inputPassword === ADMIN_PASSWORD
-  // }
-
   async function handleKeypress(event: any) {
     if (event.keyCode === 13) {
       event.preventDefault();
-      console.log("enter pressedf")
+      console.log("enter pressed")
       handleSubmit(event)
     }
   }
@@ -36,10 +35,11 @@ function AdminLanding() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: password })
     });
-    // console.log("have access: ", haveAccess)
-    // const resp = await haveAccess.json();
-    // console.log("resp have acces: ", resp.haveAccess);
-    if (true) {
+    const resp = await haveAccess.json();
+    console.log("resp have acces: ", resp.haveAccess);
+    console.group("respond token:", resp.token )
+    if (resp.haveAccess) {
+      props.setToken(resp.token);
       navigate(`/adminUpload`);
     }
     else {

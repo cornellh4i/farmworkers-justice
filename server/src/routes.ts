@@ -23,13 +23,13 @@ const LATEST_EVEN_YEAR = 2018;
 
 interface timeSeriesRangesProp {
   encoding: number,
-  start: null | number, 
+  start: null | number,
   end: null | number
 }
 
 interface timeSeriesEncodingsProp {
-  "variable-encoding": string, 
-  "variable-description": string, 
+  "variable-encoding": string,
+  "variable-description": string,
   "ranges": timeSeriesRangesProp[]
 }
 
@@ -71,7 +71,7 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
   // TODO: USE PROJECTION
   var result = await db.collection('naws_main').find(query).toArray();
   function iterateFunc(doc: any) {
-    let lst : [number, number] = [doc.FY, doc[variable]];
+    let lst: [number, number] = [doc.FY, doc[variable]];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
@@ -122,17 +122,17 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       const yrIdx: number = Math.floor((yr - minYear)/2) 
       const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
         e["variable-encoding"] === variable);
-      
+
       if (!isNaN(value)) {
         let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
-            e["encoding"] === value );
-        if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
+          e["encoding"] === value);
+        if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue;
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
-    }) 
+    })
   } else {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
@@ -240,31 +240,31 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   }
 
   await allEncoding()
-  .then( function() {
-    for (let i = 0; i < arr.length; i++) {
-      const value = arr[i][1];
-      let description;
-      if (!isNaN(value)) {
-        let j = 0;
-        while (typeof description == 'undefined') {
-          if (encodingDescrp[j].Encoding == value) {
-            description = encodingDescrp[j].Description;
+    .then(function () {
+      for (let i = 0; i < arr.length; i++) {
+        const value = arr[i][1];
+        let description;
+        if (!isNaN(value)) {
+          let j = 0;
+          while (typeof description == 'undefined') {
+            if (encodingDescrp[j].Encoding == value) {
+              description = encodingDescrp[j].Description;
+            }
+            j++;
           }
-          j++;
+          if (sum.has(description)) {
+            sum.set(description, sum.get(description)! + 1)
+          }
+          else {
+            sum.set(description, 1);
+          }
+          n++;
         }
-        if (sum.has(description)) {
-          sum.set(description, sum.get(description)! + 1)
-        }
-        else {
-          sum.set(description, 1);
-        }
-        n++;
       }
-    }
-    sum.forEach((v, d) => {
-      output.set(d, [Math.round(v/n * 100) / 100, v]);
-    })
-  });
+      sum.forEach((v, d) => {
+        output.set(d, [Math.round(v / n * 100) / 100, v]);
+      })
+    });
   return output;
 
 }
@@ -277,7 +277,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
- async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
+async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
@@ -290,7 +290,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
       }
     }
   });
-  return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
+  return { description: binaryData!.DisplayDescription, percentage: Math.round(displayCount / totalCount * 100) }
 }
 
 
@@ -359,6 +359,7 @@ async function getUniqueVariables(db: Db) {
 // export { collectVarInfo };
 
 
+
 /**
  * @param variable is a variable to generate queries for
  * @param vizType is the visualization type of the variable
@@ -384,7 +385,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   var output;
   if (vizType !== null) {
     if (vizType === VizType.Histogram) {
-      output = aggregateHistogram(queryResult); 
+      output = aggregateHistogram(queryResult);
     }
     else if (vizType === VizType.Table) {
       output = await aggregateTable(queryResult, variable, db);
@@ -409,6 +410,17 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
+    console.log("check if backend called ", req.body)
+    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
+    var token = null
+    if (haveAccess){
+      token = "token"
+    }
+    res.json({ haveAccess: haveAccess, token: token});
+    }
+  )
+  
   // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
   router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
@@ -434,7 +446,6 @@ module.exports = () => {
     });
   });
 
-
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
@@ -446,7 +457,7 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
@@ -460,7 +471,7 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
 
   });
 
@@ -475,7 +486,8 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+
   });
 
   return router;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -9,25 +9,23 @@ interface AdminLandingProps {
 }
 
 const API_URL = process.env.REACT_APP_API;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-//const ADMIN_PASSWORD = "password";
-var attemptsLeft = 3;
 
-//https://reactjs.org/docs/forms.html 
 function AdminLanding(props: AdminLandingProps) {
   const [password, setPassword] = useState("");
-  const [warning, setWarning] = useState("");
+  const [attemptsLeft, setAttemptsLeft] = useState(3)
   const navigate = useNavigate();
 
-
+  useEffect(() => {
+    console.log("Attempts left: ", attemptsLeft)
+  })
 
   async function handleKeypress(event: any) {
-    if (event.keyCode === 13) {
+    if (event.code === "Enter" || event.code === "NumpadEnter") {
       event.preventDefault();
-      console.log("enter pressed")
       handleSubmit(event)
     }
   }
+
   async function handleSubmit(event: any) {
     console.log("password submitted: ", password)
     //`${API_URL}/admin`
@@ -37,24 +35,21 @@ function AdminLanding(props: AdminLandingProps) {
       body: JSON.stringify({ password: password })
     });
     const resp = await haveAccess.json();
-    console.log("resp have acces: ", resp.haveAccess);
-    console.group("respond token:", resp.token )
     if (resp.haveAccess) {
       props.setToken(resp.token);
       navigate(`/adminUpload`);
     }
     else {
-      setWarning("Warning wrong password, " + attemptsLeft + " attempts left.");
-      attemptsLeft--;
-    }
-    if (attemptsLeft < 0) {
-      navigate(`/`);
+      if (attemptsLeft - 1 == 0) {
+        navigate(`/`);
+      }
+      setAttemptsLeft(attemptsLeft - 1);
+      setPassword("")
     }
   }
 
   function handleChange(event: any) {
     setPassword(event.target.value)
-    console.log("handle change set password: ", event.target.value)
   }
   return (
     <div className="adminLandingContainer">
@@ -75,7 +70,7 @@ function AdminLanding(props: AdminLandingProps) {
             </Grid>
           </label>
         </form>
-        <p className="warning">Warning: You have {attemptsLeft} attempts left.</p>
+        {attemptsLeft == 3 ?  null : <p className="warning">Warning wrong password: {attemptsLeft} attempts left.</p>}
       </Stack>
     </div>
   )

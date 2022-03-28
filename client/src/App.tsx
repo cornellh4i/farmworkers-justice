@@ -15,9 +15,14 @@ import Minipage from './components/Minipage/Minipage'
 import AdminLanding from './components/AdminLanding/AdminLanding'
 import Line from './charts/lineGraph';
 import AdminUpload from "./components/AdminUpload/AdminUpload";
-
+import DonutChart from "./charts/donutChart";
+import Line from './charts/lineGraph';
+import MultiColumnChart from "./charts/MultiColumnChart";
 
 const API_URL = process.env.REACT_APP_API;
+const LATEST_ODD_YEAR = 2017;
+const LATEST_EVEN_YEAR = 2018;
+
 
 function App() {
   const [tableData, setTableData] = useState<{}>({});
@@ -37,22 +42,22 @@ function App() {
     //   const histogramResponse = await fetch(urlHistogram);
     //   const histogramOut = await histogramResponse.json();
     //   setHistogramData(histogramOut.data);
-
+    
     //   const urlTable = `${API_URL}/B01`;
     //   const tableResponse = await fetch(urlTable);
     //   const tableOut = await tableResponse.json();
     //   setTableData(tableOut.data);
 
-    //   const urlDonut = `${API_URL}/B07`;
-    //   const donutResponse = await fetch(urlDonut);
-    //   const donutOut = await donutResponse.json();
-    //   setdonutData(donutOut.data);
-    // 
-    // const urlFLC = `${API_URL}/NUMFEMPL`;
-    // const FLCResponse = await fetch(urlFLC);
-    // const FLCOut = await FLCResponse.json();
-    // setFLCData(FLCOut.data);
-    // setTimeSeriesData(FLCOut.timeSeriesData)
+    urlDonut = `${API_URL}/B02`;
+    const donutResponse = await fetch(urlDonut);
+    const donutOut = await donutResponse.json();
+    setdonutData(donutOut.data);
+    
+    const urlFLC = `${API_URL}/NUMFEMPL`;
+    const FLCResponse = await fetch(urlFLC);
+    const FLCOut = await FLCResponse.json();
+    setFLCData(FLCOut.data);
+    setTimeSeriesData(FLCOut.timeSeriesData)
 
     // const urlDataHighlight = `${API_URL}/FOREIGNB`;
     // const DataHighlightResponse = await fetch(urlDataHighlight);
@@ -70,6 +75,9 @@ function App() {
         <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
+        <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
+        <Route path='/table' element={<Table data={tableData} />} />
+        <Route path='/donut' element={<DonutChart data={donutData} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

@@ -1,9 +1,8 @@
-import { useParams } from 'react-router-dom';
-import React, { ComponentProps } from 'react';
-import { Input } from 'reactstrap'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import './AdminLanding.scss'
 
 interface AdminLandingProps {
   setToken: Function
@@ -19,6 +18,8 @@ function AdminLanding(props: AdminLandingProps) {
   const [password, setPassword] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
+
+
 
   async function handleKeypress(event: any) {
     if (event.keyCode === 13) {
@@ -57,9 +58,8 @@ function AdminLanding(props: AdminLandingProps) {
   }
   return (
     <div className="adminLandingContainer">
-      Warning: You have {attemptsLeft} attempts left.
-      <form>
-        <h2 className="adminLandingContent">
+      <Stack>
+        <form className="adminLandingContent">
           <label>
             <Grid container direction="column" alignItems="center"
               justifyContent="center" style={{ minHeight: '100vh' }}>
@@ -73,13 +73,11 @@ function AdminLanding(props: AdminLandingProps) {
                 <input type="button" value="Submit" onClick={handleSubmit} />
               </Grid>
             </Grid>
-
           </label>
-
-        </h2>
-      </form>
+        </form>
+        <p className="warning">Warning: You have {attemptsLeft} attempts left.</p>
+      </Stack>
     </div>
-
   )
 }
 export default AdminLanding

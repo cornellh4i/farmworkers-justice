@@ -406,8 +406,7 @@ module.exports = () => {
       token = "token"
     }
     res.json({ haveAccess: haveAccess, token: token});
-
-  }
+    }
   )
 
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {

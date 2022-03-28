@@ -19,7 +19,7 @@ useEffect(() => {
 
   return (
     <div>
-        {props.token !== null ? <div>Hello</div> : null}
+        {props.token.length > 0 ? <div>Hello</div> : null}
     </div>
   )
   }

@@ -57,6 +57,7 @@ function AdminLanding(props: AdminLandingProps) {
   }
   return (
     <div className="adminLandingContainer">
+      Warning: You have {attemptsLeft} attempts left.
       <form>
         <h2 className="adminLandingContent">
           <label>

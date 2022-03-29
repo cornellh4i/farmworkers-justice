@@ -415,23 +415,19 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
-  /**** Routes ****/
-  router.post('/updateData', async (req: fileRequest, res: Express.Response) => {
-    console.log("Hello I was posted")
-    let uploadFile = req.files.file;
-    const fileName = req.files.file.name;
-    uploadFile.mv(
-      `./db/data/${fileName}`,
-      function (e: Error) {
-        if (e) {
-          return res.status(500).send(e);
-        }
+  const app = express();
+  const cors = require("cors");
+  app.use(cors({origin: "http://localhost:3000"}));
 
-        res.json({
-          file: `public/${req.files.file.name}`,
-        })
-      }
-    )
+  const multer = require("multer");
+  const upload = multer({ dest: './db/data'});
+
+  // Might need to uninstall and reinstall cors
+  /**** Routes ****/
+  router.post('/updateData', upload.single('selectedFile'), async (req: fileRequest, res: Express.Response) => {
+    console.log("Posted")
+    console.log(req.body)
+    res.sendStatus(200);
   })
 
   // This updateData route is placed before the :/variable route to prevent it from getting overriden 

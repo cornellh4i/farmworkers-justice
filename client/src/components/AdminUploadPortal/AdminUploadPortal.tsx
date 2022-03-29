@@ -34,7 +34,7 @@ function AdminUploadPortal() {
 	return (
 		<div className="upload">
 			<form onSubmit = {handleSubmit}>
-				<input type="file" onChange={handleFileSelect} accept=".zip" />
+				<input type="file" onChange={handleFileSelect} accept=".csv" />
 				<input type="submit" value="Upload" />
 			</form>
 			<form onSubmit = {handleSubmit}>

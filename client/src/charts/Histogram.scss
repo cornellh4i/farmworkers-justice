@@ -1,22 +1,73 @@
-.gridlines .domain {
-  }
+// .gridlines .domain {
+//   }
   
-  .gridlines line {
-    stroke: rgb(121, 121, 121);
-  }
+//   .gridlines line {
+//     stroke: rgb(121, 121, 121);
+//   }
   
-  .histogram {
-    stroke: gray;
-    fill: #ff820c;
-  }
+//   .histogram {
+//     stroke: gray;
+//     fill: #ff820c;
+//   }
   
-  .state {
-    stroke: white;
-    stroke-width: 1px;
-    fill: lightgray;
+//   .state {
+//     stroke: white;
+//     stroke-width: 1px;
+//     fill: lightgray;
+//   }
+//   .outline {
+//     stroke: darkgray;
+//     stroke-width: 3px;
+//     fill: rgba(255, 255, 255, 0);
+//   }
+.histogram-container {
+	display: flex;
+}
+
+body {
+	margin: 0;
+	padding: 40px;
+	font-family: "Raleway", sans-serif;
+	font-size: 13px;
+}
+
+p {
+	font-family: "Merriweather", serif;
+	font-size: 1.1em;
+	line-height: 1.6em;
+}
+
+p#info {
+	width: 600px;
+	margin-bottom: 60px;
+}
+
+#chart {
+	// padding: 10px;
+	width: 1000px;
+	height: 400px;
+	margin-bottom: 20px;
+	transform: translate(10px, 40px);
+}
+
+.bar {
+  width: 100px;
+  background-color: #ff820c;
+  float: left;
+  cursor: pointer;
+  border-style: solid; 
+  border-width: 1px; 
+  border-color: black
   }
-  .outline {
-    stroke: darkgray;
-    stroke-width: 3px;
-    fill: rgba(255, 255, 255, 0);
-  }
+
+.bar:last-child {
+	margin-right: 0;
+}
+
+.bar:hover {
+	background-color: #927A94;
+}
+
+button {
+	cursor: pointer;
+}

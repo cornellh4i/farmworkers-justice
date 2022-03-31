@@ -21,40 +21,22 @@ interface histogramBinRangesProp {
   "bin-ranges": Array<binProp>
 }
 
-
-const API_URL = process.env.REACT_APP_API;
-//var data: number[] = [];
-
-// TODO: CHANGE PERCENTAGE Y-AXIS LABEL
 function Histogram(props: histogramProp) {
-  const ref: React.MutableRefObject<null> = useRef(null);
+  const histogramBinRanges = require('../local-json/histogramBinRanges.json')
+  const maxHeight = 400;
 
   useEffect(() => {
-    // const svg = d3.select("svg#histogram");
-    
-    // const groupWithData = svg.selectAll("g.points").data(props.data);
-
     const dataSum = props.data.length;
-    const svg = d3.select("svg#histogram");
-    const width = 600
-    const height = 600
-    const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-    const chartWidth = width - 50 - margin.left - margin.right;
-    const chartHeight = height - margin.top - margin.bottom;  
-    const histogramBinRanges = require('../local-json/histogramBinRanges.json')
     var binRanges = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
       h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
   
     let maxValue: number = Math.max(...props.data);
     maxValue = Math.ceil(maxValue / 10) * 10;
-    const dataScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
+    // const xScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
     let total: number[] = []
-    let max = 0;
-    let i = 0;
     let x = 0;
   
     for (x = 0; x < binRanges.length; x++) {
-  
       total[x] = 0;
     }
   
@@ -69,76 +51,92 @@ function Histogram(props: histogramProp) {
         if (binRanges[key]["start"] == null) {
           if (d <= binRanges[key][end]) {
             let curr = total[key] + 1;
-            if (curr > max)
-              max = curr;
             total[key] = curr;
           }
         }
         else if (binRanges[key]["end"] == null) {
           if (d >= binRanges[key][start]) {
             let curr = total[key] + 1;
-            if (curr > max)
-              max = curr;
             total[key] = curr;
           }
         }
   
         if (d <= binRanges[key][end] && d >= binRanges[key][start]) {
           let curr = total[key] + 1;
-          if (curr > max)
-            max = curr;
           total[key] = curr;
         }
   
       });
     });
-  
-    for (let j = 0; j < total.length; j++) {
-      total[j] = (total[j] / dataSum);
+  let maxBin = 0;
+  for (let j = 0; j < total.length; j++) {
+    total[j] = (total[j] / dataSum);
+    if (total[j] > maxBin) {
+      maxBin = total[j] 
     }
-  
-  
-    max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
-    const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
-    
-    let chartArea = svg.append("g").attr("id", "points")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+  }
+  // Updates the visualization 
+  function update(total: number[]) {
+    var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
+    var axis = d3.select<SVGSVGElement, unknown>("svg g")
+    axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 
-    chartArea.append("g")
-      .attr("transform", "translate(50,0)")
-      .call(d3.axisLeft(totalScale).tickFormat(d3.format(".0%")));
-  
-  
-    Object.keys(total).forEach((key: any, index) => {
-      let end = binRanges[key]["end"]
-      let start = binRanges[key]["start"]
-  
-      let diff = end - start
-  
-  
-      chartArea.append("rect")
-        .attr("class", "histogram")
-        .attr("transform", "translate(50,0)")
-        .attr("x", dataScale(index * 10))
-        .attr("y", totalScale(total[key]))
-  
-        .attr("height", chartHeight - totalScale(total[key]))
-        .attr("width", dataScale(10));
-  
-      chartArea.append("text")
-        .attr("text-anchor", "middle")
-        .attr("transform", "translate(50,0)")
-        .attr("font-size", "15px")
-        .attr("x", dataScale(index * 10 + 5))
-        .attr('y', totalScale(total[key]) - 10)
-        .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key] * 100) + "%");    });
+    // Update selection: Resize and position existing 
+    // DOM elements with data bound to them.
+    var selection = d3.select("#chart")
+      .selectAll(".bar")
+      .data(total)
+      .style("height", function(d){ 
+        return d/maxBin*maxHeight + "px"; 
+      })
+      .style("margin-top", function(d){ 
+        return (maxHeight - d/maxBin*maxHeight) + "px"; 
+      });
+    
+    // Enter selection: Create new DOM elements for added 
+    // data items, resize and position them and attach a 
+    // mouse click handler.
+    selection.enter()
+      .append("div")
+      .attr("class", "bar")
+      .style("height", function(d){ 
+        return d/maxBin*maxHeight + "px"; 
+      })
+      .style("margin-top", function(d){ 
+        return (maxHeight - d/maxBin*maxHeight) + "px"; 
+      });
+
+    // Exit selection: Remove elements without data from the DOM
+    selection.exit().remove();
+
+      // Print underlying data array
+      // d3.selectAll("#total")
+      // .data(total)
+      // .enter()
+      // .append('text')
+      // .attr("x", function(d,i){return 100 * (i % 3)})
+      // .attr("y", function(d,i){return 20 * ( Math.floor(i/3) ) })
+      // .text(function(d) {return d});
+
+    };
+  update(total)
+    
+      //   chartArea.append("text")
+      //     .attr("text-anchor", "middle")
+      //     .attr("transform", "translate(50,0)")
+      //     .attr("font-size", "15px")
+      //     .attr("x", xScale(index * 10 + 5))
+      //     .attr('y', yScale(total[key]) - 10)
+      //     .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key] * 100) + "%");    });
+      // }
   }, [props.data])
   
   return (
-    <div>
-      <svg id="histogram" height={600} width={600} >
-        <g ref={ref} ></g>
+    <div className="histogram-container"> 
+      <svg width="60px" height="500px">
+        <g id="axis" transform="translate(30, 40)"></g>
       </svg>
+      <div id="chart"></div>
     </div>
 
   );

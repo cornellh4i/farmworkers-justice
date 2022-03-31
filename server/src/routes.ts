@@ -23,13 +23,13 @@ const LATEST_EVEN_YEAR = 2018;
 
 interface timeSeriesRangesProp {
   encoding: number,
-  start: null | number, 
+  start: null | number,
   end: null | number
 }
 
 interface timeSeriesEncodingsProp {
-  "variable-encoding": string, 
-  "variable-description": string, 
+  "variable-encoding": string,
+  "variable-description": string,
   "ranges": timeSeriesRangesProp[]
 }
 
@@ -76,7 +76,7 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
     console.log("error in queryVal with query: ", query, " for variable: ", variable)
   }
   function iterateFunc(doc: any) {
-    let lst : [number, number] = [doc.FY, doc[variable]];
+    let lst: [number, number] = [doc.FY, doc[variable]];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
@@ -128,17 +128,17 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       const yrIdx: number = Math.floor((yr - minYear)/2) 
       const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
         e["variable-encoding"] === variable);
-      
+
       if (!isNaN(value)) {
         let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
-            e["encoding"] === value );
-        if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
+          e["encoding"] === value);
+        if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue;
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
-    }) 
+    })
   } else {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
@@ -274,11 +274,11 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
         }
         n++;
       }
+      sum.forEach((v, d) => {
+        output.set(d, [Math.round(v / n * 100) / 100, v]);
+      })
     }
-    sum.forEach((v, d) => {
-      output.set(d, [Math.round(v/n * 100) / 100, v]);
-    })
-  });
+  })
   return output;
 
 }
@@ -291,7 +291,7 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
- async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
+async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
@@ -355,6 +355,29 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   return output;
 }
 
+async function getUniqueVariables(db: Db) {
+  const variablesInfo = db.collection('variable-info').find({});
+  var uniqueVariables: string[] = []
+  await variablesInfo.forEach(variableInfo => {
+    uniqueVariables.push(variableInfo.Variable)
+  });
+  console.log(uniqueVariables)
+  return uniqueVariables;
+  
+}
+
+
+// /**
+//  * @returns the the data stored inside of naws/variable-info
+//  */
+// function collectVarInfo(){
+//   const dbo = require("./db/conn");
+//   var db = dbo.getDb();
+//   return db.collection("variable-info");
+// }
+// export { collectVarInfo };
+
+
 
 /**
  * @param variable is a variable to generate queries for
@@ -381,7 +404,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   var output;
   if (vizType !== null) {
     if (vizType === VizType.Histogram) {
-      output = aggregateHistogram(queryResult); 
+      output = aggregateHistogram(queryResult);
     }
     else if (vizType === VizType.Table) {
       output = await aggregateTable(queryResult, variable, db);
@@ -406,6 +429,42 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
+    console.log("check if backend called ", req.body)
+    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
+    var token = null
+    if (haveAccess){
+      token = "token"
+    }
+    res.json({ haveAccess: haveAccess, token: token});
+    }
+  )
+  
+  // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
+  router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
+    const ATLAS_URI = process.env.ATLAS_URI;
+
+    const {spawn} = require('child_process');
+
+    var dataToSend: any;
+    // spawn new child process to call the python script
+    // switch this to python if your terminal uses python insteal of py
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
+    // collect data from script
+    python.stdout.on('data', function (data: any) {
+     console.log('Pipe data from python script ...');
+     dataToSend = data.toString();
+    });
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code: any) => {
+      console.log(`child process close all stdio with code ${code}`);
+      // send data to browser
+      res.send(dataToSend)
+    });
+  });
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph

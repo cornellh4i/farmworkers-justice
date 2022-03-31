@@ -134,7 +134,7 @@ function Histogram(props: histogramProp) {
       .style("position", "fixed")
       .style("justify-content", "center")
       .style("align-items", "center")
-      .style("display", "center")
+      .style("display", "flex")
       .style("flex-flow", "column")
       .style("width", "100px") // corresponding to bar width
       .style("left", function(d, i) { return xScale(i) + "px"})
@@ -142,27 +142,9 @@ function Histogram(props: histogramProp) {
       .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
 
     labels.exit().remove();
-
-      // Print underlying data array
-      // d3.selectAll("#total")
-      // .data(total)
-      // .enter()
-      // .append('text')
-      // .attr("x", function(d,i){return 100 * (i % 3)})
-      // .attr("y", function(d,i){return 20 * ( Math.floor(i/3) ) })
-      // .text(function(d) {return d});
-
-    };
+  };
+  
   update(total)
-    
-      //   chartArea.append("text")
-      //     .attr("text-anchor", "middle")
-      //     .attr("transform", "translate(50,0)")
-      //     .attr("font-size", "15px")
-      //     .attr("x", xScale(index * 10 + 5))
-      //     .attr('y', yScale(total[key]) - 10)
-      //     .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key] * 100) + "%");    });
-      // }
   }, [props.data])
   
   return (

@@ -4,7 +4,9 @@ import { Callback } from "mongoose";
 import { cursorTo } from "readline";
 
 const { MongoClient } = require("mongodb");
-const ATLAS_URI = process.env.ATLAS_URI;
+
+// NEED TO FIX
+const ATLAS_URI  = process.env.ATLAS_URI;
 const client = new MongoClient(ATLAS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

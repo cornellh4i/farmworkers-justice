@@ -7,11 +7,16 @@ import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
 import Table from './charts/Table'
+
+
 import LineGraph from './charts/lineGraph'
 import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
+import AdminLanding from './components/AdminLanding/AdminLanding'
+import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
+import MultiColumnChart from "./charts/MultiColumnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -25,6 +30,7 @@ function App() {
   const [FLCData, setFLCData] = useState<{}>({});
   const [timeSeriesData, setTimeSeriesData] = useState<Array<{}>>([]);
   const [dataHighlightData, setDataHighlightData] = useState<{ percentage: number, description: string }>({ percentage: 0, description: "" });
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     getData();
@@ -52,10 +58,10 @@ function App() {
     setFLCData(FLCOut.data);
     setTimeSeriesData(FLCOut.timeSeriesData)
 
-    // const urlDataHighlight = `${API_URL}/Indigenous`;
-    // const DataHighlightResponse = await fetch(urlDataHighlight);
-    // const DataHighlightOut = await DataHighlightResponse.json();
-    // setDataHighlightData(DataHighlightOut.data);
+    const urlDataHighlight = `${API_URL}/Indigenous`;
+    const DataHighlightResponse = await fetch(urlDataHighlight);
+    const DataHighlightOut = await DataHighlightResponse.json();
+    setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -66,10 +72,13 @@ function App() {
         <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
         <Route path="histogram" element={<Histogram data={histogramData} categoryEncoding={2} variableEncoding={"A08"} />} />
-        <Route path='/table' element={<Table data={tableData}/> } />
+        <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
+        <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
+        <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
+        <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
-        
+
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\
           Respondent Age
         </h3> 
@@ -88,7 +97,6 @@ function App() {
         <h3 style={{ marginBottom: "1px", marginLeft: "100px" }}>
           How well do you speak English?
         </h3>
-
         <Donut
           data={donutData}
           width={500}

@@ -27,7 +27,7 @@ function Histogram(props: histogramProp) {
 
   useEffect(() => {
     const dataSum = props.data.length;
-    var binRanges = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
+    var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
       h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
   
     let maxValue: number = Math.max(...props.data);
@@ -41,29 +41,29 @@ function Histogram(props: histogramProp) {
     }
   
     props.data.forEach(d => {
-      Object.keys(total).forEach((key: any) => {
+      total.forEach((element, index) => {
         let start = "start";
         let end = "end";
-        if (binRanges[key]["start-encoding"] != null) {
+        if (binRanges[index]["start-encoding"] != null) {
           start = "start-encoding"
           end = "end-encoding"
         }
-        if (binRanges[key]["start"] == null) {
-          if (d <= binRanges[key][end]) {
-            let curr = total[key] + 1;
-            total[key] = curr;
+        if (binRanges[index].start == null) {
+          if (d <= binRanges[index].end!) {
+            let curr = total[index] + 1;
+            total[index] = curr;
           }
         }
-        else if (binRanges[key]["end"] == null) {
-          if (d >= binRanges[key][start]) {
-            let curr = total[key] + 1;
-            total[key] = curr;
+        else if (binRanges[index].end == null) {
+          if (d >= binRanges[index].start!) {
+            let curr = total[index] + 1;
+            total[index] = curr;
           }
         }
   
-        if (d <= binRanges[key][end] && d >= binRanges[key][start]) {
-          let curr = total[key] + 1;
-          total[key] = curr;
+        if (d <= binRanges[index].end! && d >= binRanges[index].start!) {
+          let curr = total[index] + 1;
+          total[index] = curr;
         }
   
       });
@@ -78,12 +78,15 @@ function Histogram(props: histogramProp) {
   // Updates the visualization 
   function update(total: number[]) {
     var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
+    const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 100 + 10]); // +10 due to chart transform
     var axis = d3.select<SVGSVGElement, unknown>("svg g")
     axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 
     // Update selection: Resize and position existing 
     // DOM elements with data bound to them.
     var selection = d3.select("#chart")
+
+    var bins = selection
       .selectAll(".bar")
       .data(total)
       .style("height", function(d){ 
@@ -96,7 +99,7 @@ function Histogram(props: histogramProp) {
     // Enter selection: Create new DOM elements for added 
     // data items, resize and position them and attach a 
     // mouse click handler.
-    selection.enter()
+    bins.enter()
       .append("div")
       .attr("class", "bar")
       .style("height", function(d){ 
@@ -107,7 +110,38 @@ function Histogram(props: histogramProp) {
       });
 
     // Exit selection: Remove elements without data from the DOM
-    selection.exit().remove();
+    bins.exit().remove();
+
+    var labels = selection 
+      .selectAll('.text')
+      .data(binRanges)
+      .style("font-size", "12px")
+      .style("position", "fixed")
+      .style("justify-content", "center")
+      .style("align-items", "center")
+      .style("display", "center")
+      .style("flex-flow", "column")
+      .style("width", "100px") // corresponding to bar width
+      .style("left", function(d, i) { return xScale(i) + "px"})
+      .style('top', function(d, i) { return yScale(total[i]) -20 + "px"}) //-20 to go above bar
+      .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
+
+
+    labels.enter()
+      .append("text")
+      .attr("class", "text")
+      .style("font-size", "12px")
+      .style("position", "fixed")
+      .style("justify-content", "center")
+      .style("align-items", "center")
+      .style("display", "center")
+      .style("flex-flow", "column")
+      .style("width", "100px") // corresponding to bar width
+      .style("left", function(d, i) { return xScale(i) + "px"})
+      .style('top', function(d, i) { return yScale(total[i]) - 20 + "px"}) //-20 to go above bar
+      .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
+
+    labels.exit().remove();
 
       // Print underlying data array
       // d3.selectAll("#total")

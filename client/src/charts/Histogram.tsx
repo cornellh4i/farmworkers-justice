@@ -84,7 +84,7 @@ function Histogram(props: histogramProp) {
 
     // Update selection: Resize and position existing 
     // DOM elements with data bound to them.
-    var selection = d3.select("#chart")
+    var selection = d3.select("#histogram")
 
     var bins = selection
       .selectAll(".bar")
@@ -152,7 +152,7 @@ function Histogram(props: histogramProp) {
       <svg width="60px" height="500px">
         <g id="axis" transform="translate(30, 40)"></g>
       </svg>
-      <div id="chart"></div>
+      <div id="histogram"></div>
     </div>
 
   );

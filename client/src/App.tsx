@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import DataHighlight from '../src/charts/DataHighlight';
-import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
@@ -10,7 +9,6 @@ import Table from './charts/Table'
 
 
 import LineGraph from './charts/lineGraph'
-import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 import AdminLanding from './components/AdminLanding/AdminLanding'
 import AdminUpload from "./components/AdminUpload/AdminUpload";
@@ -47,7 +45,7 @@ function App() {
     const tableOut = await tableResponse.json();
     setTableData(tableOut.data);
 
-    const urlDonut = `${API_URL}/B02`;
+    const urlDonut = `${API_URL}/STREAMS`;
     const donutResponse = await fetch(urlDonut);
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);

@@ -1,6 +1,5 @@
 import "@fontsource/rubik";
 import './Dropdown.scss';
-import { unmountComponentAtNode } from 'react-dom'
 import Grid from '@mui/material/Grid';
 import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
@@ -79,13 +78,13 @@ function Dropdown(props: DropdownProp) {
         //TODO: RENDER TIME SERIES
         console.log("fetched data for variable ", props.variable, " : ", output.data)
         if (output.vizType === "histogram") {
-          setVisualizationComponent(<Histogram categoryEncoding={props.index} variableEncoding={props.variable} data={output.data} />)
+          setVisualizationComponent(<Histogram key={props.index.toString()} categoryEncoding={props.index} variableEncoding={props.variable} data={output.data} />)
         } else if (output.vizType === "donut") {
-          setVisualizationComponent(<Donut data={output.data} />)
+          setVisualizationComponent(<Donut key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "table") {
-          setVisualizationComponent(<DataTable data={output.data} />)
+          setVisualizationComponent(<DataTable key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "data") {
-          setVisualizationComponent(<DataHighlight data={output.data} />)
+          setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
         } else {
           console.log("visualization type not covered ")
         }
@@ -93,6 +92,7 @@ function Dropdown(props: DropdownProp) {
         console.log("Failed to fetch: ", props.variable)
       }
     }
+    console.log("set visualization component for index: ", props.index, " with component: ", VisualizationComponent)
 
     var url;
     if (props.filter1Selected === null && props.filter2Selected === null) {
@@ -108,9 +108,7 @@ function Dropdown(props: DropdownProp) {
         el["filter-value"] === props.filter2Selected![0])["filter-encoding"];
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filter1Encoding}/${props.filter2Selected[1]}/${filter2Encoding}`;
     }
-    console.log("filter fetch url: ", url)
     getData(url)
-    // unmountComponentAtNode(document.getElementById('#visualizationComponent')!)
   
 
   }, [props.filter1Selected, props.filter2Selected])
@@ -131,29 +129,6 @@ function Dropdown(props: DropdownProp) {
               <div id="visualizationComponent">
                 {props.variable}
                 {VisualizationComponent}
-                {/* {visualizationType === "histogram" ? 
-                  <Histogram categoryEncoding={props.index} variableEncoding={props.variable} data={visualizationData} />
-                  :
-                  <>
-                    {visualizationType === "donut" ? 
-                      <Donut innerRadius={100} outerRadius={200} data={visualizationData} height={600} width={600} />
-                      :
-                      <>
-                        {visualizationType === "table" ?
-                          <DataTable data={visualizationData} />
-                          :
-                          <>
-                            {visualizationType === "data" ?
-                              <DataHighlight percentage={visualizationData.percentage} description={visualizationData.description}/>
-                              :
-                              null
-                              }
-                          </>
-                        }
-                      </>
-                    }
-                  </>
-                } */}
                 {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
               </div>
             </Collapse>

@@ -8,7 +8,6 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import './FilterPanel.scss'
-import { propsToClassKey } from "@mui/styles";
 
 const FilterEnum = {
   GENDER: "GENDER",

@@ -14,10 +14,12 @@ function DonutChart(props: DonutChartProps) {
   const width = 400
   const [data, setData] = useState<number[]>([])
   const [description, setDescription] = useState<string[]>([])
-  const colors = d3.scaleOrdinal(d3.schemeCategory10);
+  var colors: d3.ScaleOrdinal<string, string, never> =  d3.scaleOrdinal(d3.schemeCategory10);
 
-
+  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
   useEffect(() => {
+    colors = d3.scaleOrdinal(d3.schemeCategory10);
+
     // get list of data from the values
     var donutData: number[] = []
     var donutDescription: string[] = []
@@ -79,7 +81,7 @@ function DonutChart(props: DonutChartProps) {
       <Grid item xs alignItems='center' display='flex'>
         <div>
           {description.map((element, index) => 
-            <Grid container spacing={2} className="legend-row">
+            <Grid container spacing={2} className="legend-row" key={index}>
               <Grid item xs={2} justifyContent='right' display='flex'>
                 <div className='rect' style={{backgroundColor: colors(index.toString())}}></div>
               </Grid>

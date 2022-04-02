@@ -25,6 +25,7 @@ function Histogram(props: histogramProp) {
   const histogramBinRanges = require('../local-json/histogramBinRanges.json')
   const maxHeight = 400;
 
+  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
   useEffect(() => {
     const dataSum = props.data.length;
     var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
@@ -39,33 +40,48 @@ function Histogram(props: histogramProp) {
     for (x = 0; x < binRanges.length; x++) {
       total[x] = 0;
     }
-  
+    // TODO: FIX SORTING FOR VARIALBES WITH ENCODINGS
     props.data.forEach(d => {
       total.forEach((element, index) => {
         let start = "start";
         let end = "end";
         if (binRanges[index]["start-encoding"] != null) {
-          start = "start-encoding"
-          end = "end-encoding"
-        }
-        if (binRanges[index].start == null) {
-          if (d <= binRanges[index].end!) {
+          if (binRanges[index].start == null) {
+            if (d <= binRanges[index]["end-encoding"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d >= binRanges[index]["start-encoding"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+    
+          if (d <= binRanges[index]["end-encoding"]! && d >= binRanges[index]["start-encoding"]!) {
+            let curr = total[index] + 1;
+            total[index] = curr;
+          }
+        } else {
+          if (binRanges[index].start == null) {
+            if (d <= binRanges[index]["end"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d >= binRanges[index]["start"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+    
+          if (d <= binRanges[index]["end"]! && d >= binRanges[index]["start"]!) {
             let curr = total[index] + 1;
             total[index] = curr;
           }
         }
-        else if (binRanges[index].end == null) {
-          if (d >= binRanges[index].start!) {
-            let curr = total[index] + 1;
-            total[index] = curr;
-          }
-        }
-  
-        if (d <= binRanges[index].end! && d >= binRanges[index].start!) {
-          let curr = total[index] + 1;
-          total[index] = curr;
-        }
-  
       });
     });
   let maxBin = 0;

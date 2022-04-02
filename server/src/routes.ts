@@ -196,6 +196,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
+  console.log("encodingDescrp: ", encodingDescrp)
   arr.forEach(([year, val]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
@@ -203,6 +204,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       totalCounts += 1
     }
   });
+  console.log("output before dividing: ", output)
 
   output.forEach((val, description) => {
     output.set(description, Math.round(val/totalCounts * 100) / 100);

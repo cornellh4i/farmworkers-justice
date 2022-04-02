@@ -5,6 +5,7 @@ import './donutChart.scss';
 
 interface DonutChartProps {
   data: any,
+  index: number
 }
 
 function DonutChart(props: DonutChartProps) {
@@ -45,7 +46,7 @@ function DonutChart(props: DonutChartProps) {
         .innerRadius(innerRadius - 50)
         .outerRadius(outerRadius - 50);
       
-      var path = d3.select("#donutChart")
+      var path = d3.select(`#donutChart${props.index}`)
       .datum(donutData).selectAll("path")
       .data(createPie)
       // .append("path")
@@ -63,7 +64,7 @@ function DonutChart(props: DonutChartProps) {
         .attr("d", createArc);
       // .each(function(d){ this._current = d; })
 
-      d3.select("#donutChart")
+      d3.select(`#donutChart${props.index}`)
         .datum(donutData).selectAll("path")
         .data(createPie).exit().remove();
     }
@@ -75,7 +76,7 @@ function DonutChart(props: DonutChartProps) {
     <Grid container>
       <Grid item xs>
         <svg height={height} width={width}>
-          <g id="donutChart" style={{transform: `translate(200px, 200px)`}}></g>
+          <g id={`donutChart${props.index}`} style={{transform: `translate(200px, 200px)`}}></g>
         </svg>
       </Grid>
       <Grid item xs alignItems='center' display='flex'>

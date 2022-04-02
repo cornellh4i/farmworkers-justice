@@ -39,9 +39,12 @@ function Minipage() {
     return (
         <div>
             <FilterPanel setMapFilterSelected={setMapFilterSelected} setFilter1Selected={setFilter1Selected} setFilter2Selected={setFilter2Selected} />
-            {variableDescriptions.map((variableDescription, index) => <Dropdown key={index.toString()} variableDescription={variableDescription}
-                index={index} variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
-                currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
+           <ul>
+                {variableDescriptions.map((variableDescription, index) => 
+                    <Dropdown key={index.toString()} variableDescription={variableDescription} index={index} 
+                    variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
+                    currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
+            </ul>
         </div>
     )
 }

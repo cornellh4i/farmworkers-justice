@@ -78,9 +78,9 @@ function Dropdown(props: DropdownProp) {
         //TODO: RENDER TIME SERIES
         console.log("fetched data for variable ", props.variable, " : ", output.data)
         if (output.vizType === "histogram") {
-          setVisualizationComponent(<Histogram key={props.index.toString()} categoryEncoding={props.index} variableEncoding={props.variable} data={output.data} />)
+          setVisualizationComponent(<Histogram key={props.index.toString()} index={props.index} variableEncoding={props.variable} data={output.data} />)
         } else if (output.vizType === "donut") {
-          setVisualizationComponent(<Donut key={props.index.toString()} data={output.data} />)
+          setVisualizationComponent(<Donut key={props.index.toString()} index={props.index} data={output.data} />)
         } else if (output.vizType === "table") {
           setVisualizationComponent(<DataTable key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "data") {

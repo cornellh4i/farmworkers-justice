@@ -69,12 +69,12 @@ function App() {
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
         <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
-        <Route path="histogram" element={<Histogram data={histogramData} categoryEncoding={2} variableEncoding={"A08"} />} />
+        <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
         <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
         <Route path='/table' element={<Table data={tableData} />} />
-        <Route path='/donut' element={<DonutChart data={donutData} />} />
+        <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

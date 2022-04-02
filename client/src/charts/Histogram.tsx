@@ -10,9 +10,9 @@ interface binProp {
 }
 
 interface histogramProp {
-  categoryEncoding: number;
   variableEncoding: string;
-  data: number[]
+  data: number[],
+  index: number
 }
 
 interface histogramBinRangesProp {
@@ -95,12 +95,12 @@ function Histogram(props: histogramProp) {
   function update(total: number[]) {
     var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
     const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 100 + 10]); // +10 due to chart transform
-    var axis = d3.select<SVGSVGElement, unknown>("svg g")
+    var axis = d3.select<SVGSVGElement, unknown>(`#axis${props.index}`)
     axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 
     // Update selection: Resize and position existing 
     // DOM elements with data bound to them.
-    var selection = d3.select("#histogram")
+    var selection = d3.select(`#histogram${props.index}`)
 
     var bins = selection
       .selectAll(".bar")
@@ -166,9 +166,9 @@ function Histogram(props: histogramProp) {
   return (
     <div className="histogram-container"> 
       <svg width="60px" height="500px">
-        <g id="axis" transform="translate(30, 40)"></g>
+        <g id={`axis${props.index}`} transform="translate(30, 40)"></g>
       </svg>
-      <div id="histogram"></div>
+      <div id={`histogram${props.index}`} style={{width: '1000px', height: '400px', marginBottom: '20px', transform: "translate(10px, 40px)"}}></div>
     </div>
 
   );

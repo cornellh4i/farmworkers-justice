@@ -145,10 +145,7 @@ function Histogram(props: histogramProp) {
       .attr("class", "text")
       .style("font-size", "12px")
       .style("position", "fixed")
-      .style("justify-content", "center")
-      .style("align-items", "center")
-      .style("display", "flex")
-      .style("flex-flow", "column")
+      .style("text-align", "center")
       .style("width", "100px") // corresponding to bar width
       .style("left", function(d, i) { return xScale(i) + "px"})
       .style('top', function(d, i) { return yScale(total[i]) - 20 + "px"}) //-20 to go above bar

@@ -83,7 +83,7 @@ function DonutChart(props: DonutChartProps) {
         <div>
           {description.map((element, index) => 
             <Grid container spacing={2} className="legend-row" key={index}>
-              <Grid item xs={2} justifyContent='right' display='flex'>
+              <Grid item xs={2}>
                 <div className='rect' style={{backgroundColor: colors(index.toString())}}></div>
               </Grid>
               <Grid item xs={10} alignItems='center' display='flex'>

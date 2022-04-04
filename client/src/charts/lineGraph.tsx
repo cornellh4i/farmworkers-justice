@@ -73,7 +73,7 @@ function LineGraph(props: LineGraphProp) {
         if(toExclude.includes(props.variableEncoding)) {
           return variableDescription;
         } 
-        return `Percentage of farmworkers overtime for suvery question: ${variableDescription}`;
+        return `Percentage of farmworkers over time for suvery question: ${variableDescription}`;
       });
 
     svg.selectAll('.line')

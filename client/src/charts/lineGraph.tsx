@@ -4,11 +4,8 @@ import "@fontsource/rubik";
 
 interface LineGraphProp {
   data: any;
-  width: number;
-  height: number;
   variableDescription: string;
   variableEncoding: string;
-  categoryEncoding: string;
 }
 
 const toExclude: string[] = ["B11", "G01", "G03", "FWRDays", "NUMFEMPL"];
@@ -23,17 +20,17 @@ function findMaxY(data: any){
 
 function LineGraph(props: LineGraphProp) {
   const svgRef: React.MutableRefObject<null> = useRef(null);
-  const w = props.width;
-  const h = props.height;
+  const w = 400;
+  const h = 400;
 
   useEffect(() => {
     const variableDescription = props.variableDescription;
     const svg = d3.select(svgRef.current)
       .attr('width', w)
-      .attr('height', h)
+      .attr('height', h + 50)
       .style('background', 'white')
-      .style('margin-top', '100')
-      .style('margin-left', '100')
+      .style('margin-top', '50')
+      .style('margin-left', '50')
       .style('overflow', 'visible');
     const xScale = d3.scaleLinear()
       .domain((props.data.length !== 0)? 
@@ -55,7 +52,8 @@ function LineGraph(props: LineGraphProp) {
       // .tickFormat(i => String(i))
       .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
     const yAxis = d3.axisLeft(yScale)
-      .ticks(5);
+      .ticks(5)
+      .tickFormat((d, i) => `${d}%`);
     svg.append('g')
       .call(xAxis)
       .attr('transform', `translate(0, ${h})`);
@@ -69,22 +67,13 @@ function LineGraph(props: LineGraphProp) {
       .style('font-family', 'Rubik')
       .text("Years");    
     svg.append("text")
-      .attr("class", "y label")
-      .attr("text-anchor", "end")
-      .attr("y", -60)
-      .attr("x", -w/2 + ((variableDescription.length * 8)/2))
-      .attr("dy", ".75em")
-      .attr("transform", "rotate(-90)")
-      .style('font-family', 'Rubik')
-      .text(variableDescription); 
-    svg.append("text")
       .attr("y", -10)
       .style('font-family', 'Rubik')
       .text(() => {
         if(toExclude.includes(props.variableEncoding)) {
           return variableDescription;
         } 
-        return `Percentage of survey question: ${variableDescription}`;
+        return `Percentage of farmworkers overtime for suvery question: ${variableDescription}`;
       });
 
     svg.selectAll('.line')

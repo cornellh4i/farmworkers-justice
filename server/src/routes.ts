@@ -94,7 +94,8 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  *        it assumes that the number of distinct years is even
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
- *          as {year: 2009, value: 0.54}. The year is representative of two years (2019 & 2010 in the example)
+ *          as {year: 2009, value: 54}. The year is representative of two years (2019 & 2010 in the example)
+ *          and the value is a percentage of  1s / (1s + 0s)
  *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
  *          The value represents the percentage of how often a variable appears in those two years. 
  *          An average value is returned for variables: B11, G01, G03, FWRDays, 
@@ -151,11 +152,10 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
         }
       }
     })
+    output.forEach((d) => {
+      d.value = (d.value / totalEachYear.get(d.year)! * 100)
+    })
   }
-
-  output.forEach((d) => {
-    d.value = (d.value / totalEachYear.get(d.year)!)
-  })
   return output
 }
 
@@ -204,8 +204,6 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
       totalCounts += 1
     }
   });
-  console.log("output before dividing: ", output)
-
   output.forEach((val, description) => {
     output.set(description, Math.round(val/totalCounts * 100) / 100);
   })
@@ -311,7 +309,7 @@ async function getDataHighlights(arr: [number, number][], variable: string, db: 
     }
   });
   
-  return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
+  return {description: binaryData!.DisplayDescription, percentage: (displayCount/totalCount * 100).toFixed(1)}
 }
 
 

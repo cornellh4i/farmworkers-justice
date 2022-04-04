@@ -11,7 +11,7 @@ import Histogram from './../../charts/Histogram';
 import Donut from './../../charts/donutChart'
 import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
-
+import LineGraph from './../../charts/lineGraph'
 
 interface DropdownProp {
   index: number
@@ -41,11 +41,11 @@ const filterEncodings = require("./../../local-json/filterEncoding.json")
 
 function Dropdown(props: DropdownProp) {
   const [collapse, setCollapse] = useState(false)
-  const [visualizationType, setVisualizationType] = useState("")
-  const [visualizationData, setVisualizationData] = useState<any>(null)
-  const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
+  // const [visualizationType, setVisualizationType] = useState("")
+  // const [visualizationData, setVisualizationData] = useState<any>(null)
+  // const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
   const [VisualizationComponent , setVisualizationComponent] = useState(<></>);
-
+  const [TimeSeriesComponent , setTimeSeriesComponent] = useState(<></>);
 
   function onClickCollapse() {
     if (props.currentCollapseIndex === props.index) {
@@ -72,9 +72,9 @@ function Dropdown(props: DropdownProp) {
       try {
         response = await fetch(url);
         output = await response.json();
-        setVisualizationType(output.vizType)
-        setVisualizationData(output.data)
-        setTimeSeriesData(output.timeSeriesData)
+        // setVisualizationType(output.vizType)
+        // setVisualizationData(output.data)
+        // setTimeSeriesData(output.timeSeriesData)
         //TODO: RENDER TIME SERIES
         console.log("fetched data for variable ", props.variable, " : ", output.data)
         if (output.vizType === "histogram") {
@@ -87,6 +87,10 @@ function Dropdown(props: DropdownProp) {
           setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
         } else {
           console.log("visualization type not covered ")
+        }
+
+        if (typeof output.timeSeriesData != 'undefined') {
+          setTimeSeriesComponent(<LineGraph key={props.index.toString()} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
         }
       } catch (error) {
         console.log("Failed to fetch: ", props.variable)
@@ -128,13 +132,21 @@ function Dropdown(props: DropdownProp) {
             <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
               <div id="visualizationComponent">
                 {props.variable}
-                {VisualizationComponent}
-                {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
+                <Grid container> 
+                  <Grid item xs ={9}>
+                    {VisualizationComponent}
+                  </Grid>
+                  <Grid item xs ={3}>
+                    {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
+                  </Grid>
+                  <Grid item xs={12}> 
+                    {TimeSeriesComponent}
+                  </Grid>
+                </Grid>
               </div>
             </Collapse>
           </Grid>
         </Grid>
-
       </div >
     </div >
   )

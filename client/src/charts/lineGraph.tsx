@@ -30,7 +30,7 @@ function LineGraph(props: LineGraphProp) {
       .attr('height', h + 50)
       .style('background', 'white')
       .style('margin-top', '50')
-      .style('margin-left', '50')
+      .style('margin-left', '30') // align with histogram y-axis
       .style('overflow', 'visible');
     const xScale = d3.scaleLinear()
       .domain((props.data.length !== 0)? 

@@ -148,7 +148,7 @@ function Histogram(props: histogramProp) {
       .style("text-align", "center")
       .style("width", "100px") // corresponding to bar width
       .style("left", function(d, i) { return xScale(i) + "px"})
-      .style('top', function(d, i) { return yScale(total[i]) - 20 + "px"}) //-20 to go above bar
+      .style('top', function(d, i) { return yScale(total[i]) - 30 + "px"}) //-30 to go two rows above bar
       .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
 
     labels.exit().remove();

@@ -95,21 +95,20 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
  *          as {year: 2009, value: 54}. The year is representative of two years (2019 & 2010 in the example)
- *          and the value is a percentage of  1s / (1s + 0s)
+ *          and value is the percentage of 1s / (1s + 0s)
  *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
  *          The value represents the percentage of how often a variable appears in those two years. 
- *          An average value is returned for variables: B11, G01, G03, FWRDays, 
- *          and NUMFEMPL. 
+ *          An average value is returned for variables: B11, G01, G03, FWRDays, and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, number][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2 
   let output = new Array<{ year: number, value: number }>();
-  let totalEachYear = new Map<number, number>();
+  let countEachYear = new Map<number, number>();
   for (let i = 0; i <= (maxYear - minYear - 1)/2; i++) {
     output[i] = { year: minYear + i*2, value: 0 };
-    totalEachYear.set(minYear + i*2, 0)
+    countEachYear.set(minYear + i*2, 0)
   }
 
   if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
@@ -119,8 +118,11 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       const yrIdx: number = Math.floor((yr - minYear)/2) // Have odd then even years in one group
       if (!isNaN(value)) {
         output[yrIdx].value += value;
-        totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+        countEachYear.set(yr, countEachYear.get(yr)! + 1);
       }
+    })
+    output.forEach((d) => {
+      d.value = (d.value / countEachYear.get(d.year)!)
     })
   } else if (variable === "G01" || variable === "G03") {
     arr.forEach((v) => {
@@ -136,9 +138,12 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
         if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue;
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+          countEachYear.set(yr, countEachYear.get(yr)! + 1);
         }
       }
+    })
+    output.forEach((d) => {
+      d.value = (d.value / countEachYear.get(d.year)!)
     })
   } else {
     arr.forEach((v) => {
@@ -148,12 +153,12 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
           output[yrIdx].value += value;
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+          countEachYear.set(yr, countEachYear.get(yr)! + 1);
         }
       }
     })
     output.forEach((d) => {
-      d.value = (d.value / totalEachYear.get(d.year)! * 100)
+      d.value = (d.value / countEachYear.get(d.year)! * 100)
     })
   }
   return output

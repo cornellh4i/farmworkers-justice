@@ -49,11 +49,16 @@ function LineGraph(props: LineGraphProp) {
     
     const xAxis = d3.axisBottom(xScale)
       .ticks(Object.keys(props.data).length)
-      // .tickFormat(i => String(i))
       .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
     const yAxis = d3.axisLeft(yScale)
       .ticks(5)
-      .tickFormat((d, i) => `${d}%`);
+      .tickFormat((d, i) => {
+        if(toExclude.includes(props.variableEncoding)) {
+          return `${d}`;
+        } else {
+          return `${d}%`
+        }
+      });
     svg.append('g')
       .call(xAxis)
       .attr('transform', `translate(0, ${h})`);
@@ -71,7 +76,7 @@ function LineGraph(props: LineGraphProp) {
       .style('font-family', 'Rubik')
       .text(() => {
         if(toExclude.includes(props.variableEncoding)) {
-          return variableDescription;
+          return "";
         } 
         return `Percentage of farmworkers over time for suvery question: ${variableDescription}`;
       });

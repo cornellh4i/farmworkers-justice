@@ -96,7 +96,6 @@ function Dropdown(props: DropdownProp) {
         console.log("Failed to fetch: ", props.variable)
       }
     }
-    console.log("set visualization component for index: ", props.index, " with component: ", VisualizationComponent)
 
     var url;
     if (props.filter1Selected === null && props.filter2Selected === null) {

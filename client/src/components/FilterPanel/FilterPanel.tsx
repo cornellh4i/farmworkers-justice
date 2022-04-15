@@ -8,17 +8,18 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import './FilterPanel.scss'
-import { propsToClassKey } from "@mui/styles";
 
 const FilterEnum = {
   GENDER: "GENDER",
-  CURRSTAT: "CURRSTAT",
+  CURRSTAT: "currstat",
   FLC: "FLC",
   REGION6: "REGION6"
 }
 
 interface FilterPanelProps {
   setMapFilterSelected: Function
+  setFilter1Selected: Function
+  setFilter2Selected: Function
 }
 
 function FilterPanel(props: FilterPanelProps) {
@@ -46,8 +47,10 @@ function FilterPanel(props: FilterPanelProps) {
 
     if (filter1 === null || filter1[1] === filterName) {
       setFilter1([event.target.value, filterName]);
+      props.setFilter1Selected([event.target.value, filterName]);
     } else if (filter2 === null || filter2[1] === filterName) {
       setFilter2([event.target.value, filterName]);
+      props.setFilter2Selected([event.target.value, filterName]);
     }
   };
 
@@ -66,8 +69,11 @@ function FilterPanel(props: FilterPanelProps) {
     if (filter2 !== null) {
       setFilter1(filter2);
       setFilter2(null);
+      props.setFilter1Selected(filter2);
+      props.setFilter2Selected(null);
     } else {
       setFilter1(null);
+      props.setFilter1Selected(null);
     }
   };
 
@@ -83,6 +89,7 @@ function FilterPanel(props: FilterPanelProps) {
       props.setMapFilterSelected(null);
     }
     setFilter2(null);
+    props.setFilter2Selected(null);
   };
 
   return (

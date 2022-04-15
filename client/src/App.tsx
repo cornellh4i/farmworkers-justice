@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Histogram from '../src/charts/Histogram';
 import Map from '../src/charts/Map';
 import DataHighlight from '../src/charts/DataHighlight';
-import * as d3 from "d3";
 import Homepage from './components/Homepage/Homepage'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Donut from './charts/donutChart'
@@ -10,10 +9,8 @@ import Table from './charts/Table'
 
 
 import LineGraph from './charts/lineGraph'
-import { Button } from 'react-bootstrap';
 import Minipage from './components/Minipage/Minipage'
 import AdminLanding from './components/AdminLanding/AdminLanding'
-import Line from './charts/lineGraph';
 import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
@@ -38,17 +35,17 @@ function App() {
   }, []);
 
   async function getData() {
-    //   const urlHistogram = `${API_URL}/AGE`;
-    //   const histogramResponse = await fetch(urlHistogram);
-    //   const histogramOut = await histogramResponse.json();
-    //   setHistogramData(histogramOut.data);
-    
-    //   const urlTable = `${API_URL}/B01`;
-    //   const tableResponse = await fetch(urlTable);
-    //   const tableOut = await tableResponse.json();
-    //   setTableData(tableOut.data);
+    const urlHistogram = `${API_URL}/A08`;
+    const histogramResponse = await fetch(urlHistogram);
+    const histogramOut = await histogramResponse.json();
+    setHistogramData(histogramOut.data);
 
-    urlDonut = `${API_URL}/B02`;
+    const urlTable = `${API_URL}/B01`;
+    const tableResponse = await fetch(urlTable);
+    const tableOut = await tableResponse.json();
+    setTableData(tableOut.data);
+
+    const urlDonut = `${API_URL}/STREAMS`;
     const donutResponse = await fetch(urlDonut);
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
@@ -59,10 +56,10 @@ function App() {
     setFLCData(FLCOut.data);
     setTimeSeriesData(FLCOut.timeSeriesData)
 
-    // const urlDataHighlight = `${API_URL}/FOREIGNB`;
-    // const DataHighlightResponse = await fetch(urlDataHighlight);
-    // const DataHighlightOut = await DataHighlightResponse.json();
-    // setDataHighlightData(DataHighlightOut.data);
+    const urlDataHighlight = `${API_URL}/Indigenous`;
+    const DataHighlightResponse = await fetch(urlDataHighlight);
+    const DataHighlightOut = await DataHighlightResponse.json();
+    setDataHighlightData(DataHighlightOut.data);
   }
 
   return (
@@ -70,14 +67,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path="/linegraph" element={<Line data={timeSeriesData} width={500} height={500} categoryEncoding={"8"} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
-        <Route path='/data' element={<DataHighlight percentage={dataHighlightData.percentage} description={dataHighlightData.description} />} />
-        <Route path="histogram" element={<Histogram categoryEncoding={"2"} variableDescription={"In what year did you/they first enter the US to live or work? (if foreign-born)"} variableEncoding={"A08"} />} />
+        <Route path="/linegraph" element={<Line data={timeSeriesData} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
+        <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
+        <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
         <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
         <Route path='/table' element={<Table data={tableData} />} />
-        <Route path='/donut' element={<DonutChart data={donutData} />} />
+        <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

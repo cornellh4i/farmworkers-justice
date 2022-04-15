@@ -16,7 +16,7 @@ var _db: Db;
 
 // Used to preprocess data by deleting documents before 2008
 function pre_process(db: Db) {
-  db.collection('naws_main').deleteMany({ FY: { $lt: "2008" } })
+  db.collection('naws-preprocessed').deleteMany({ FY: { $lt: "2008" } })
     .then(function () {
       console.log("processed!")
     })
@@ -24,7 +24,7 @@ function pre_process(db: Db) {
 
 // Used to preprocess data by deleting the NFWEEKS column
 function deleteCol(db: Db) {
-  db.collection('naws_main').updateMany(
+  db.collection('naws-preprocessed').updateMany(
     {},
     { $unset: { NFWEEKS: "" } })
     .then(function () {

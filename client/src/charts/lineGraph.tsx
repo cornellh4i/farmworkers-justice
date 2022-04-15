@@ -10,12 +10,12 @@ interface LineGraphProp {
 
 const toExclude: string[] = ["B11", "G01", "G03", "FWRDays", "NUMFEMPL"];
 
-function findMinY(data: any){
-  return Math.min.apply(Math, data.map(function(o: any) { return o.value; }));
+function findMinY(data: any) {
+  return Math.min.apply(Math, data.map(function (o: any) { return o.value; }));
 }
 
-function findMaxY(data: any){
-  return Math.max.apply(Math, data.map(function(o: any) { return o.value; }));
+function findMaxY(data: any) {
+  return Math.max.apply(Math, data.map(function (o: any) { return o.value; }));
 }
 
 function LineGraph(props: LineGraphProp) {
@@ -39,7 +39,7 @@ function LineGraph(props: LineGraphProp) {
 
       .range([0, w])
     const yScale = d3.scaleLinear()
-      .domain([findMinY(props.data), findMaxY(props.data)])
+      .domain([.9 * findMinY(props.data), 1.1 * findMaxY(props.data)])
       .range([h, 0])
 
     const generatedScaleLine = d3.line()

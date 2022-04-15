@@ -426,7 +426,7 @@ module.exports = () => {
   /**** Routes ****/
   router.post('/updateData', upload.single('selectedFile'), async (req: fileRequest, res: Express.Response) => {
     console.log("Posted")
-    console.log(req.body)
+    //console.log(req.body)
     res.sendStatus(200);
   })
 

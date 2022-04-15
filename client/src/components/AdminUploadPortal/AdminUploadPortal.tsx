@@ -1,16 +1,31 @@
 import {useState} from "react";
 import axios from "axios";
+
 import './AdminUploadPortal.scss';
 
 const API_URL = process.env.REACT_APP_API;
 
+
 function AdminUploadPortal() {
+
 	const [selectedFile, setSelectedFile] = useState(null);
+	const fs = require('browserfs')
 	
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
 		console.log("File Submitted")
-		console.log(selectedFile!)
+		//console.log(selectedFile!)
+		
+
+		fs.writeFile("data.csv", selectedFile!, (error: any) => {
+			if (error){
+				console.error('Error', error)
+			} else {
+				console.log('success')
+			}
+		})
+		
+
 		const formData = new FormData();
 		formData.append("selectedFile", selectedFile!);
 		try {

@@ -25,6 +25,7 @@ def preprocessing():
     # Need to answer why FY and FWID is not a necessary variable
     necessaryVariables = sys.argv[1].split(",")
     necessaryVariables.append("FY")
+    necessaryVariables.append("REGION6")
 
     # Processes dropping the variables that are not in necessaryVariables
     necessaryVariablesFinal = ["value"]*len(necessaryVariables)

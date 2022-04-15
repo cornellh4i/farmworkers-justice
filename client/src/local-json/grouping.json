@@ -1,0 +1,181 @@
+[{
+      "generalDescription" : "Do you speak ...",
+      "condensedVariableEncoding": "B21x",
+      "variables": [
+        {
+          "variable-encoding": "B21a",
+          "variable-description": "English"
+        },
+        {
+          "variable-encoding": "B21b",
+          "variable-description": "Spanish"
+        },
+        {
+          "variable-encoding": "B21c",
+          "variable-description": "Creole"
+        },
+        {
+          "variable-encoding": "B21d",
+          "variable-description": "Mixtec"
+        },
+        {
+          "variable-encoding": "B21e",
+          "variable-description": "Kanjobal"
+        },
+        {
+          "variable-encoding": "B21f",
+          "variable-description": "Zapotec"
+        },
+        {
+          "variable-encoding": "B21z",
+          "variable-description": "Other Languages"
+        }
+      ]
+    },
+    {
+      "generalDescription" : "In the last two years, has anyone in your household used ...",
+      "condensedVariableEncoding": "G04x",
+      "variables": [
+        {
+          "variable-encoding": "G04B",
+          "variable-description": "Food Stamps"
+        },
+        {
+          "variable-encoding": "G04C",
+          "variable-description": "Disability Insurance"
+        },
+        {
+          "variable-encoding": "G04D",
+          "variable-description": "Unemployment Insurance"
+        },
+        {
+          "variable-encoding": "G04E",
+          "variable-description": "Social Security"
+        },
+        {
+          "variable-encoding": "G04fx",
+          "variable-description": "Veteran's Pay"
+        },
+        {
+          "variable-encoding": "G04gx",
+          "variable-description": "General Assistance/Welfare"
+        },
+        {
+          "variable-encoding": "G04H",
+          "variable-description": "Low Income Housing"
+        },
+        {
+          "variable-encoding": "G04I",
+          "variable-description": "Public Health Clinic"
+        },
+        {
+          "variable-encoding": "G04J",
+          "variable-description": "Medicaid"
+        },
+        {
+          "variable-encoding": "G04K",
+          "variable-description": "WIC"
+        },
+        {
+          "variable-encoding": "G04L",
+          "variable-description": "Disaster Relief"
+        },
+        {
+          "variable-encoding": "G04M",
+          "variable-description": "Legal Services"
+        },
+        {
+          "variable-encoding": "G04N",
+          "variable-description": "Social Programs"
+        },
+        {
+          "variable-encoding": "G04px",
+          "variable-description": "Temporary Assistance for Needy Families (TANF)"
+        }
+      ]
+    },
+    {
+        "generalDescription" : "Have you ever been told by a nurse or doctor that you had ...",
+        "condensedVariableEncoding": "NH0X",
+        "variables": [
+          {
+            "variable-encoding": "NH01",
+            "variable-description": "Asthma"
+          },
+          {
+            "variable-encoding": "NH02",
+            "variable-description": "Diabetes"
+          },
+          {
+            "variable-encoding": "NH03",
+            "variable-description": "High Blood Pressure"
+          },
+          {
+            "variable-encoding": "NH04",
+            "variable-description": "Tuberculosis"
+          },
+          {
+            "variable-encoding": "NH5",
+            "variable-description": "Heart Disease"
+          },
+          {
+            "variable-encoding": "NH6",
+            "variable-description": "Urinary Tract Infections"
+          },
+          {
+            "variable-encoding": "NH10",
+            "variable-description": "Other Conditions"
+          }
+        ]
+      },
+      {
+        "generalDescription" : "When you want to get health care in the US, what are the main difficulties you face?",
+        "condensedVariableEncoding": "NQ10Xx",
+        "variables": [
+          {
+            "variable-encoding": "NQ10bx",
+            "variable-description": "Don't know where health services are available"
+          },
+          {
+            "variable-encoding": "NQ10cx",
+            "variable-description": "Health center not open when needed"
+          },
+          {
+            "variable-encoding": "NQ10dx",
+            "variable-description": "Do not have the service needed"
+          },
+          {
+            "variable-encoding": "NQ10ex",
+            "variable-description": "Do not speak my language"
+          },
+          {
+            "variable-encoding": "NQ10fx",
+            "variable-description": "Don't feel welcome"
+          },
+          {
+            "variable-encoding": "NQ10gx",
+            "variable-description": "Do not understand my problems"
+          },
+          {
+            "variable-encoding": "NQ10hx",
+            "variable-description": "Will lose my job"
+          },
+          {
+            "variable-encoding": "NQ10ix",
+            "variable-description": "Too expensive"
+          },
+          {
+            "variable-encoding": "NQ10jx",
+            "variable-description": "Other"
+          },
+          {
+            "variable-encoding": "NQ10lx",
+            "variable-description": "I'm \"undocumented\" they don't treat me well"
+          },
+          {
+            "variable-encoding": "NQ10mx",
+            "variable-description": "I do not know. I've never needed it"
+          }
+        ] 
+      }
+]

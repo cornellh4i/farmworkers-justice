@@ -481,6 +481,8 @@ module.exports = () => {
 
 
     res.json({ data: output }); 
+    }
+  )
 
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     console.log("check if backend called ", req.body)

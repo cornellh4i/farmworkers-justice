@@ -9,7 +9,6 @@ type rowProp = {
 type tableProp = {
     data: { [key: string]: [number, number] }
 }
-
 const PECENTAGE_INDEX = 0
 const COUNT_INDEX = 1
 
@@ -17,7 +16,8 @@ function Table(props: tableProp) {
     let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
         {
-            name: "Ethnicity",
+            name: "Category",
+            //do we want to hard code titles?
             selector: row => row.response_description
         },
         {
@@ -38,7 +38,7 @@ function Table(props: tableProp) {
     }
 
     return (
-        <DataTable title="Ethnicity of Respondents" columns={columns} data={entries}
+        <DataTable columns={columns} data={entries}
         />
     )
 

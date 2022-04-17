@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import './Histogram.scss';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface binProp {
   "start": null | number,
@@ -10,9 +10,9 @@ interface binProp {
 }
 
 interface histogramProp {
-  categoryEncoding: string;
   variableEncoding: string;
-  variableDescription: string;
+  data: number[],
+  index: number
 }
 
 interface histogramBinRangesProp {
@@ -21,131 +21,148 @@ interface histogramBinRangesProp {
   "bin-ranges": Array<binProp>
 }
 
-
-const API_URL = process.env.REACT_APP_API;
-var data: number[] = [];
-
-
 function Histogram(props: histogramProp) {
-
-  async function getData() {
-    const variableEncoding = props.variableEncoding
-    const urlHistogram = `${API_URL}/${variableEncoding}`;
-    const histogramResponse = await fetch(urlHistogram);
-    const histogramOut = await histogramResponse.json();
-    data = histogramOut.data;
-  }
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const dataSum = data.length;
-  const svg = d3.select("svg#histogram");
-  const width = 600
-  const height = 600
-  const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-  const chartWidth = width-50 - margin.left - margin.right;
-  const chartHeight = height - margin.top - margin.bottom;
-  let chartArea = svg.append("g").attr("id", "points")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
-
   const histogramBinRanges = require('../local-json/histogramBinRanges.json')
+  const maxHeight = 400;
 
-  var title = props.variableDescription
-  var binRanges = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
-    h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
-
-
-  let maxValue: number = Math.max(...data);
-  maxValue = Math.ceil(maxValue / 10) * 10;
-  const dataScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
-  let total: number[] = []
-  let max = 0;
-  let i = 0;
-  let x = 0;
-
-
-  for (x = 0; x < binRanges.length; x++) {
-
-    total[x] = 0;
-  }
-
-  data.forEach(d => {
-    Object.keys(total).forEach((key: any) => {
-      let start = "start";
-      let end = "end";
-      if (binRanges[key]["start-encoding"] != null) {
-        start = "start-encoding"
-        end = "end-encoding"
-      }
-      if (binRanges[key]["start"] == null) {
-        if (d <= binRanges[key][end]) {
-          let curr = total[key] + 1;
-          if (curr > max)
-            max = curr;
-          total[key] = curr;
-        }
-      }
-      else if (binRanges[key]["end"] == null) {
-        if (d >= binRanges[key][start]) {
-          let curr = total[key] + 1;
-          if (curr > max)
-            max = curr;
-          total[key] = curr;
-        }
-      }
-
-      if (d <= binRanges[key][end] && d >= binRanges[key][start]) {
-        let curr = total[key] + 1;
-        if (curr > max)
-          max = curr;
-        total[key] = curr;
-      }
-
-    });
-  });
-
-  for(let j = 0; j < total.length; j++){
-    total[j] = (total[j] / dataSum);
-  }
+  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
+  useEffect(() => {
+    const dataSum = props.data.length;
+    var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
+      h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
   
-
-  max = ((Math.ceil(max / 10) * 10 + 10) / dataSum)
-  const totalScale = d3.scaleLinear().domain([0, max]).range([chartHeight, 0]);
-  var percentFormat = d3.format(".0%")
-  chartArea.append("g")
-    .attr("transform", "translate(50,0)")
-    .call(d3.axisLeft(totalScale).tickFormat(d3.format(".0%")));
-
-
-  Object.keys(total).forEach((key: any, index) => {
-    let end = binRanges[key]["end"]
-    let start = binRanges[key]["start"]
-
-    let diff = end - start
+    let maxValue: number = Math.max(...props.data);
+    maxValue = Math.ceil(maxValue / 10) * 10;
+    // const xScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
+    let total: number[] = []
+    let x = 0;
+  
+    for (x = 0; x < binRanges.length; x++) {
+      total[x] = 0;
+    }
+    // TODO: FIX SORTING FOR VARIALBES WITH ENCODINGS
+    props.data.forEach(d => {
+      total.forEach((element, index) => {
+        let start = "start";
+        let end = "end";
+        if (binRanges[index]["start-encoding"] != null) {
+          if (binRanges[index].start == null) {
+            if (d <= binRanges[index]["end-encoding"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d >= binRanges[index]["start-encoding"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
     
+          if (d <= binRanges[index]["end-encoding"]! && d >= binRanges[index]["start-encoding"]!) {
+            let curr = total[index] + 1;
+            total[index] = curr;
+          }
+        } else {
+          if (binRanges[index].start == null) {
+            if (d <= binRanges[index]["end"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d >= binRanges[index]["start"]!) {
+              let curr = total[index] + 1;
+              total[index] = curr;
+            }
+          }
     
-    chartArea.append("rect")
-      .attr("class", "histogram")
-      .attr("transform", "translate(50,0)") 
-      .attr("x", dataScale(index * 10))
-      .attr("y", totalScale(total[key]))
-      
-      .attr("height", chartHeight - totalScale(total[key]))
-      .attr("width", dataScale(10));
-
-    chartArea.append("text")
-      .attr("text-anchor", "middle")
-      .attr("transform", "translate(50,0)") 
-      .attr("font-size", "15px")
-      .attr("x", dataScale(index * 10 + 5))
-      .attr('y', totalScale(total[key]) - 10)
-      .text((start === null ? " " : start) + " - " + (end === null ? " " : end) + " , " + Math.round(total[key]*100) + "%");
+          if (d <= binRanges[index]["end"]! && d >= binRanges[index]["start"]!) {
+            let curr = total[index] + 1;
+            total[index] = curr;
+          }
+        }
+      });
     });
+  let maxBin = 0;
+  for (let j = 0; j < total.length; j++) {
+    total[j] = (total[j] / dataSum);
+    if (total[j] > maxBin) {
+      maxBin = total[j] 
+    }
+  }
+  // Updates the visualization 
+  function update(total: number[]) {
+    var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
+    const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 100 + 10]); // +10 due to chart transform
+    var axis = d3.select<SVGSVGElement, unknown>(`#axis${props.index}`)
+    axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
+
+    // Update selection: Resize and position existing 
+    // DOM elements with data bound to them.
+    var selection = d3.select(`#histogram${props.index}`)
+
+    var bins = selection
+      .selectAll(".bar")
+      .data(total)
+      .style("height", function(d){ 
+        return d/maxBin*maxHeight + "px"; 
+      })
+      .style("margin-top", function(d){ 
+        return (maxHeight - d/maxBin*maxHeight) + "px"; 
+      });
+    
+    // Enter selection: Create new DOM elements for added 
+    // data items, resize and position them and attach a 
+    // mouse click handler.
+    bins.enter()
+      .append("div")
+      .attr("class", "bar")
+      .style("height", function(d){ 
+        return d/maxBin*maxHeight + "px"; 
+      })
+      .style("margin-top", function(d){ 
+        return (maxHeight - d/maxBin*maxHeight) + "px"; 
+      });
+
+    // Exit selection: Remove elements without data from the DOM
+    bins.exit().remove();
+
+    var labels = selection 
+      .selectAll('.text')
+      .data(binRanges)
+      .style("font-size", "12px")
+      .style("position", "fixed")
+      .style("text-align", "center")
+      .style("width", "100px") // corresponding to bar width
+      .style("left", function(d, i) { return xScale(i) + "px"})
+      .style('top', function(d, i) { return yScale(total[i]) - 30 + "px"}) //-30 to go two rows above bar
+      .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
+
+
+    labels.enter()
+      .append("text")
+      .attr("class", "text")
+      .style("font-size", "12px")
+      .style("position", "fixed")
+      .style("text-align", "center")
+      .style("width", "100px") // corresponding to bar width
+      .style("left", function(d, i) { return xScale(i) + "px"})
+      .style('top', function(d, i) { return yScale(total[i]) - 30 + "px"}) //-30 to go two rows above bar
+      .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
+
+    labels.exit().remove();
+  };
+  
+  update(total)
+  }, [props.data])
   
   return (
-    <div>
-      <svg id="histogram" height={600} width={600}></svg>
+    <div className="histogram-container"> 
+      <svg width="60px" height="500px">
+        <g id={`axis${props.index}`} transform="translate(30, 40)"></g>
+      </svg>
+      <div id={`histogram${props.index}`} style={{width: '1000px', height: '400px', marginBottom: '20px', transform: "translate(10px, 40px)"}}></div>
     </div>
 
   );

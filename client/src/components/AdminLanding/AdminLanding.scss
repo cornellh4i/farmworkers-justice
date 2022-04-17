@@ -1,0 +1,22 @@
+.adminLandingContainer {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  margin-top: 40%;
+  .adminLandingContent {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 100px
+  }
+  .font{
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: bold;
+  }
+  .warning{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+}

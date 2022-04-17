@@ -429,56 +429,54 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 }
 
 async function combinationalData(db: Db){
-   var combDataList;
-   const filtersEncoding = require('../client/src/local-json/filterEncoding.json')
-   //[filter: "GENDER"; filterValue: "0]
-   var variablesArray; 
-   combDataList = [];
-   variablesArray = await getUniqueVariables(db);
-   
-
-  // loop through all variables 
-  // loop through filters (fill all filter1 and 2)
-  // loop through filters (fill all filter2 only)
-   for(let i=0; i < variablesArray.length; i++){
-    var[vizType, timeSeries] = await getVizType(variablesArray[i], db);
+   var combDatas;
+   const filtersEncoding = require('./local-json/filterEncoding.json')
+  //  [filter: "GENDER"; filterValue: "0]
+   var variables; 
+   combDatas = []
+   variables = await getUniqueVariables(db);
+   for(let i=0; i < variables.length; i++){
+    var[vizType, timeSeries] = await getVizType(variables[i], db);
+    var timeSeriesData = timeSeries ? timeSeriesMain(variables[i], db) : null;
     let combData = {
-      "variable": variablesArray[i],
+      "variable": variables[i],
       "filter1":  "",
       "filter1Encoding": "",
       "filter2": "",
       "filter2Encoding": "",
-      "mainQueryData": null, // find real type
-      "timeSeriesQueryData": null, // find real type
+      "mainQueryData": main(variables[i], db, vizType),
+      "timeSeriesQueryData": timeSeriesData, 
     }
-    if( timeSeries ) {
-      combData["mainQueryData"] = main(variablesArray[i], db, vizType)
-      combData["timeSeriesQueryData"] = timeSeriesMain(variablesArray[i], db, vizType)
-      }
-    else{
-      combData["mainQueryData"] = main(variablesArray[i], db, vizType)
-    }
-    combDataList.push(combData)
-  // loop through filters (fill all filter1 only)
+    combDatas.push(combData)
+  //loop through filters (fill all filter1 only)
   for(let key1 in filtersEncoding){
     let value1 = filtersEncoding[key1]
     combData["filter1"] = key1
     for (let x = 0; x < value1.length; x++) {
       combData["filter1Encoding"] = value1[x]
-      combDataList.push(combData) // f1 = filt, f2 = null
+      combData["mainQueryData"] = main(variables[i], db, vizType, combData["filter1"], combData["filter1Encoding"])
+      if(timeSeries){
+        combData["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combData["filter1"], combData["filter1Encoding"])
+      }
+      combDatas.push(combData) // f1 = filt, f2 = null
       for(let key2 in filtersEncoding){
-        let value2 = filtersEncoding[key2]
-        combData["filter2"] = key2
-        for (let y = 0; y < value2.length; y++) {
-          combData["filter2Encoding"] = value2[x]
-          combDataList.push(combData) // f1 = filt, f2 = filt
-        }
-        combData["filter2Encoding"] = ""
+        if(!(key2 === key1)){
+          let value2 = filtersEncoding[key2]
+          combData["filter2"] = key2
+          for (let y = 0; y < value2.length; y++) {
+            combData["filter2Encoding"] = value2[x]
+            combData["mainQueryData"] = main(variables[i], db, vizType, combData["filter1"], combData["filter1Encoding"], combData["filter2"], combData["filter2Encoding"] )
+            if(timeSeries){
+              combData["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combData["filter1"], combData["filter1Encoding"], combData["filter2"], combData["filter2Encoding"])
+            }
+            combDatas.push(combData) // f1 = filt, f2 = filt
+          }
+       }
       }
     }
-    combData["filter1Encoding"] = ""
   }
  }
+ return combDatas;
 }
 
 module.exports = () => {
@@ -486,6 +484,16 @@ module.exports = () => {
   const router = express.Router();
 
   /**** Routes ****/
+
+  router.get('/testData',async (req: Express.Request, res: Express.Response) => {
+    console.log("test text ");
+    const dbo = require("./db/conn");
+    var data = await combinationalData(dbo.getDb());
+    console.log("data is " + data.length)
+    res.json({success: true});
+  }
+  )
+
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     console.log("check if backend called ", req.body)
     const haveAccess = req.body.password === process.env.ADMIN_PASSWORD

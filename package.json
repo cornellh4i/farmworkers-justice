@@ -9,5 +9,9 @@
     "install": "cd client && npm install",
     "build": "cd client && npm run build"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "highcharts": "^10.0.0",
+    "highcharts-react-official": "^3.1.0"
+  }
 }

@@ -17,6 +17,7 @@ enum VizType {
 }
 
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
+
 const LATEST_ODD_YEAR = 2017;
 const LATEST_EVEN_YEAR = 2018;
 
@@ -324,10 +325,28 @@ async function getDataHighlights(arr: [number, any][], variable: string, db: Db)
  *          type and the second element indicates whether the variable generates 
  *          a time series visualization as well. *          
  */
+
+/**
+ * Update (4/16): Work with grouping json to assign column visualization type
+ * */
+
+ const groupingVariables = require('./../../local-json/grouping.json')
+
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
   const variableInfo = await db.collection('variable-info').findOne(query)
+  var encodings = []
+  for(var i = 0; i < groupingVariables.length; i++){
+    var grouping = groupingVariables[i]["variables"]
+    for(var j = 0; j < grouping.length; j ++) {
+      encodings[j] = grouping[j]
+    }
+  }
+  
   if (variableInfo !== null) {
+    if(encodings.includes(variableInfo["variable"])){
+      return ["column", variableInfo["Time Series"]]
+    }
     return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
   } else {
     throw "Variable not found in variable-info collection: ", variable

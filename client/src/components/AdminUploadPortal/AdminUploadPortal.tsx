@@ -9,7 +9,7 @@ const API_URL = process.env.REACT_APP_API;
 function AdminUploadPortal() {
 
 	const [selectedFile, setSelectedFile] = useState(null);
-	const fs = require('browserfs')
+	//const fs = require('browserfs')
 	
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
@@ -17,13 +17,13 @@ function AdminUploadPortal() {
 		//console.log(selectedFile!)
 		
 
-		fs.writeFile("data.csv", selectedFile!, (error: any) => {
-			if (error){
-				console.error('Error', error)
-			} else {
-				console.log('success')
-			}
-		})
+		//fs.writeFile("data.csv", selectedFile!, (error: any) => {
+		//	if (error){
+		//		console.error('Error', error)
+		//	} else {
+		//		console.log('success')
+		//	}
+		//})
 		
 
 		const formData = new FormData();

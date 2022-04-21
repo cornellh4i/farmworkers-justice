@@ -14,7 +14,8 @@ enum VizType {
   Donut = "donut",
   Histogram = "histogram",
   Table = "table",
-  Data = 'data'
+  Data = 'data',
+  Column = 'column'
 }
 
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
@@ -329,29 +330,24 @@ async function getDataHighlights(arr: [number, any][], variable: string, db: Db)
  *          type and the second element indicates whether the variable generates 
  *          a time series visualization as well. *          
  */
-
-/**
- * Update (4/16): Work with grouping json to assign column visualization type
- * */
-
- const groupingVariables = require('./local-json/grouping.json')
-
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
   const variableInfo = await db.collection('variable-info').findOne(query)
-  var encodings = []
+  const groupingVariables = require('./local-json/grouping.json')
+  var columnEncodings = []
   for(var i = 0; i < groupingVariables.length; i++){
     var grouping = groupingVariables[i]["variables"]
     for(var j = 0; j < grouping.length; j ++) {
-      encodings[j] = grouping[j]
+      columnEncodings.push(grouping[j]["variable-encoding"])
     }
   }
-  
+  console.log("columnEncodings: ", columnEncodings)
   if (variableInfo !== null) {
-    if(encodings.includes(variableInfo["variable"])){
-      return ["column", variableInfo["Time Series"]]
+    if(columnEncodings.includes(variable)){
+      return [VizType.Column, variableInfo["Time Series"]]
+    } else {
+      return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
     }
-    return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
   } else {
     throw "Variable not found in variable-info collection: ", variable
   }
@@ -497,6 +493,9 @@ module.exports = () => {
     
     const output = aggregateColumnChart(arr, db);
     console.log(output)
+
+    const vizOutput = await getVizType("B21b", db);
+    console.log("vizOutput: ", vizOutput)
 
 
     res.json({ data: output }); 

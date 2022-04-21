@@ -3,16 +3,10 @@ import HighchartsReact from 'highcharts-react-official'
 import "@fontsource/rubik";
 
 
-function MultiColumnChart() {
+function ColumnChart() {
     const options = {
         chart: {
           type: 'column'
-        },
-        title: {
-          text: 'What languages do you speak?'
-        },
-        subtitle: {
-          text: 'Source: Farmworkers\' Justice'
         },
         xAxis: {
           categories: [
@@ -26,20 +20,13 @@ function MultiColumnChart() {
             text: 'Percentage of Respondents'
           }
         },
-        // tooltip: {
-        //   headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        //   pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        //     '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-        //   footerFormat: '</table>',
-        //   shared: true,
-        //   useHTML: true
-        // },
         plotOptions: {
           column: {
             pointPadding: 0.2,
             borderWidth: 0
           }
         },
+        
         series: [{
         type: 'column',
           name: 'English',
@@ -92,4 +79,4 @@ function MultiColumnChart() {
     </div>
     )
 }
-export default MultiColumnChart;
+export default ColumnChart;

@@ -14,7 +14,7 @@ import AdminLanding from './components/AdminLanding/AdminLanding'
 import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
-import MultiColumnChart from "./charts/MultiColumnChart";
+import ColumnChart from "./charts/columnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -72,7 +72,7 @@ function App() {
         <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
-        <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
+        <Route path="columnChart" element={<ColumnChart/>} />
         <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}

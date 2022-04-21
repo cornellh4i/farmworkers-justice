@@ -334,7 +334,7 @@ async function getDataHighlights(arr: [number, any][], variable: string, db: Db)
  * Update (4/16): Work with grouping json to assign column visualization type
  * */
 
- const groupingVariables = require('./../../local-json/grouping.json')
+ const groupingVariables = require('./local-json/grouping.json')
 
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }

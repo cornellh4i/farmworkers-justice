@@ -13,7 +13,6 @@ function AdminUploadPortal() {
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()
 		console.log("File Submitted")
-		//console.log(selectedFile!)
 		
 
 		//fs.writeFile("data.csv", selectedFile!, (error: any) => {
@@ -27,6 +26,8 @@ function AdminUploadPortal() {
 
 		const formData = new FormData();
 		formData.append("selectedFile", selectedFile!);
+		console.log(selectedFile)
+		console.log(formData.get("selectedFile"))
 		try {
 			const response = await fetch(`${API_URL}/updateData`, {
 				method: "post",

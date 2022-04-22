@@ -441,6 +441,7 @@ module.exports = () => {
 
   /**** Routes ****/
   router.post('/updateData', async (req: fileRequest, res: Express.Response) =>{
+    console.log(req.files)
     try {
       if(!req.files) {
         res.send({

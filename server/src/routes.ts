@@ -35,11 +35,7 @@ interface timeSeriesEncodingsProp {
 
 interface fileRequest extends Request {
   files: any,
-  fieldname: any,
-  originalname: any,
 }
-
-type Callback = (error: Error | null, filename: string) => void
 
 /**
  * Takes an array and a string variable
@@ -419,36 +415,55 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
-  const app = express();
-  const cors = require("cors");
-  app.use(cors({origin: "http://localhost:3000"}));
+  // const app = express();
+  // const cors = require("cors");
+  // app.use(cors({origin: "http://localhost:3000"}));
 
-  const multer = require('multer');
-  // const upload = multer({ dest: './src/db/data/'});
+  // const multer = require('multer');
+  // // const upload = multer({ dest: './src/db/data/'});
 
   const UPLOAD_DIRECTORY = 'src/db/data/';
 
-  let storage = multer.diskStorage({
-    destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
-        cb(null, UPLOAD_DIRECTORY)
-    },
-    filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
-      cb(null, file.fieldname)
-    }
-  });
+  // let storage = multer.diskStorage({
+  //   destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
+  //       cb(null, UPLOAD_DIRECTORY)
+  //   },
+  //   filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
+  //     cb(null, file.fieldname)
+  //   }
+  // });
 
-  const upload = multer({storage: storage,
-    onFileUploadStart: function (file: fileRequest) {
-      console.log(file.originalname + ' is starting ...')
-    }
-  });
+  // const upload = multer({storage: storage,
+  //   onFileUploadStart: function (file: fileRequest) {
+  //     console.log(file.originalname + ' is starting ...')
+  //   }
+  // });
 
-  // Might need to uninstall and reinstall cors
   /**** Routes ****/
-  router.post('/updateData', upload.single('selectedFile'), async (req: fileRequest, res: Express.Response) => {
-    console.log("Posted")
-    console.log(req.body)
-    res.sendStatus(200);
+  router.post('/updateData', async (req: fileRequest, res: Express.Response) =>{
+    try {
+      if(!req.files) {
+        res.send({
+          status: false,
+          message: 'No file uploaded',
+        })
+      } else {
+        let file = req.files.file;
+        file.mv(UPLOAD_DIRECTORY);
+
+        res.send({
+          status: true,
+          message: 'File is uploaded',
+          data: {
+            name: file.name,
+            mimetype: file.mimetype,
+            size: file.size,
+          }
+        });
+      }
+    } catch (e: any) {
+      res.status(500).send(e);
+    }
   })
 
   // This updateData route is placed before the :/variable route to prevent it from getting overriden 

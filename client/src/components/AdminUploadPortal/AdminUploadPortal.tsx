@@ -1,5 +1,4 @@
 import {useState} from "react";
-import axios from "axios";
 
 import './AdminUploadPortal.scss';
 
@@ -29,16 +28,16 @@ function AdminUploadPortal() {
 		const formData = new FormData();
 		formData.append("selectedFile", selectedFile!);
 		try {
-			const response = await axios({
+			const response = await fetch(`${API_URL}/updateData`, {
 				method: "post",
-				url: `${API_URL}/updateData`,
-				data: formData.get("selectedFile"),
+				body: formData,
 				// headers: { "Content-Type": "multipart/form-data",
 				// 'Access-Control-Allow-Origin': 'http://localhost:3000'},
 			});
-			console.log(response.status)
+			const result = await response.json()
+			console.log(result);
 		} catch(error) {
-			console.log(error)
+			console.log(error);
 		}
     }
 

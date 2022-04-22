@@ -449,28 +449,40 @@ async function combinationalData(db: Db) {
       "timeSeriesQueryData": timeSeriesData,
     }
     combDatas.push(combData)
-    //loop through filters (fill all filter1 only)
+    // loop through filters (fill all filter1 only)
     for (let key1 in filtersEncoding) {
+      let combDataOne = {
+        ...combData
+      }
       let value1 = filtersEncoding[key1]
-      combData["filter1"] = key1
+      combDataOne["filter1"] = key1
       for (let x = 0; x < value1.length; x++) {
-        combData["filter1Encoding"] = value1[x]
-        combData["mainQueryData"] = main(variables[i], db, vizType, combData["filter1"], combData["filter1Encoding"])
-        if (timeSeries) {
-          combData["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combData["filter1"], combData["filter1Encoding"])
+        let combDataTwo = {
+          ...combDataOne
         }
-        combDatas.push(combData) // f1 = filt, f2 = null
+        combDataTwo["filter1Encoding"] = value1[x]
+        combDataTwo["mainQueryData"] = main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"])
+        if (timeSeries) {
+          combDataTwo["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"])
+        }
+        combDatas.push(combDataTwo) // f1 = filt, f2 = null
         for (let key2 in filtersEncoding) {
+          let combDataThree = {
+            ...combDataTwo
+          }
           if (!(key2 === key1)) {
             let value2 = filtersEncoding[key2]
-            combData["filter2"] = key2
+            combDataThree["filter2"] = key2
             for (let y = 0; y < value2.length; y++) {
-              combData["filter2Encoding"] = value2[x]
-              combData["mainQueryData"] = main(variables[i], db, vizType, combData["filter1"], combData["filter1Encoding"], combData["filter2"], combData["filter2Encoding"])
-              if (timeSeries) {
-                combData["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combData["filter1"], combData["filter1Encoding"], combData["filter2"], combData["filter2Encoding"])
+              let combDataFour = {
+                ...combDataThree
               }
-              combDatas.push(combData) // f1 = filt, f2 = filt
+              combDataFour["filter2Encoding"] = value2[x]
+              combDataFour["mainQueryData"] = main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"])
+              if (timeSeries) {
+                combDataFour["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"])
+              }
+              combDatas.push(combDataFour) // f1 = filt, f2 = filt
             }
           }
         }
@@ -478,7 +490,7 @@ async function combinationalData(db: Db) {
     }
   }
   console.log("caching data")
-  dbo.cache.insert(combDatas)
+  db.collection('cache').insertMany(combDatas)
   return combDatas;
 }
 

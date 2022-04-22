@@ -387,7 +387,7 @@ async function getVizType(variable: string, db: Db) {
   for(var i = 0; i < columnChartGroupings.length; i++){
     columnEncodings.push(columnChartGroupings[i]["condensedVariableEncoding"])
   }
-
+  // TODO: CAN BE REMOVED IF MODIFY VARIABLE-INFO COLLECTION DIRECTLY TO CHANGE VARIABLE TYPE TO COLUMN
   if(columnEncodings.includes(variable)){
     return [VizType.Column, 0]
   } else {

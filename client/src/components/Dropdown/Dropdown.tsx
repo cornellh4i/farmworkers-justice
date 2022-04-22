@@ -12,6 +12,7 @@ import Donut from './../../charts/donutChart'
 import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
 import LineGraph from './../../charts/lineGraph'
+import ColumnChart from './../../charts/columnChart'
 
 interface DropdownProp {
   index: number
@@ -85,6 +86,8 @@ function Dropdown(props: DropdownProp) {
           setVisualizationComponent(<DataTable key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "data") {
           setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
+        } else if (output.vizType === "column") {
+          setVisualizationComponent(<ColumnChart key={props.index.toString()} data={output.data} />)
         } else {
           console.log("visualization type not covered ")
         }

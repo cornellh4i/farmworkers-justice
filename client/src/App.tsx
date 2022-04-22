@@ -72,7 +72,7 @@ function App() {
         <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
-        <Route path="columnChart" element={<ColumnChart/>} />
+        {/* <Route path="columnChart" element={<ColumnChart/>} /> */}
         <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}

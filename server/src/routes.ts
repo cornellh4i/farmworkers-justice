@@ -306,9 +306,7 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
  *        ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
  *        ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
  *     ];
- * @returns a dictionary where the keys are column descriptions and the values 
- *          are corresponding yes percentages of each column variable
- *          EX. {"English": 50, "Spanish": 66.66666, "Mixtec": 100, "Other": 25}
+ * @returns a list of seriesProps that is needed to supplied to the HighCharts Column type 
  */
 function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
   interface seriesProps {
@@ -322,8 +320,8 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
   for(let i = 0; i < arr.length; i ++) {
     var percent = calculatePercent(arr[i][1]);
     output.push({
-      type: 'column', 
-      name: arr[i][0],
+      type: 'column', // always have to be column
+      name: arr[i][0], // x-axis column description label
       data: [percent]
     })
   }

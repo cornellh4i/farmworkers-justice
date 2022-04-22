@@ -96,7 +96,7 @@
     },
     {
         "generalDescription" : "Have you ever been told by a nurse or doctor that you had ...",
-        "condensedVariableEncoding": "NH0X",
+        "condensedVariableEncoding": "NH0x",
         "variables": [
           {
             "variable-encoding": "NH01",
@@ -130,7 +130,7 @@
       },
       {
         "generalDescription" : "When you want to get health care in the US, what are the main difficulties you face?",
-        "condensedVariableEncoding": "NQ10Xx",
+        "condensedVariableEncoding": "NQ10x",
         "variables": [
           {
             "variable-encoding": "NQ10bx",

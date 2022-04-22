@@ -91,7 +91,6 @@ function Dropdown(props: DropdownProp) {
         } else {
           console.log("visualization type not covered ")
         }
-
         if (typeof output.timeSeriesData != 'undefined') {
           setTimeSeriesComponent(<LineGraph key={props.index.toString()} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
         }

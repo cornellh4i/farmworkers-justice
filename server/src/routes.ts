@@ -438,14 +438,14 @@ async function combinationalData(db: Db) {
   variables = await getUniqueVariables(db);
   for (let i = 0; i < variables.length; i++) {
     var [vizType, timeSeries] = await getVizType(variables[i], db);
-    var timeSeriesData = timeSeries ? timeSeriesMain(variables[i], db) : null;
+    var timeSeriesData = timeSeries ? JSON.stringify(timeSeriesMain(variables[i], db)) : null;
     let combData = {
       "variable": variables[i],
       "filter1": "",
       "filter1Encoding": "",
       "filter2": "",
       "filter2Encoding": "",
-      "mainQueryData": main(variables[i], db, vizType),
+      "mainQueryData": JSON.stringify(main(variables[i], db, vizType)),
       "timeSeriesQueryData": timeSeriesData,
     }
     combDatas.push(combData)
@@ -461,9 +461,9 @@ async function combinationalData(db: Db) {
           ...combDataOne
         }
         combDataTwo["filter1Encoding"] = value1[x]
-        combDataTwo["mainQueryData"] = main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"])
+        combDataTwo["mainQueryData"] = JSON.stringify(main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         if (timeSeries) {
-          combDataTwo["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"])
+          combDataTwo["timeSeriesQueryData"] = JSON.stringify(timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         }
         combDatas.push(combDataTwo) // f1 = filt, f2 = null
         for (let key2 in filtersEncoding) {
@@ -478,9 +478,9 @@ async function combinationalData(db: Db) {
                 ...combDataThree
               }
               combDataFour["filter2Encoding"] = value2[x]
-              combDataFour["mainQueryData"] = main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"])
+              combDataFour["mainQueryData"] = JSON.stringify(main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
               if (timeSeries) {
-                combDataFour["timeSeriesQueryData"] = timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"])
+                combDataFour["timeSeriesQueryData"] = JSON.stringify(timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
               }
               combDatas.push(combDataFour) // f1 = filt, f2 = filt
             }

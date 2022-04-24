@@ -429,62 +429,76 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
+/**96 total variables 
+ * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
+ */
 async function combinationalData(db: Db) {
   var combDatas;
   const filtersEncoding = require('./local-json/filterEncoding.json')
   //  [filter: "GENDER"; filterValue: "0]
-  var variables;
+  var variables : string[];
   combDatas = []
   variables = await getUniqueVariables(db);
-  for (let i = 0; i < variables.length; i++) {
+  for (let i = 0; i < 1; i++) {
     var [vizType, timeSeries] = await getVizType(variables[i], db);
-    var timeSeriesData = timeSeries ? JSON.stringify(timeSeriesMain(variables[i], db)) : null;
+    var timeSeriesData = timeSeries ? ( await timeSeriesMain(variables[i], db)) : null;
+    var filters = ["GENDER", "FLC", "REGION6", "currstat"]
     let combData = {
       "variable": variables[i],
+      "vizType": vizType,
       "filter1": "",
       "filter1Encoding": "",
       "filter2": "",
       "filter2Encoding": "",
-      "mainQueryData": JSON.stringify(main(variables[i], db, vizType)),
+      "mainQueryData": ( await main(variables[i], db, vizType)),
       "timeSeriesQueryData": timeSeriesData,
     }
     combDatas.push(combData)
     // loop through filters (fill all filter1 only)
-    for (let key1 in filtersEncoding) {
+    for (let x = 0; x < 4; x++) {
+      console.log("loop")
       let combDataOne = {
         ...combData
       }
-      let value1 = filtersEncoding[key1]
-      combDataOne["filter1"] = key1
-      for (let x = 0; x < value1.length; x++) {
+      let value1 : string = filters[x]
+      combDataOne["filter1"] = value1
+      //for (let x = 0; x < value1.length; x++) { 
+      console.log(typeof value1)
+      // for (var element of value1)
+      console.log(filtersEncoding)
+      for (var element of filtersEncoding[value1]) {
+        console.log("element 1: ", element)
         let combDataTwo = {
           ...combDataOne
         }
-        combDataTwo["filter1Encoding"] = value1[x]
-        combDataTwo["mainQueryData"] = JSON.stringify(main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+        combDataTwo["filter1Encoding"] = element
+        combDataTwo["mainQueryData"] = (await main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         if (timeSeries) {
-          combDataTwo["timeSeriesQueryData"] = JSON.stringify(timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+          combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         }
         combDatas.push(combDataTwo) // f1 = filt, f2 = null
-        for (let key2 in filtersEncoding) {
+        // db.collection('test').insertOne(combDataTwo)
+        for (let j = x+1; j < 4; j++ ) {
           let combDataThree = {
             ...combDataTwo
           }
-          if (!(key2 === key1)) {
-            let value2 = filtersEncoding[key2]
-            combDataThree["filter2"] = key2
-            for (let y = 0; y < value2.length; y++) {
+          //if (!(key2 === key1)) {
+            let value2 : string = filters[j]
+            combDataThree["filter2"] = value2
+            //for (let y = 0; y < value2.length; y++) {
+            for (var element of filtersEncoding[value2]) {
               let combDataFour = {
                 ...combDataThree
               }
-              combDataFour["filter2Encoding"] = value2[x]
-              combDataFour["mainQueryData"] = JSON.stringify(main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+              combDataFour["filter2Encoding"] = element
+              combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
               if (timeSeries) {
-                combDataFour["timeSeriesQueryData"] = JSON.stringify(timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+                combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
               }
               combDatas.push(combDataFour) // f1 = filt, f2 = filt
             }
-          }
+            
+          //}
         }
       }
     }
@@ -553,41 +567,28 @@ module.exports = () => {
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+    //const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     let query = { variable: req.params.variable, filter1: "", filter1Encoding: "", filter2: "", filter2Encoding: "" }
-    const cache = await dbo.collection('cache').findOne(query)
+    const cache = await dbo.getDb().collection('cache').findOne(query)
     const output = cache["mainQueryData"]
-    //const vizType = output -> make vizype entry in collections too? 
-    if (timeSeries) {
+    const vizType = output["vizType"]
+    if (timeSeriesData != null ) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-
-    // const dbo = require("./db/conn");
-    // var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
-    // const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    // const output = await main(req.params.variable, dbo.getDb(), vizType)
-    // if (timeSeries) {
-    //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
-    // }
-    // console.log("variable: ", req.params.variable)
-    // console.log("output: ", output)
-    // console.log("timeseries output: ", timeSeriesData)
-    // res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: "", filter2Encoding: "" }
-    const cache = await dbo.collection('cache').findOne(query)
+    const cache = await dbo.getDb().collection('cache').findOne(query)
     const output = cache["mainQueryData"]
-    //const vizType = output -> make vizype entry in collections too? 
-    if (timeSeries) {
+    const vizType = output["vizType"]
+    if (timeSeriesData != null ) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
@@ -595,38 +596,17 @@ module.exports = () => {
     console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
 
-    // const dbo = require("./db/conn");
-    // var timeSeriesData;
-    // const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    // const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey, req.params.filterVal)
-    // if (timeSeries) {
-    //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
-    // }
-    // console.log("variable: ", req.params.variable)
-    // console.log("output: ", output)
-    // console.log("timeseries output: ", timeSeriesData)
-    // res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-
   });
-  /**let combData = {
-     "variable": variables[i],
-     "filter1": "",
-     "filter1Encoding": "",
-     "filter2": "",
-     "filter2Encoding": "",
-     "mainQueryData": main(variables[i], db, vizType),
-     "timeSeriesQueryData": timeSeriesData,
-   }*/
+
 
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: req.params.filterKey2, filter2Encoding: req.params.filterVal2 }
-    const cache = await dbo.collection('cache').findOne(query)
+    const cache = await dbo.getDb().collection('cache').findOne(query)
     const output = cache["mainQueryData"]
-    //const vizType = output -> make vizype entry in collections too? 
-    if (timeSeries) {
+    const vizType = output["vizType"]
+    if (timeSeriesData != null ) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
@@ -635,19 +615,6 @@ module.exports = () => {
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
-  /**router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
-    const dbo = require("./db/conn");
-    var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
-    if (timeSeries) {
-      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
-    }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-  });*/
 
   return router;
 }

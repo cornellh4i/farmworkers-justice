@@ -440,17 +440,23 @@ module.exports = () => {
   // });
 
   /**** Routes ****/
-  router.post('/updateData', async (req: fileRequest, res: Express.Response) =>{
-    console.log(req.files)
+  const multer = require('multer')
+  const upload = multer({dest: UPLOAD_DIRECTORY})
+  const fs = require("fs")
+  router.post('/updateData', upload.single('selectedFile'), async (req: any, res: Express.Response) =>{
+    console.log("req body: ", req.body)
+    console.log("received files: ", req.file)
     try {
-      if(!req.files) {
+      if(!req.file) {
         res.send({
           status: false,
           message: 'No file uploaded',
         })
       } else {
-        let file = req.files.file;
-        file.mv(UPLOAD_DIRECTORY);
+        let file = req.file;
+        fs.rename(file.path, `${UPLOAD_DIRECTORY}/${file.originalname}`, (err: Error) => {
+          if (err) console.log(err)
+        })
 
         res.send({
           status: true,

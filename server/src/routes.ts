@@ -338,7 +338,11 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
         counterNo += 1;
       }
     } 
-    return (counterYes / (counterYes + counterNo)) * 100;
+    if (counterYes + counterNo === 0) {
+      return 0
+    } else {
+      return (counterYes / (counterYes + counterNo)) * 100;
+    }
   }
   return output;
 }

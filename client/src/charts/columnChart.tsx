@@ -34,16 +34,13 @@ function ColumnChart(props: ColumnChartProps) {
         borderWidth: 0,
       }
     },
+    title:{
+      text:''
+    },
     series: props.data,
     legend: {
-      // labelFormat: '{name} ({point.x}%)' // TODO
       labelFormatter: function (this: any) {
-        console.log("this: ", this)
-        if (this.yData[0] === null) {
-          return (this.name + " (0%)");
-        }
-        // return (props.data[0].name + props.data[point.x].data[0].toString());
-        return (this.name + " (" + this.yData[0] + "%)");
+        return (this.name + " (" + this.yData[0].toFixed(2) + "%)");
       }
     },
 

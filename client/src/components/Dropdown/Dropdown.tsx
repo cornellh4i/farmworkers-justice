@@ -138,7 +138,7 @@ function Dropdown(props: DropdownProp) {
                     {VisualizationComponent}
                   </Grid>
                   <Grid item xs ={3}>
-                    {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
+                    {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
                   </Grid>
                   <Grid item xs={12}> 
                     {TimeSeriesComponent}

@@ -38,7 +38,7 @@ function Minipage() {
 
     return (
         <div>
-            <FilterPanel setMapFilterSelected={setMapFilterSelected} setFilter1Selected={setFilter1Selected} setFilter2Selected={setFilter2Selected} />
+            <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
            <ul>
                 {variableDescriptions.map((variableDescription, index) => 
                     <Dropdown key={index.toString()} variableDescription={variableDescription} index={index} 

@@ -431,17 +431,18 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 
 /**96 total variables 
  * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
+ * total entries: 
  */
 async function combinationalData(db: Db) {
   var combDatas;
   const filtersEncoding = require('./local-json/filterEncoding.json')
   //  [filter: "GENDER"; filterValue: "0]
-  var variables : string[];
+  var variables: string[];
   combDatas = []
   variables = await getUniqueVariables(db);
-  for (let i = 0; i < 1; i++) {
+  for (let i = 1; i < 2; i++) {
     var [vizType, timeSeries] = await getVizType(variables[i], db);
-    var timeSeriesData = timeSeries ? ( await timeSeriesMain(variables[i], db)) : null;
+    var timeSeriesData = timeSeries ? (await timeSeriesMain(variables[i], db)) : null;
     var filters = ["GENDER", "FLC", "REGION6", "currstat"]
     let combData = {
       "variable": variables[i],
@@ -450,9 +451,10 @@ async function combinationalData(db: Db) {
       "filter1Encoding": "",
       "filter2": "",
       "filter2Encoding": "",
-      "mainQueryData": ( await main(variables[i], db, vizType)),
+      "mainQueryData": (await main(variables[i], db, vizType)),
       "timeSeriesQueryData": timeSeriesData,
     }
+    console.log("main query data: ", main(variables[i], db, vizType));
     combDatas.push(combData)
     // loop through filters (fill all filter1 only)
     for (let x = 0; x < 4; x++) {
@@ -460,7 +462,7 @@ async function combinationalData(db: Db) {
       let combDataOne = {
         ...combData
       }
-      let value1 : string = filters[x]
+      let value1: string = filters[x]
       combDataOne["filter1"] = value1
       //for (let x = 0; x < value1.length; x++) { 
       console.log(typeof value1)
@@ -478,26 +480,26 @@ async function combinationalData(db: Db) {
         }
         combDatas.push(combDataTwo) // f1 = filt, f2 = null
         // db.collection('test').insertOne(combDataTwo)
-        for (let j = x+1; j < 4; j++ ) {
+        for (let j = x + 1; j < 4; j++) {
           let combDataThree = {
             ...combDataTwo
           }
           //if (!(key2 === key1)) {
-            let value2 : string = filters[j]
-            combDataThree["filter2"] = value2
-            //for (let y = 0; y < value2.length; y++) {
-            for (var element of filtersEncoding[value2]) {
-              let combDataFour = {
-                ...combDataThree
-              }
-              combDataFour["filter2Encoding"] = element
-              combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
-              if (timeSeries) {
-                combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
-              }
-              combDatas.push(combDataFour) // f1 = filt, f2 = filt
+          let value2: string = filters[j]
+          combDataThree["filter2"] = value2
+          //for (let y = 0; y < value2.length; y++) {
+          for (var element of filtersEncoding[value2]) {
+            let combDataFour = {
+              ...combDataThree
             }
-            
+            combDataFour["filter2Encoding"] = element
+            combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+            if (timeSeries) {
+              combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+            }
+            combDatas.push(combDataFour) // f1 = filt, f2 = filt
+          }
+
           //}
         }
       }
@@ -570,15 +572,19 @@ module.exports = () => {
     //const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
     let query = { variable: req.params.variable, filter1: "", filter1Encoding: "", filter2: "", filter2Encoding: "" }
     const cache = await dbo.getDb().collection('cache').findOne(query)
+    //if (cache != null) {
     const output = cache["mainQueryData"]
-    const vizType = output["vizType"]
-    if (timeSeriesData != null ) {
+    const vizType: string = cache["vizType"]
+    if (timeSeriesData != null) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
+    console.log("vizType: ", vizType)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    //}
+
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
@@ -586,16 +592,17 @@ module.exports = () => {
     var timeSeriesData;
     let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: "", filter2Encoding: "" }
     const cache = await dbo.getDb().collection('cache').findOne(query)
+    //if (cache != null) {
     const output = cache["mainQueryData"]
-    const vizType = output["vizType"]
-    if (timeSeriesData != null ) {
+    const vizType = cache["vizType"]
+    if (timeSeriesData != null) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-
+    //}
   });
 
 
@@ -604,15 +611,17 @@ module.exports = () => {
     var timeSeriesData;
     let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: req.params.filterKey2, filter2Encoding: req.params.filterVal2 }
     const cache = await dbo.getDb().collection('cache').findOne(query)
+    //if (cache != null) {
     const output = cache["mainQueryData"]
-    const vizType = output["vizType"]
-    if (timeSeriesData != null ) {
+    const vizType = cache["vizType"]
+    if (timeSeriesData != null) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    //}
   });
 
 

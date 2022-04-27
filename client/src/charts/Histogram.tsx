@@ -27,7 +27,7 @@ function Histogram(props: histogramProp) {
 
   // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
   useEffect(() => {
-    const dataSum = props.data.length;
+    const dataSum = props.data.length; //TODO: ACCOUNT WEIGHTINGS
     var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
       h["variable-encoding"] === props.variableEncoding)["bin-ranges"];
   
@@ -48,7 +48,7 @@ function Histogram(props: histogramProp) {
         if (binRanges[index]["start-encoding"] != null) {
           if (binRanges[index].start == null) {
             if (d <= binRanges[index]["end-encoding"]!) {
-              let curr = total[index] + 1;
+              let curr = total[index] + 1; //TODO: ACCOUNT WEIGHTINGS
               total[index] = curr;
             }
           }

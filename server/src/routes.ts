@@ -49,6 +49,7 @@ interface fileRequest extends Request {
  *          EX: [[2010, 2], [2010, 2]]
  */
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
+  // TODO: return corresponding weightings 
   var query = {}
   if (typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
@@ -115,8 +116,8 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       const value: number = v[1];
       const yrIdx: number = Math.floor((yr - minYear)/2) // Have odd then even years in one group
       if (!isNaN(value)) {
-        output[yrIdx].value += value;
-        totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+        output[yrIdx].value += value; //TODO: ACCOUNT WEIGHTINGS
+        totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
       }
     })
   } else if (variable === "G01" || variable === "G03") {
@@ -132,8 +133,8 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
             e["encoding"] === value );
         if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
-          output[yrIdx].value += midValue;
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+          output[yrIdx].value += midValue; //TODO: ACCOUNT WEIGHTINGS
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
         }
       }
     }) 
@@ -144,8 +145,8 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
       const yrIdx: number = Math.floor((yr - minYear)/2) 
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
-          output[yrIdx].value += value;
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
+          output[yrIdx].value += value; //TODO: ACCOUNT WEIGHTINGS
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
         }
       }
     })
@@ -166,6 +167,7 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
+// TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
 function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 
@@ -199,8 +201,8 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   arr.forEach(([year, val]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
-      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1)
-      totalCounts += 1
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1) //TODO: ACCOUNT WEIGHTINGS
+      totalCounts += 1 //TODO: ACCOUNT WEIGHTINGS
     }
   });
 
@@ -260,12 +262,12 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
           j++;
         }
         if (sum.has(description)) {
-          sum.set(description, sum.get(description)! + 1)
+          sum.set(description, sum.get(description)! + 1) //TODO: ACCOUNT WEIGHTINGS
         }
         else {
           sum.set(description, 1);
         }
-        n++;
+        n++; //TODO: ACCOUNT WEIGHTINGS
       }
     }
     sum.forEach((v, d) => {
@@ -291,9 +293,9 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   const binaryData = await db.collection('binary-data').findOne(query)
   arr.forEach(([year, value]) => {
     if (!isNaN(value)) {
-      totalCount++;
+      totalCount++; //TODO: ACCOUNT WEIGHTINGS
       if (value === binaryData!.DisplayEncoding) {
-        displayCount++
+        displayCount++ //TODO: ACCOUNT WEIGHTINGS
       }
     }
   });

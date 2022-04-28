@@ -75,4 +75,5 @@ def sendToMongo(df):
     collection.delete_many({ })
     collection.insert_many(data_dict)
 
+
 preprocessing()

@@ -415,29 +415,7 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
-  // const app = express();
-  // const cors = require("cors");
-  // app.use(cors({origin: "http://localhost:3000"}));
-
-  // const multer = require('multer');
-  // // const upload = multer({ dest: './src/db/data/'});
-
   const UPLOAD_DIRECTORY = 'src/db/data/';
-
-  // let storage = multer.diskStorage({
-  //   destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //       cb(null, UPLOAD_DIRECTORY)
-  //   },
-  //   filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //     cb(null, file.fieldname)
-  //   }
-  // });
-
-  // const upload = multer({storage: storage,
-  //   onFileUploadStart: function (file: fileRequest) {
-  //     console.log(file.originalname + ' is starting ...')
-  //   }
-  // });
 
   /**** Routes ****/
   const multer = require('multer')
@@ -475,28 +453,58 @@ module.exports = () => {
 
   // This updateData route is placed before the :/variable route to prevent it from getting overriden 
   router.get('/updateData', async (req: Express.Request, res: Express.Response) => {
-    // TODO: check that the two files exist for preprocessing to be called; send error message otherwise
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;
 
-    const {spawn} = require('child_process');
+    const fs = require("fs");
+    const path = ["./db/data/NAWS_A2E191.csv", "./db/data/NAWS_F2Y191.csv"]
+    let path_bools = [true, true];
 
-    var dataToSend: any;
-    // spawn new child process to call the python script
-    // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
-    // collect data from script
-    python.stdout.on('data', function (data: any) {
-     console.log('Pipe data from python script ...');
-     dataToSend = data.toString();
-    });
-    // in close event we are sure that stream from child process is closed
-    python.on('close', (code: any) => {
-      console.log(`child process close all stdio with code ${code}`);
-      // send data to browser
-      res.send(dataToSend)
-    });
+    // for(let i = 0; i < 2; i++){
+    //   fs.exists(path[i], function (isExist: any) {
+    //     if (isExist) {
+    //       console.log("exists:", path[i]);
+    //     } else {
+    //       console.log("DOES NOT exist:", path[i]);
+    //       path_bools[i] = false
+    //     }
+    //   });
+    // }
+
+    for(let i = 0; i < 2; i++){
+      try {
+        fs.accessSync(path[i]);
+        console.log("exists:", path[i]);
+      } catch (err) {
+        console.log("DOES NOT exist:", path[i]);
+        console.error(err);
+        path_bools[i] = false;
+      }
+    }
+
+    if (path_bools[0] && path_bools[1]) {
+      const {spawn} = require('child_process');
+
+      var dataToSend: any;
+      // spawn new child process to call the python script
+      // switch this to python if your terminal uses python insteal of py
+      const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+      // collect data from script
+      python.stdout.on('data', function (data: any) {
+       console.log('Pipe data from python script ...');
+       dataToSend = data.toString();
+      });
+      // in close event we are sure that stream from child process is closed
+      python.on('close', (code: any) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        res.send(dataToSend)
+      });
+      
+    } else {
+      res.send("Error in file upload");
+    }
   });
 
 

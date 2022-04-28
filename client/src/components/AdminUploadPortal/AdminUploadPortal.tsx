@@ -22,7 +22,7 @@ function AdminUploadPortal() {
 				method: "post",
 				body: formData,
 			});
-			const result = await response.json()
+			const result = await response.json();
 			console.log("response result: ", result);
 		} catch(error) {
 			console.log(error);
@@ -31,6 +31,17 @@ function AdminUploadPortal() {
 
 	function handleFileSelect(event: any) {
 		setSelectedFile(event.target.files[0])
+	}
+
+	async function handleUpdate(event: any) {
+		event.preventDefault()
+
+		try {
+			const response = await fetch(`${API_URL}/updateData`, );
+			console.log(response);
+		} catch(error) {
+			console.log(error);
+		}
 	}
 
 	return (
@@ -43,6 +54,7 @@ function AdminUploadPortal() {
 				<input type="file" onChange={handleFileSelect} accept=".csv" />
 				<input type="submit" value="Upload" />
 			</form>
+			<button onClick = {handleUpdate}>Update Data</button>
 		</div>
 	);
 }

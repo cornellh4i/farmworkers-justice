@@ -475,6 +475,7 @@ module.exports = () => {
 
   // This updateData route is placed before the :/variable route to prevent it from getting overriden 
   router.get('/updateData', async (req: Express.Request, res: Express.Response) => {
+    // TODO: check that the two files exist for preprocessing to be called; send error message otherwise
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;

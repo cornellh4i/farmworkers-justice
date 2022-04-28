@@ -33,6 +33,10 @@ interface timeSeriesEncodingsProp {
   "ranges": timeSeriesRangesProp[]
 }
 
+interface fileRequest extends Request {
+  files: any,
+}
+
 /**
  * Takes an array and a string variable
  * @param variable is the variable being used to filter the data. EX: GENDER, FLC, REGION6 
@@ -67,21 +71,20 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
       query = {}
     }
   }
-  var filtered_array: Array<[number, any]> = []
-  var result: any[] = [];
+  var filtered_array: Array<[number, number]> = []
   // TODO: USE PROJECTION
-  try {
-    result = await db.collection('naws-preprocessed').find(query).toArray();
-  } catch (e) {
-    console.log("error in queryVal with query: ", query, " for variable: ", variable)
-  }
+  // try {
+  //   result = await db.collection('naws-preprocessed').find(query).toArray();
+  // } catch (e) {
+  //   console.log("error in queryVal with query: ", query, " for variable: ", variable)
+  // }
+  var result = await db.collection('naws_main').find(query).toArray();
   function iterateFunc(doc: any) {
-    let lst: [number, any] = [doc.FY, doc[variable]];
+    let lst: [number, number] = [doc.FY, doc[variable]];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
-    // console.log(error);
-    console.log("error in queryVal for variable: ", variable)
+    console.log(error);
   }
   result.forEach(iterateFunc, errorFunc);
   return filtered_array
@@ -95,40 +98,37 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  *        it assumes that the number of distinct years is even
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
- *          as {year: 2009, value: 54}. The year is representative of two years (2019 & 2010 in the example)
- *          and value is the percentage of 1s / (1s + 0s)
+ *          as {year: 2009, value: 0.54}. The year is representative of two years (2019 & 2010 in the example)
  *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
  *          The value represents the percentage of how often a variable appears in those two years. 
- *          An average value is returned for variables: B11, G01, G03, FWRDays, and NUMFEMPL. 
+ *          An average value is returned for variables: B11, G01, G03, FWRDays, 
+ *          and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
-function aggregateTimeSeries(arr: [number, any][], variable: string) {
+function aggregateTimeSeries(arr: [number, number][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2
   let output = new Array<{ year: number, value: number }>();
-  let countEachYear = new Map<number, number>();
+  let totalEachYear = new Map<number, number>();
   for (let i = 0; i <= (maxYear - minYear - 1) / 2; i++) {
     output[i] = { year: minYear + i * 2, value: 0 };
-    countEachYear.set(minYear + i * 2, 0)
+    totalEachYear.set(minYear + i * 2, 0)
   }
 
   if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
-      const value: any = v[1];
+      const value: number = v[1];
       const yrIdx: number = Math.floor((yr - minYear) / 2) // Have odd then even years in one group
       if (!isNaN(value)) {
-        output[yrIdx].value += value === 1 ? 1 : 0;
-        countEachYear.set(yr, countEachYear.get(yr)! + 1);
+        output[yrIdx].value += value;
+        totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
       }
-    })
-    output.forEach((d) => {
-      d.value = (d.value / countEachYear.get(d.year)!)
     })
   } else if (variable === "G01" || variable === "G03") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
-      const value: any = v[1];
+      const value: number = v[1];
       const yrIdx: number = Math.floor((yr - minYear) / 2)
       const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
         e["variable-encoding"] === variable);
@@ -139,29 +139,29 @@ function aggregateTimeSeries(arr: [number, any][], variable: string) {
         if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue;
-          countEachYear.set(yr, countEachYear.get(yr)! + 1);
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
-    })
-    output.forEach((d) => {
-      d.value = (d.value / countEachYear.get(d.year)!)
     })
   } else {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
-      const value: any = v[1];
+      const value: number = v[1];
       const yrIdx: number = Math.floor((yr - minYear) / 2)
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
           output[yrIdx].value += value;
-          countEachYear.set(yr, countEachYear.get(yr)! + 1);
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
         }
       }
     })
-    output.forEach((d) => {
-      d.value = (d.value / countEachYear.get(d.year)! * 100)
-    })
   }
+  console.log("output before division: ", output)
+  console.log("total each year before division: ", totalEachYear)
+
+  output.forEach((d) => {
+    d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100)
+  })
   return output
 }
 
@@ -172,10 +172,10 @@ function aggregateTimeSeries(arr: [number, any][], variable: string) {
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
-function aggregateHistogram(arr: [number, any][]) {
+function aggregateHistogram(arr: [number, number][]) {
   let recentVals: Array<number> = [];
 
-  function iterateFunc(v: [number, any]) {
+  function iterateFunc(v: [number, number]) {
     if (!isNaN(v[1])) {
       recentVals.push(v[1])
     }
@@ -196,19 +196,20 @@ function aggregateHistogram(arr: [number, any][]) {
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
-async function aggregateDonutChart(arr: [number, any][], variable: string, db: Db) {
-  // TODO: HANDLE STREAMS SPECIAL CASE - NO ENCODING JUST STRING ENTRIES
+async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
+  console.log("encoding descrp: ", encodingDescrp)
   arr.forEach(([year, val]) => {
-    if (!isNaN(val) || (variable == "STREAMS" && val.length > 0)) {
+    if (!isNaN(val)) {
       let currCount = output.get(val.toString())
-      output.set(val.toString(), (typeof currCount == 'undefined') ? 1 : currCount! + 1)
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1)
       totalCounts += 1
     }
   });
+
   output.forEach((val, description) => {
     output.set(description, Math.round(val / totalCounts * 100) / 100);
   })
@@ -235,7 +236,7 @@ async function aggregateDonutChart(arr: [number, any][], variable: string, db: D
  *          value is the number of count for that response.
  *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
  */
-async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
+async function aggregateTable(arr: [number, number][], variable: string, db: Db) {
   let sum = new Map<string, number>();
   let output = new Map<string, [number, number]>();
   let n = 0;
@@ -245,9 +246,6 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
     let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
-      if (typeof encodingDescrp == 'undefined') {
-        console.log("check on code: ", variable)
-      }
       return encodingDescrp;
     } catch (error) {
       console.log(error);
@@ -255,21 +253,40 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
   }
 
   await allEncoding()
+    // .then(function () {
+    //   for (let i = 0; i < arr.length; i++) {
+    //     const value = arr[i][1];
+    //     let description;
+    //     if (!isNaN(value)) {
+    //       let j = 0;
+    //       try {
+    //         while (typeof description == 'undefined') {
+    //           if (encodingDescrp[j].Encoding == value) {
+    //             description = encodingDescrp[j].Description;
+    //           }
+    //           j++;
+    //         }
+    //       } catch (e) {
+    //         console.log("erroring for encoding: ", value, " for variable: ", variable)
+    //       }
+    //       if (sum.has(description)) {
+    //         sum.set(description, sum.get(description)! + 1)
+    //       }
+    //       else {
+    //         sum.set(description, 1);
+    //       }
+    //       n++;
     .then(function () {
       for (let i = 0; i < arr.length; i++) {
         const value = arr[i][1];
         let description;
         if (!isNaN(value)) {
           let j = 0;
-          try {
-            while (typeof description == 'undefined') {
-              if (encodingDescrp[j].Encoding == value) {
-                description = encodingDescrp[j].Description;
-              }
-              j++;
+          while (typeof description == 'undefined') {
+            if (encodingDescrp[j].Encoding == value) {
+              description = encodingDescrp[j].Description;
             }
-          } catch (e) {
-            console.log("erroring for encoding: ", value, " for variable: ", variable)
+            j++;
           }
           if (sum.has(description)) {
             sum.set(description, sum.get(description)! + 1)
@@ -277,13 +294,15 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
           else {
             sum.set(description, 1);
           }
-          n++;
+          sum.forEach((v, d) => {
+            output.set(d, [Math.round(v / n * 100) / 100, v]);
+          })
         }
-        sum.forEach((v, d) => {
-          output.set(d, [Math.round(v / n * 100) / 100, v]);
-        })
       }
-    })
+      sum.forEach((v, d) => {
+        output.set(d, [Math.round(v / n * 100) / 100, v]);
+      })
+    });
   return output;
 
 }
@@ -296,7 +315,7 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
-async function getDataHighlights(arr: [number, any][], variable: string, db: Db) {
+async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
@@ -315,6 +334,14 @@ async function getDataHighlights(arr: [number, any][], variable: string, db: Db)
   });
 
   return { description: binaryData!.DisplayDescription, percentage: (displayCount / totalCount * 100).toFixed(1) }
+  //   if (!isNaN(value)) {
+  //     totalCount++;
+  //     if (value === binaryData!.DisplayEncoding) {
+  //       displayCount++
+  //     }
+  //   }
+  // });
+  // return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
 }
 
 
@@ -381,7 +408,6 @@ async function getUniqueVariables(db: Db) {
 //   return db.collection("variable-info");
 // }
 // export { collectVarInfo };
-
 
 
 /**
@@ -516,33 +542,66 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
+  // const app = express();
+  // const cors = require("cors");
+  // app.use(cors({origin: "http://localhost:3000"}));
+
+  // const multer = require('multer');
+  // const upload = multer({ dest: './src/db/data/'});
+
+  const UPLOAD_DIRECTORY = 'src/db/data/';
+
+  // let storage = multer.diskStorage({
+  //   destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
+  //       cb(null, UPLOAD_DIRECTORY)
+  //   },
+  //   filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
+  //     cb(null, file.fieldname)
+  //   }
+  // });
+
+  // const upload = multer({storage: storage,
+  //   onFileUploadStart: function (file: fileRequest) {
+  //     console.log(file.originalname + ' is starting ...')
+  //   }
+  // });
+
   /**** Routes ****/
+  const multer = require('multer')
+  const upload = multer({ dest: UPLOAD_DIRECTORY })
+  const fs = require("fs")
+  router.post('/updateData', upload.single('selectedFile'), async (req: any, res: Express.Response) => {
+    console.log("req body: ", req.body)
+    console.log("received files: ", req.file)
+    try {
+      if (!req.file) {
+        res.send({
+          status: false,
+          message: 'No file uploaded',
+        })
+      } else {
+        let file = req.file;
+        fs.rename(file.path, `${UPLOAD_DIRECTORY}/${file.originalname}`, (err: Error) => {
+          if (err) console.log(err)
+        })
 
-  router.get('/testData', async (req: Express.Request, res: Express.Response) => {
-    console.log("test text ");
-    const dbo = require("./db/conn");
-    var data = await combinationalData(dbo.getDb());
-    // dbo.createCollection("cache");
-    // dbo.cache.insert(data)
-    // console.log("collection created!");
-    console.log("data is " + data.length)
-    res.json({ success: true });
-  }
-  )
-
-  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
-    console.log("check if backend called ", req.body)
-    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
-    var token = null
-    if (haveAccess) {
-      token = "token"
+        res.send({
+          status: true,
+          message: 'File is uploaded',
+          data: {
+            name: file.name,
+            mimetype: file.mimetype,
+            size: file.size,
+          }
+        });
+      }
+    } catch (e: any) {
+      res.status(500).send(e);
     }
-    res.json({ haveAccess: haveAccess, token: token });
-  }
-  )
+  })
 
-  // This preprocessing route is placed before the :/variable route to prevent it from getting overriden 
-  router.get('/preprocessing', async (req: Express.Request, res: Express.Response) => {
+  // This updateData route is placed before the :/variable route to prevent it from getting overriden 
+  router.get('/updateData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;
@@ -552,7 +611,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
       console.log('Pipe data from python script ...');
@@ -566,6 +625,7 @@ module.exports = () => {
     });
   });
 
+
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
@@ -575,9 +635,10 @@ module.exports = () => {
     //if (cache != null) {
     const output = cache["mainQueryData"]
     const vizType: string = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
-    }
+    timeSeriesData = cache["timeSeriesQueryData"]
+    // if (timeSeriesData != null) {
+    //   timeSeriesData = cache["timeSeriesQueryData"]
+    // }
     console.log("variable: ", req.params.variable)
     console.log("vizType: ", vizType)
     console.log("output: ", output)
@@ -595,14 +656,15 @@ module.exports = () => {
     //if (cache != null) {
     const output = cache["mainQueryData"]
     const vizType = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
-    }
-    console.log("variable: ", req.params.variable)
+    timeSeriesData = cache["timeSeriesQueryData"]
+    // if (timeSeriesData != null) {
+    //   timeSeriesData = cache["timeSeriesQueryData"]
+    // }
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-    //}
+
   });
 
 
@@ -617,11 +679,10 @@ module.exports = () => {
     if (timeSeriesData != null) {
       timeSeriesData = cache["timeSeriesQueryData"]
     }
-    console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
+    console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-    //}
   });
 
 

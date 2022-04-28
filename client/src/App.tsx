@@ -14,7 +14,7 @@ import AdminLanding from './components/AdminLanding/AdminLanding'
 import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
-import MultiColumnChart from "./charts/MultiColumnChart";
+// import MultiColumnChart from "./charts/multiColumnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -67,12 +67,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path="/linegraph" element={<Line data={timeSeriesData} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
+        <Route path="/linegraph" element={<Line data={timeSeriesData} index={1} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
         <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
-        <Route path="multicolumn-chart" element={<MultiColumnChart/>} />
+        {/* <Route path="multicolumn-chart" element={<MultiColumnChart/>} /> */}
         <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}

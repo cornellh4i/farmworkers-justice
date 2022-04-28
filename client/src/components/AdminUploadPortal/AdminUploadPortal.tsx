@@ -52,13 +52,6 @@ function AdminUploadPortal() {
 				<input type="file" onChange={handleFileSelect} accept=".csv" />
 				<input type="submit" value="Upload" />
 			</form>
-			{/* <div className="secondButton">
-				<p>Please upload "NAWS_A2E191.csv"</p>
-				<form onSubmit = {handleSubmit}>
-					<input type="file" onChange={handleFileSelect} accept=".csv" />
-					<input type="submit" value="Upload" />
-				</form>
-			</div> */}
 			<div className="preprocess">
 				<p>Verify that both files were uploaded to preprocess the data</p>
 				<Button onClick = {handleUpdate} variant="contained">Update Data</Button>

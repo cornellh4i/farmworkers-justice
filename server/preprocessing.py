@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 from pymongo import MongoClient
+import os
 
 latestFY = 2020
 earliestFY = (latestFY + 1) - 10
@@ -76,4 +77,5 @@ def sendToMongo(df):
     collection.insert_many(data_dict)
 
 
-preprocessing()
+if (os.path.exists("./src/db/data/NAWS_A2E191.csv") and os.path.exists("./src/db/data/NAWS_F2Y191.csv")):
+    preprocessing()

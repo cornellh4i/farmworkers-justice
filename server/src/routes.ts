@@ -366,7 +366,6 @@ async function getUniqueVariables(db: Db) {
   await variablesInfo.forEach(variableInfo => {
     uniqueVariables.push(variableInfo.Variable)
   });
-  console.log(uniqueVariables)
   return uniqueVariables;
 
 }
@@ -436,13 +435,13 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 async function combinationalData(db: Db) {
   var combDatas;
   const filtersEncoding = require('./local-json/filterEncoding.json')
-  //  [filter: "GENDER"; filterValue: "0]
-  var variables: string[];
+  var variables : string[];
   combDatas = []
   variables = await getUniqueVariables(db);
-  for (let i = 1; i < 2; i++) {
+  for (let i = 0; i < 1; i++) {
+    // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);
-    var timeSeriesData = timeSeries ? (await timeSeriesMain(variables[i], db)) : null;
+    var timeSeriesData = timeSeries === 1 ? ( await timeSeriesMain(variables[i], db)) : null;
     var filters = ["GENDER", "FLC", "REGION6", "currstat"]
     let combData = {
       "variable": variables[i],
@@ -454,58 +453,47 @@ async function combinationalData(db: Db) {
       "mainQueryData": (await main(variables[i], db, vizType)),
       "timeSeriesQueryData": timeSeriesData,
     }
-    console.log("main query data: ", main(variables[i], db, vizType));
     combDatas.push(combData)
     // loop through filters (fill all filter1 only)
     for (let x = 0; x < 4; x++) {
-      console.log("loop")
       let combDataOne = {
         ...combData
       }
       let value1: string = filters[x]
       combDataOne["filter1"] = value1
-      //for (let x = 0; x < value1.length; x++) { 
-      console.log(typeof value1)
-      // for (var element of value1)
-      console.log(filtersEncoding)
       for (var element of filtersEncoding[value1]) {
-        console.log("element 1: ", element)
         let combDataTwo = {
           ...combDataOne
         }
-        combDataTwo["filter1Encoding"] = element
+        combDataTwo["filter1Encoding"] = element["filter-encoding"]
         combDataTwo["mainQueryData"] = (await main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         if (timeSeries) {
           combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         }
-        combDatas.push(combDataTwo) // f1 = filt, f2 = null
-        // db.collection('test').insertOne(combDataTwo)
+        combDatas.push(combDataTwo) // f1 = filter, f2 = null
+        // loop through filters (fill both filter1 and filter2)
         for (let j = x + 1; j < 4; j++) {
           let combDataThree = {
             ...combDataTwo
           }
-          //if (!(key2 === key1)) {
           let value2: string = filters[j]
           combDataThree["filter2"] = value2
-          //for (let y = 0; y < value2.length; y++) {
           for (var element of filtersEncoding[value2]) {
             let combDataFour = {
               ...combDataThree
             }
-            combDataFour["filter2Encoding"] = element
+            combDataFour["filter2Encoding"] = element["filter-encoding"]
             combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             if (timeSeries) {
               combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             }
             combDatas.push(combDataFour) // f1 = filt, f2 = filt
           }
-
-          //}
         }
       }
     }
   }
-  console.log("caching data")
+  db.collection('cache').drop()
   db.collection('cache').insertMany(combDatas)
   return combDatas;
 }
@@ -519,7 +507,6 @@ module.exports = () => {
   /**** Routes ****/
 
   router.get('/testData', async (req: Express.Request, res: Express.Response) => {
-    console.log("test text ");
     const dbo = require("./db/conn");
     var data = await combinationalData(dbo.getDb());
     // dbo.createCollection("cache");
@@ -527,7 +514,7 @@ module.exports = () => {
     // console.log("collection created!");
     console.log("data is " + data.length)
     res.json({ success: true });
-  }
+    }
   )
 
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {

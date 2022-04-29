@@ -12,39 +12,39 @@ function Minipage() {
     const categoryIndex = parseInt(params.categoryEncoding!)
     const variablesInCategories = require('./../../local-json/categories.json')
     const [currentCollapseIndex, setCurrentCollapseIndex] = useState<number | null>(null)
-    const [encodings, setEncodings] = useState<Array<string>>([])
+    const [variableEncodings, setVariableEncodings] = useState<Array<string>>([])
     const [mapFilterSelected, setMapFilterSelected] = useState<null | string>(null);
+    const [filter1Selected, setFilter1Selected] = useState<null | string[]>(null);
+    const [filter2Selected, setFilter2Selected] = useState<null | string[]>(null);
+    const [variableDescriptions, setVariableDescriptions] = useState<string[]>([]);
 
-
-
-    // function onCollapse(index: number) {
-    //     if (index === dropdownIndex) {
-    //         setDropdownIndex(null) // closing collapse
-    //     } else {
-    //         setDropdownIndex(index);
-    //     }
-    // }
-
-    function getVariablesEncoding(categoryIndex: number) {
-        var variables = variablesInCategories["categories"][categoryIndex]["variables"]
-        var allEncodings: string[] = []
-        for (let i = 0; i < variables.length; i++) {
-            allEncodings.push(variables[i]["variable-encoding"])
-        }
-        setEncodings(allEncodings) 
-    }
 
     useEffect(() => {
+
+        function getVariablesEncoding(categoryIndex: number) {
+            var variables = variablesInCategories["categories"][categoryIndex]["variables"]
+            var allvariableEncodings: string[] = []
+            for (let i = 0; i < variables.length; i++) {
+                allvariableEncodings.push(variables[i]["variable-encoding"])
+            }
+            setVariableEncodings(allvariableEncodings)
+        }
+
         getVariablesEncoding(categoryIndex)
+        var descriptions = getVariablesByCategory(categoryIndex)
+        setVariableDescriptions(descriptions)
     }, [])
-    
+
 
     return (
         <div>
-            <FilterPanel setMapFilterSelected={setMapFilterSelected}/>
-            {getVariablesByCategory(categoryIndex).map((variable, index) => <Dropdown key={index} categoryVariable={variable} 
-                index={index} encoding={encodings[index]}  mapFilterSelected={mapFilterSelected} 
-                currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
+            <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
+           <ul>
+                {variableDescriptions.map((variableDescription, index) => 
+                    <Dropdown key={index.toString()} variableDescription={variableDescription} index={index} 
+                    variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
+                    currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
+            </ul>
         </div>
     )
 }

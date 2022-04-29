@@ -8,17 +8,21 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import './FilterPanel.scss'
-import { propsToClassKey } from "@mui/styles";
 
 const FilterEnum = {
   GENDER: "GENDER",
-  CURRSTAT: "CURRSTAT",
+  CURRSTAT: "currstat",
   FLC: "FLC",
   REGION6: "REGION6"
 }
 
 interface FilterPanelProps {
+  mapFilterSelected: null | string
   setMapFilterSelected: Function
+  filter1Selected: null | string[]
+  setFilter1Selected: Function
+  filter2Selected: null | string[]
+  setFilter2Selected: Function
 }
 
 function FilterPanel(props: FilterPanelProps) {
@@ -29,8 +33,8 @@ function FilterPanel(props: FilterPanelProps) {
 
 
   // filter1 and filter2 states are in the form of [filter value, filter name]
-  const [filter1, setFilter1] = useState<null | string[]>(null);
-  const [filter2, setFilter2] = useState<null | string[]>(null);
+  // const [filter1, setFilter1] = useState<null | string[]>(null);
+  // const [filter2, setFilter2] = useState<null | string[]>(null);
 
   function handleFilterChange(filterName: string, event: { target: { value: string; } }) {
     if (filterName === FilterEnum.GENDER) {
@@ -44,45 +48,45 @@ function FilterPanel(props: FilterPanelProps) {
       props.setMapFilterSelected(event.target.value);
     }
 
-    if (filter1 === null || filter1[1] === filterName) {
-      setFilter1([event.target.value, filterName]);
-    } else if (filter2 === null || filter2[1] === filterName) {
-      setFilter2([event.target.value, filterName]);
+    if (props.filter1Selected === null || props.filter1Selected[1] === filterName) {
+      props.setFilter1Selected([event.target.value, filterName]);
+    } else if (props.filter2Selected === null || props.filter2Selected[1] === filterName) {
+      props.setFilter2Selected([event.target.value, filterName]);
     }
   };
 
   function handleDeleteFilter1() {
-    if (filter1![1] === FilterEnum.GENDER) {
+    if (props.filter1Selected![1] === FilterEnum.GENDER) {
       setGender('');
-    } else if (filter1![1] === FilterEnum.CURRSTAT) {
+    } else if (props.filter1Selected![1] === FilterEnum.CURRSTAT) {
       setCurrStat('');
-    } else if (filter1![1] === FilterEnum.FLC) {
+    } else if (props.filter1Selected![1] === FilterEnum.FLC) {
       setFlc('');
-    } else if (filter1![1] === FilterEnum.REGION6) {
+    } else if (props.filter1Selected![1] === FilterEnum.REGION6) {
       setRegion6('');
       props.setMapFilterSelected(null);
     }
 
-    if (filter2 !== null) {
-      setFilter1(filter2);
-      setFilter2(null);
+    if (props.filter2Selected !== null) {
+      props.setFilter1Selected(props.filter2Selected);
+      props.setFilter2Selected(null);
     } else {
-      setFilter1(null);
+      props.setFilter1Selected(null);
     }
   };
 
   function handleDeleteFilter2() {
-    if (filter2![1] === FilterEnum.GENDER) {
+    if (props.filter2Selected![1] === FilterEnum.GENDER) {
       setGender('');
-    } else if (filter2![1] === FilterEnum.CURRSTAT) {
+    } else if (props.filter2Selected![1] === FilterEnum.CURRSTAT) {
       setCurrStat('');
-    } else if (filter2![1] === FilterEnum.FLC) {
+    } else if (props.filter2Selected![1] === FilterEnum.FLC) {
       setFlc('');
-    } else if (filter2![1] === FilterEnum.REGION6) {
+    } else if (props.filter2Selected![1] === FilterEnum.REGION6) {
       setRegion6('');
       props.setMapFilterSelected(null);
     }
-    setFilter2(null);
+    props.setFilter2Selected(null);
   };
 
   return (
@@ -101,7 +105,7 @@ function FilterPanel(props: FilterPanelProps) {
               value={gender}
               label="Gender"
               onChange={(e) => handleFilterChange(FilterEnum.GENDER, e)}
-              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.GENDER && filter2[1] !== FilterEnum.GENDER)}
+              disabled={(props.filter1Selected !== null && props.filter2Selected !== null && props.filter1Selected[1] !== FilterEnum.GENDER && props.filter2Selected[1] !== FilterEnum.GENDER)}
             >
               <MenuItem value={"Male"}>Male</MenuItem>
               <MenuItem value={"Female"}>Female</MenuItem>
@@ -117,7 +121,7 @@ function FilterPanel(props: FilterPanelProps) {
               value={currstat}
               label="Work Authorization Status"
               onChange={(e) => handleFilterChange(FilterEnum.CURRSTAT, e)}
-              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.CURRSTAT && filter2[1] !== FilterEnum.CURRSTAT)}
+              disabled={(props.filter1Selected !== null && props.filter2Selected !== null && props.filter1Selected[1] !== FilterEnum.CURRSTAT && props.filter2Selected[1] !== FilterEnum.CURRSTAT)}
             >
               <MenuItem value={"Citizen"}>Citizen</MenuItem>
               <MenuItem value={"Green Card"}>Green Card</MenuItem>
@@ -135,7 +139,7 @@ function FilterPanel(props: FilterPanelProps) {
               value={flc}
               label="Employer"
               onChange={(e) => handleFilterChange(FilterEnum.FLC, e)}
-              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.FLC && filter2[1] !== FilterEnum.FLC)}
+              disabled={(props.filter1Selected !== null && props.filter2Selected !== null && props.filter1Selected[1] !== FilterEnum.FLC && props.filter2Selected[1] !== FilterEnum.FLC)}
             >
               <MenuItem value={"Grower/Nurs./Packh/Oth"}>Grower/Nurs./Packh/Oth</MenuItem>
               <MenuItem value={"Farm-labor Contractor"}>Farm-labor Contractor</MenuItem>
@@ -151,7 +155,7 @@ function FilterPanel(props: FilterPanelProps) {
               value={region6}
               label="Region"
               onChange={(e) => handleFilterChange(FilterEnum.REGION6, e)}
-              disabled={(filter1 !== null && filter2 !== null && filter1[1] !== FilterEnum.REGION6 && filter2[1] !== FilterEnum.REGION6)}
+              disabled={(props.filter1Selected !== null && props.filter2Selected !== null && props.filter1Selected[1] !== FilterEnum.REGION6 && props.filter2Selected[1] !== FilterEnum.REGION6)}
             >
               <MenuItem value={"East"}>East</MenuItem>
               <MenuItem value={"South East"}>South East</MenuItem>
@@ -168,16 +172,16 @@ function FilterPanel(props: FilterPanelProps) {
 
       < div className="chip">
         <h3 className="filter-applied-text">Filters applied:</h3>
-        {filter1 === null ?
+        {props.filter1Selected === null ?
           null :
           <Stack direction="row" spacing={1} sx={{ marginRight: '1rem' }}>
-            <Chip label={filter1[0]} onDelete={handleDeleteFilter1} sx={{ backgroundColor: '#D2E0F1' }} />
+            <Chip label={props.filter1Selected[0]} onDelete={handleDeleteFilter1} sx={{ backgroundColor: '#D2E0F1' }} />
           </Stack>
         }
-        {filter2 === null ?
+        {props.filter2Selected === null ?
           null :
           <Stack direction="row" spacing={1} >
-            <Chip label={filter2[0]} onDelete={handleDeleteFilter2} sx={{ backgroundColor: '#FFD999' }} />
+            <Chip label={props.filter2Selected[0]} onDelete={handleDeleteFilter2} sx={{ backgroundColor: '#FFD999' }} />
           </Stack>
         }
       </div>

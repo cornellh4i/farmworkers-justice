@@ -115,7 +115,7 @@
             ]
         },
         {
-            "variable-encoding": "C09Weeks",
+            "variable-encoding": "C09WEEKS",
             "variable-description": "Number of weeks at current job",
             "bin-ranges": [
                 {
@@ -151,7 +151,7 @@
             ]
         },
         {
-            "variable-encoding": "FWRDays",
+            "variable-encoding": "FWRDAYS",
             "variable-description": "Actual Farm Work Days",
             "bin-ranges": [
                 {
@@ -199,7 +199,7 @@
             ]
         },
         {
-            "variable-encoding": "NWWeeks",
+            "variable-encoding": "NWWEEKS",
             "variable-description": "Number of non-work weeks last year",
             "bin-ranges": [
                 {
@@ -313,7 +313,7 @@
             ]
         },
         {
-            "variable-encoding": "WageT1",
+            "variable-encoding": "WAGET1",
             "variable-description": "Wage for work task",
             "bin-ranges": [
                 {

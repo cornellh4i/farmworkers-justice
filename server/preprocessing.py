@@ -22,9 +22,11 @@ def preprocessing():
 
     df = pd.read_csv("./src/db/combined.csv")
 
+
     # Need to answer why FY and FWID is not a necessary variable
     necessaryVariables = sys.argv[1].split(",")
     necessaryVariables.append("FY")
+    necessaryVariables.append("REGION6")
 
     # Processes dropping the variables that are not in necessaryVariables
     necessaryVariablesFinal = ["value"]*len(necessaryVariables)
@@ -39,6 +41,7 @@ def preprocessing():
 
     # Reassign df to the proper dataframe
     df = dropped_df
+
     
     df = df[(df['FY'] >= earliestFY) & (df['FY'] <= latestFY)]
 
@@ -75,6 +78,7 @@ def sendToMongo(df):
     data_dict = df.to_dict("records")
     collection.delete_many({ })
     collection.insert_many(data_dict)
+    print("finished writing to mongodb")
 
 
 if (os.path.exists("./src/db/data/NAWS_A2E191.csv") and os.path.exists("./src/db/data/NAWS_F2Y191.csv")):

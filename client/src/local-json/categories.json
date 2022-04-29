@@ -17,7 +17,7 @@
                     "variable-description": "Where were you/they born?"
                 },
                 {
-                    "variable-encoding": "Streams",
+                    "variable-encoding": "STREAMS",
                     "variable-description": "Streams by Zone Eastern Midwest and Western"
                 },
                 {
@@ -25,7 +25,7 @@
                     "variable-description": "What country did you live in before coming to the US? (if foreign born)"
                 },
                 {
-                    "variable-encoding": "CURRSTAT",
+                    "variable-encoding": "currstat",
                     "variable-description": "Current Work Authorization Status (Immigration status)"
                 },
                 {
@@ -33,19 +33,19 @@
                     "variable-description": "Foreign Born"
                 },
                 {
-                    "variable-encoding": "INDIGENOUS",
+                    "variable-encoding": "Indigenous",
                     "variable-description": "Indigenous definition that include race, language and child language."
                 },
                 {
-                    "variable-encoding": "Migrant",
+                    "variable-encoding": "MIGRANT",
                     "variable-description": "Migrant"
                 },
                 {
-                    "variable-encoding": "MIXEDFAM",
+                    "variable-encoding": "MixedFam",
                     "variable-description": "Farmworker is unauthorized but has US Citizen children"
                 },
                 {
-                    "variable-encoding": "ADULTOTHERINDG",
+                    "variable-encoding": "AdultOtherIndg",
                     "variable-description": "Has other adult language indigenous."
                 },
                 {
@@ -71,11 +71,11 @@
                     "variable-description": "Number of Parents in Household"
                 },
                     {
-                    "variable-encoding": "Gender",
+                    "variable-encoding": "GENDER",
                     "variable-description": "Gender"
                 },
                     {
-                    "variable-encoding": "Married",
+                    "variable-encoding": "MARRIED",
                     "variable-description": "Married"
                 }
             ]
@@ -97,32 +97,8 @@
                     "variable-description": "How well do you read English?"
                 },
                 {
-                    "variable-encoding": "B21a",
-                    "variable-description": "Do you speak English?"
-                },
-                {
-                    "variable-encoding": "B21b",
-                    "variable-description": "Do you speak Spanish?"
-                },
-                {
-                    "variable-encoding": "B21c",
-                    "variable-description": "Do you speak Creole?"
-                },
-                {
-                    "variable-encoding": "B21d",
-                    "variable-description": "Do you speak Mixtec?"
-                },
-                {
-                    "variable-encoding": "B21e",
-                    "variable-description": "Do you speak Kanjobal?"
-                },
-                {
-                    "variable-encoding": "B21f",
-                    "variable-description": "Do you speak Zapotec?"
-                },
-                {
-                    "variable-encoding": "B21z",
-                    "variable-description": "Do you speak other languages?"
+                    "variable-encoding": "B21x",
+                    "variable-description": "Do you speak ..."
                 },
                 {
                     "variable-encoding": "B22b",
@@ -159,7 +135,7 @@
                     "variable-description": "How much do you pay for housing each month?"
                 },
                 {
-                    "variable-encoding": "Crowded1",
+                    "variable-encoding": "CROWDED1",
                     "variable-description": "Household is crowded, based on U.S. census bureau definition"
                 }
             ]
@@ -169,23 +145,23 @@
             "category-encoding": 4,
             "variables": [
                 {
-                    "variable-encoding": "C09Weeks",
+                    "variable-encoding": "C09WEEKS",
                     "variable-description": "Number of weeks at current job"
                 },
                 {
-                    "variable-encoding": "Crop",
+                    "variable-encoding": "CROP",
                     "variable-description": "Crop at time of interview"
                 },
                 {
-                    "variable-encoding": "FWRDays",
+                    "variable-encoding": "FWRDAYS",
                     "variable-description": "Actual Farm Work Days"
                 },
                 {
-                    "variable-encoding": "NWWeeks",
+                    "variable-encoding": "NWWEEKS",
                     "variable-description": "Number of non-work weeks last year"
                 },
                 {
-                    "variable-encoding": "Task",
+                    "variable-encoding": "TASK",
                     "variable-description": "Work task"
                 },
                 {
@@ -197,7 +173,7 @@
                     "variable-description": "How are you paid?"
                 },
                 {
-                    "variable-encoding": "WageT1",
+                    "variable-encoding": "WAGET1",
                     "variable-description": "Wage for work task"
                 },
                 {
@@ -221,7 +197,7 @@
                     "variable-description": "Have you been covered by a union contract at any time in the last two years?"
                 },
                 {
-                    "variable-encoding": "NP01F",
+                    "variable-encoding": "NP01f",
                     "variable-description": "In the last 12 months, have you loaded, mixed, or applied pesticides"
                 },
                 {
@@ -274,60 +250,8 @@
                     "variable-description": "What was your family's total income last year in USD?"
                 },
                 {
-                    "variable-encoding": "G04B",
-                    "variable-description": "In the last two years, has anyone in your household used food stamps?"
-                },
-                {
-                    "variable-encoding": "G04C",
-                    "variable-description": "In the last two years, has anyone in your household used disability insurance?"
-                },
-                {
-                    "variable-encoding": "G04D",
-                    "variable-description": "In the last two years, has anyone in your household used unemployment insurance?"
-                },
-                {
-                    "variable-encoding": "G04E",
-                    "variable-description": "In the last two years, has anyone in your household used social security?"
-                },
-                {
-                    "variable-encoding": "G04fx",
-                    "variable-description": "In the last two years, has anyone in your household used veteran's pay?"
-                },
-                {
-                    "variable-encoding": "G04gx",
-                    "variable-description": "In the last two years, has anyone in your household used general assistance/welfare?"
-                },
-                {
-                    "variable-encoding": "G04H",
-                    "variable-description": "In the last two years, has anyone in your household used low income housing?"
-                },
-                {
-                    "variable-encoding": "G04I",
-                    "variable-description": "In the last two years, has anyone in your household used public health clinic?"
-                },
-                {
-                    "variable-encoding": "G04J",
-                    "variable-description": "In the last two years, has anyone in your household used medicaid?"
-                },
-                {
-                    "variable-encoding": "G04K",
-                    "variable-description": "In the last two years, has anyone in your household used WIC?"
-                },
-                {
-                    "variable-encoding": "G04L",
-                    "variable-description": "In the last two years, has anyone in your household used disaster relief?"
-                },
-                {
-                    "variable-encoding": "G04M",
-                    "variable-description": "In the last two years, has anyone in your household used legal services?"
-                },
-                {
-                    "variable-encoding": "G04N",
-                    "variable-description": "In the last two years, has anyone in your household used other social programs?"
-                },
-                {
-                    "variable-encoding": "G04px",
-                    "variable-description": "In the last two years, has anyone in your household used Temporary assistance for needy families (TANF)?"
+                    "variable-encoding": "G04x",
+                    "variable-description": "In the last two years, has anyone in your household used ..."
                 },
                 {
                     "variable-encoding": "FAMPOV",
@@ -340,87 +264,23 @@
             "category-encoding": 8,
             "variables": [
                 {
-                    "variable-encoding": "NH01",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had asthma?"
+                    "variable-encoding": "NH0x",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had ..."
                 }, 
                 {
-                    "variable-encoding": "NH02",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had diabetes?"
-                }, 
-                {
-                    "variable-encoding": "NH03",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had high blood pressure?"
-                }, 
-                {
-                    "variable-encoding": "NH04",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had tuberculosis?"
-                }, 
-                {
-                    "variable-encoding": "NH05",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had heart disease?"
-                }, 
-                {
-                    "variable-encoding": "NH06",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had urinary tract infections?"
-                }, 
-                {
-                    "variable-encoding": "NH10",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had other conditions?"
-                }, 
-                {
-                    "variable-encoding": "NQ03Bx",
+                    "variable-encoding": "NQ03bx",
                     "variable-description": "The last time you used a health care provider, where did you go?"
                 }, 
                 {
-                    "variable-encoding": "NQ10bx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Don't know where health services are available."
+                    "variable-encoding": "NQ10x",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face?"
                 }, 
                 {
-                    "variable-encoding": "NQ10cx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Health center not open when needed."
-                }, 
-                {
-                    "variable-encoding": "NQ10dx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not have the service needed."
-                }, 
-                {
-                    "variable-encoding": "NQ10ex",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not speak my language."
-                }, 
-                {
-                    "variable-encoding": "NQ10fx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Don't feel welcome."
-                }, 
-                {
-                    "variable-encoding": "NQ10gx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Do not understand my problems."
-                }, 
-                {
-                    "variable-encoding": "NQ10hx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Will lose my job."
-                }, 
-                {
-                    "variable-encoding": "NQ10ix",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Too expensive."
-                }, 
-                {
-                    "variable-encoding": "NQ10jx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? Other."
-                }, 
-                {
-                    "variable-encoding": "NQ10lx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? I'm 'undocumented' they don't treat me well."
-                }, 
-                {
-                    "variable-encoding": "NQ10mx",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face? I do not know. I've never needed it."
-                }, 
-                {
-                    "variable-encoding": "A21A",
+                    "variable-encoding": "A21a",
                     "variable-description": "Does the Farmworker have health insurance?"
                 }, 
                 {
-                    "variable-encoding": "A21B",
+                    "variable-encoding": "A21b",
                     "variable-description": "Does the spouse have health insurance?"
                 }, 
                 {
@@ -428,15 +288,15 @@
                     "variable-description": "Do the children have health insurance?"
                 }, 
                 {
-                    "variable-encoding": "A23A3",
+                    "variable-encoding": "A23a3",
                     "variable-description": "Farmworker has employer-provided health insurance"
                 }, 
                 {
-                    "variable-encoding": "A23A5",
+                    "variable-encoding": "A23a5",
                     "variable-description": "Farmworker has government-provided health insurance"
                 }, 
                 {
-                    "variable-encoding": "A23C5",
+                    "variable-encoding": "A23c5",
                     "variable-description": "Children have government-provided health insurance"
                 }, 
                 {

@@ -45,7 +45,7 @@
             "filter-value": "California"
         }
     ],
-    "CURRSTAT": [
+    "currstat": [
         {
             "filter-encoding": 1,
             "filter-value": "Citizen"

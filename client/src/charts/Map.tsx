@@ -7,7 +7,7 @@ import './Map.scss'
 
 interface MapProp {
   mapFilterSelected : string;
-  collapseIndex: null | number;
+  // collapseIndex: null | number;
 }
 
 interface RegionToStatesProps {
@@ -40,7 +40,7 @@ function Map(props : MapProp) {
     const newStateIDs = regionToStatesData["regionToStates"].find((el: RegionToStatesProps) =>
       el.regionEncoding === newRegionEncoding).stateIDs;
     setStateIDs(newStateIDs)
-  }, [props.mapFilterSelected, props.collapseIndex])
+  }, [props.mapFilterSelected])
     
   const us = require("./us-smaller.json")
   var states = topojson.feature((us as unknown) as Topology, ((us as unknown) as Topology).objects.states as GeometryObject) as geojson.FeatureCollection;    

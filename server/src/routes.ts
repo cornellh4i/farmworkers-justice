@@ -1,7 +1,6 @@
 import Express from "express";
 import { Db } from "mongodb";
 
-
 enum VizType {
   Donut = "donut",
   Histogram = "histogram",
@@ -38,6 +37,10 @@ interface columnChartGroupingProp {
   generalDescription: string, 
   condensedVariableEncoding: string,
   variables: columnChartVariableProp[]
+}
+
+interface fileRequest extends Request {
+  files: any,
 }
 
 interface fileRequest extends Request {
@@ -505,27 +508,11 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
-  /**** Routes ****/
-  // router.get('/column', async (req: Express.Request, res: Express.Response) => {
-  //   const dbo = require("./db/conn");
-  //   const db = dbo.getDb();
-  //   const arr = [
-  //     ["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
-  //     ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
-  //     ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
-  //     ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
-  //   ];
-    
-    
-  //   const output = aggregateColumnChart(arr);
-  //   console.log(output)
+module.exports = () => {
+  const express = require("express");
+  const router = express.Router();
 
-  //   const vizOutput = await getVizType("B21x", db);
-  //   console.log("vizOutput: ", vizOutput)
-
-
-  //   res.json({ data: output }); 
-  // })
+  const UPLOAD_DIRECTORY = 'src/db/data/';
   
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     console.log("check if backend called ", req.body)
@@ -583,8 +570,8 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
     const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
-     console.log('Pipe data from python script ...');
-     dataToSend = data.toString();
+    console.log('Pipe data from python script ...');
+    dataToSend = data.toString();
     });
     // in close event we are sure that stream from child process is closed
     python.on('close', (code: any) => {
@@ -592,6 +579,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
       // send data to browser
       res.send(dataToSend)
     });
+
   });
 
 

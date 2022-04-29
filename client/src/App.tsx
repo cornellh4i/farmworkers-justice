@@ -14,6 +14,7 @@ import AdminLanding from './components/AdminLanding/AdminLanding'
 import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
+import AdminUploadPortal from './components/AdminUploadPortal/AdminUploadPortal';
 import ColumnChart from "./charts/columnChart";
 
 const API_URL = process.env.REACT_APP_API;
@@ -50,12 +51,12 @@ function App() {
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
     
-    const urlFLC = `${API_URL}/NUMFEMPL`;
-    const FLCResponse = await fetch(urlFLC);
-    const FLCOut = await FLCResponse.json();
-    setFLCData(FLCOut.data);
-    setTimeSeriesData(FLCOut.timeSeriesData)
-
+    // const urlFLC = `${API_URL}/NUMFEMPL`;
+    // const FLCResponse = await fetch(urlFLC);
+    // const FLCOut = await FLCResponse.json();
+    // setFLCData(FLCOut.data);
+    // setTimeSeriesData(FLCOut.timeSeriesData)
+    
     const urlDataHighlight = `${API_URL}/Indigenous`;
     const DataHighlightResponse = await fetch(urlDataHighlight);
     const DataHighlightOut = await DataHighlightResponse.json();

@@ -10,6 +10,7 @@ const cors = require('cors');
 
 /**** Configuration ****/
 const app = express(); 
+app.use(bodyParser({limit: '50mb'}));
 
 function createServer() {
   const routes = require("./routes")();

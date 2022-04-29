@@ -2,6 +2,7 @@ import "@fontsource/rubik";
 import './Dropdown.scss';
 import Grid from '@mui/material/Grid';
 import ListItemButton from '@mui/material/ListItemButton';
+import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -146,6 +147,12 @@ function Dropdown(props: DropdownProp) {
                     {TimeSeriesComponent}
                   </Grid>
                 </Grid>
+              </div>
+              <div id="download">
+                <Button variant="contained" 
+                  onClick={
+                    () => {alert("✔️ This works on every component!");}
+                  }>Download</Button>
               </div>
             </Collapse>
           </Grid>

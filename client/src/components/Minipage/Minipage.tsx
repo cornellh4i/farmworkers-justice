@@ -2,6 +2,7 @@ import "@fontsource/rubik";
 import './Minipage.scss';
 import Dropdown from "../Dropdown/Dropdown";
 import "@fontsource/rubik";
+import Button from '@mui/material/Button';
 import { getVariablesByCategory } from "./../Homepage/Homepage"
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -38,6 +39,12 @@ function Minipage() {
 
     return (
         <div>
+            <div id="download">
+                <Button variant = "contained" 
+                    onClick={
+                    () => {alert("✔️ Time to download all!");}
+                }>Download All</Button>
+            </div>
             <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
            <ul>
                 {variableDescriptions.map((variableDescription, index) => 
@@ -45,6 +52,7 @@ function Minipage() {
                     variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
                     currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
             </ul>
+
         </div>
     )
 }

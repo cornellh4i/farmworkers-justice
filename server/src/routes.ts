@@ -23,13 +23,13 @@ const LATEST_EVEN_YEAR = 2018;
 
 interface timeSeriesRangesProp {
   encoding: number,
-  start: null | number, 
+  start: null | number,
   end: null | number
 }
 
 interface timeSeriesEncodingsProp {
-  "variable-encoding": string, 
-  "variable-description": string, 
+  "variable-encoding": string,
+  "variable-description": string,
   "ranges": timeSeriesRangesProp[]
 }
 
@@ -51,32 +51,33 @@ interface fileRequest extends Request {
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
   // TODO: return corresponding weightings 
   var query = {}
+  var weights = {}
   if (typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
-      query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }
+      query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
     } else {
       query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }] }
     }
   }
   else if (typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
-      query = { $and: [{ [filter_key1]: filter_value1 }, { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}] }
+      query = { $and: [{ [filter_key1]: filter_value1 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
     } else {
       query = { [filter_key1]: filter_value1 }
     }
   }
   else {
     if (latestYearsQuery) {
-      query = { $or: [{"FY": LATEST_EVEN_YEAR}, {"FY": LATEST_ODD_YEAR}]}
-    } else{
+      query = { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }
+    } else {
       query = {}
     }
   }
-  var filtered_array: Array<[number, number]> = []
+  var filtered_array: Array<[number, number, number]> = []
   // TODO: USE PROJECTION
   var result = await db.collection('naws_main').find(query).toArray();
   function iterateFunc(doc: any) {
-    let lst : [number, number] = [doc.FY, doc[variable]];
+    let lst: [number, number, number] = [doc.FY, doc[variable], doc.PWTYCRD];
     filtered_array.push(lst)
   }
   function errorFunc(error: any) {
@@ -100,53 +101,56 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  *          and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
-function aggregateTimeSeries(arr: [number, number][], variable: string) {
+function aggregateTimeSeries(arr: [number, number, number][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
-  const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2 
+  const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2
   let output = new Array<{ year: number, value: number }>();
   let totalEachYear = new Map<number, number>();
-  for (let i = 0; i <= (maxYear - minYear - 1)/2; i++) {
-    output[i] = { year: minYear + i*2, value: 0 };
-    totalEachYear.set(minYear + i*2, 0)
+  for (let i = 0; i <= (maxYear - minYear - 1) / 2; i++) {
+    output[i] = { year: minYear + i * 2, value: 0 };
+    totalEachYear.set(minYear + i * 2, 0)
   }
 
   if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = Math.floor((yr - minYear)/2) // Have odd then even years in one group
+      const weight: number = v[2];
+      const yrIdx: number = Math.floor((yr - minYear) / 2) // Have odd then even years in one group
       if (!isNaN(value)) {
-        output[yrIdx].value += value; //TODO: ACCOUNT WEIGHTINGS
-        totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
+        output[yrIdx].value += value * weight; //TODO: ACCOUNT WEIGHTINGS
+        totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
       }
     })
   } else if (variable === "G01" || variable === "G03") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = Math.floor((yr - minYear)/2) 
+      const weight: number = v[2];
+      const yrIdx: number = Math.floor((yr - minYear) / 2)
       const ranges = timeSeriesEncodings.find((e: timeSeriesEncodingsProp) =>
         e["variable-encoding"] === variable);
-      
+
       if (!isNaN(value)) {
         let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
-            e["encoding"] === value );
-        if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
+          e["encoding"] === value);
+        if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
-          output[yrIdx].value += midValue; //TODO: ACCOUNT WEIGHTINGS
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
+          output[yrIdx].value += midValue; // question this //TODO: ACCOUNT WEIGHTINGS
+          totalEachYear.set(yr, totalEachYear.get(yr)! + weight * 1); //TODO: ACCOUNT WEIGHTINGS
         }
       }
-    }) 
+    })
   } else {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
-      const yrIdx: number = Math.floor((yr - minYear)/2) 
+      const weight: number = v[2];
+      const yrIdx: number = Math.floor((yr - minYear) / 2)
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
-          output[yrIdx].value += value; //TODO: ACCOUNT WEIGHTINGS
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1); //TODO: ACCOUNT WEIGHTINGS
+          output[yrIdx].value += value * weight; //TODO: ACCOUNT WEIGHTINGS
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
         }
       }
     })
@@ -168,11 +172,11 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 // TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
-function aggregateHistogram(arr: [number, number][]) {
+function aggregateHistogram(arr: [number, number, number][]) {
   let recentVals: Array<number> = [];
 
-  function iterateFunc(v: [number, number]) {
-    if (!isNaN(v[1])){
+  function iterateFunc(v: [number, number, number]) {
+    if (!isNaN(v[1])) {
       recentVals.push(v[1])
     }
   }
@@ -192,22 +196,22 @@ function aggregateHistogram(arr: [number, number][]) {
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
-async function aggregateDonutChart(arr: [number, number][], variable: string, db: Db) {
+async function aggregateDonutChart(arr: [number, number, number][], variable: string, db: Db) {
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
   console.log("encoding descrp: ", encodingDescrp)
-  arr.forEach(([year, val]) => {
+  arr.forEach(([year, val, weight]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
-      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + 1) //TODO: ACCOUNT WEIGHTINGS
-      totalCounts += 1 //TODO: ACCOUNT WEIGHTINGS
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + weight) //TODO: ACCOUNT WEIGHTINGS
+      totalCounts += weight //TODO: ACCOUNT WEIGHTINGS
     }
   });
 
   output.forEach((val, description) => {
-    output.set(description, Math.round(val/totalCounts * 100) / 100);
+    output.set(description, Math.round(val / totalCounts * 100) / 100);
   })
 
   // Get description for encoded variables 
@@ -232,7 +236,7 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
  *          value is the number of count for that response.
  *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
  */
-async function aggregateTable(arr: [number, number][], variable: string, db: Db) {
+async function aggregateTable(arr: [number, number, number][], variable: string, db: Db) {
   let sum = new Map<string, number>();
   let output = new Map<string, [number, number]>();
   let n = 0;
@@ -249,31 +253,32 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
   }
 
   await allEncoding()
-  .then( function() {
-    for (let i = 0; i < arr.length; i++) {
-      const value = arr[i][1];
-      let description;
-      if (!isNaN(value)) {
-        let j = 0;
-        while (typeof description == 'undefined') {
-          if (encodingDescrp[j].Encoding == value) {
-            description = encodingDescrp[j].Description;
+    .then(function () {
+      for (let i = 0; i < arr.length; i++) {
+        const value = arr[i][1];
+        const weight = arr[i][2];
+        let description;
+        if (!isNaN(value)) {
+          let j = 0;
+          while (typeof description == 'undefined') {
+            if (encodingDescrp[j].Encoding == value) {
+              description = encodingDescrp[j].Description;
+            }
+            j++;
           }
-          j++;
+          if (sum.has(description)) {
+            sum.set(description, sum.get(description)! + 1 * weight) //TODO: ACCOUNT WEIGHTINGS
+          }
+          else {
+            sum.set(description, 1);
+          }
+          n *= weight; //TODO: ACCOUNT WEIGHTINGS
         }
-        if (sum.has(description)) {
-          sum.set(description, sum.get(description)! + 1) //TODO: ACCOUNT WEIGHTINGS
-        }
-        else {
-          sum.set(description, 1);
-        }
-        n++; //TODO: ACCOUNT WEIGHTINGS
       }
-    }
-    sum.forEach((v, d) => {
-      output.set(d, [Math.round(v/n * 100) / 100, v]);
-    })
-  });
+      sum.forEach((v, d) => {
+        output.set(d, [Math.round(v / n * 100) / 100, v]);
+      })
+    });
   return output;
 
 }
@@ -286,20 +291,20 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
- async function getDataHighlights(arr: [number, number][], variable: string, db: Db) {
+async function getDataHighlights(arr: [number, number, number][], variable: string, db: Db) {
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
   const binaryData = await db.collection('binary-data').findOne(query)
-  arr.forEach(([year, value]) => {
+  arr.forEach(([year, value, weight]) => {
     if (!isNaN(value)) {
-      totalCount++; //TODO: ACCOUNT WEIGHTINGS
+      totalCount += weight; //TODO: ACCOUNT WEIGHTINGS
       if (value === binaryData!.DisplayEncoding) {
-        displayCount++ //TODO: ACCOUNT WEIGHTINGS
+        displayCount += weight; //TODO: ACCOUNT WEIGHTINGS
       }
     }
   });
-  return {description: binaryData!.DisplayDescription, percentage: Math.round(displayCount/totalCount * 100)}
+  return { description: binaryData!.DisplayDescription, percentage: Math.round(displayCount / totalCount * 100) }
 }
 
 
@@ -332,13 +337,13 @@ async function getVizType(variable: string, db: Db) {
  */
 async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
-  if (typeof filterKey2 !== 'undefined'){
+  if (typeof filterKey2 !== 'undefined') {
     queryResult = await queryVal(variable, db, false, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
   }
   else if (typeof filterKey1 !== 'undefined') {
     queryResult = await queryVal(variable, db, false, filterKey1, parseInt(filterValue1!))
   }
-  else{
+  else {
     queryResult = await queryVal(variable, db, false)
   }
   const output = aggregateTimeSeries(queryResult, variable)
@@ -353,7 +358,7 @@ async function getUniqueVariables(db: Db) {
   });
   console.log(uniqueVariables)
   return uniqueVariables;
-  
+
 }
 
 
@@ -381,19 +386,19 @@ async function getUniqueVariables(db: Db) {
  */
 async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
-  if (typeof filterKey2 !== 'undefined'){
+  if (typeof filterKey2 !== 'undefined') {
     queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
   }
   else if (typeof filterKey1 !== 'undefined') {
     queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!))
   }
-  else{
+  else {
     queryResult = await queryVal(variable, db, true)
   }
   var output;
   if (vizType !== null) {
     if (vizType === VizType.Histogram) {
-      output = aggregateHistogram(queryResult); 
+      output = aggregateHistogram(queryResult);
     }
     else if (vizType === VizType.Table) {
       output = await aggregateTable(queryResult, variable, db);
@@ -443,13 +448,13 @@ module.exports = () => {
 
   /**** Routes ****/
   const multer = require('multer')
-  const upload = multer({dest: UPLOAD_DIRECTORY})
+  const upload = multer({ dest: UPLOAD_DIRECTORY })
   const fs = require("fs")
-  router.post('/updateData', upload.single('selectedFile'), async (req: any, res: Express.Response) =>{
+  router.post('/updateData', upload.single('selectedFile'), async (req: any, res: Express.Response) => {
     console.log("req body: ", req.body)
     console.log("received files: ", req.file)
     try {
-      if(!req.file) {
+      if (!req.file) {
         res.send({
           status: false,
           message: 'No file uploaded',
@@ -481,7 +486,7 @@ module.exports = () => {
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;
 
-    const {spawn} = require('child_process');
+    const { spawn } = require('child_process');
 
     var dataToSend: any;
     // spawn new child process to call the python script
@@ -489,8 +494,8 @@ module.exports = () => {
     const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
-     console.log('Pipe data from python script ...');
-     dataToSend = data.toString();
+      console.log('Pipe data from python script ...');
+      dataToSend = data.toString();
     });
     // in close event we are sure that stream from child process is closed
     python.on('close', (code: any) => {
@@ -512,7 +517,7 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
@@ -526,7 +531,7 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
 
   });
 
@@ -541,7 +546,7 @@ module.exports = () => {
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
     console.log("viz type: ", vizType)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData }); 
+    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   return router;

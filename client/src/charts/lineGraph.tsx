@@ -38,19 +38,19 @@ function LineGraph(props: LineGraphProp) {
     var x = d3.scaleLinear().range([0, w])
     var xAxis = d3.axisBottom(x)
       .ticks(Object.keys(props.data).length)
-      .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
+      .tickFormat((d, i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
 
     var y = d3.scaleLinear().range([h, 0])
     var yAxis = d3.axisLeft(y)
       .ticks(5)
       .tickFormat((d, i) => {
-        if(toExclude.includes(props.variableEncoding)) {
+        if (toExclude.includes(props.variableEncoding)) {
           return `${d}`;
         } else {
           return `${d}%`
         }
       });
-    
+
     // const xScale = d3.scaleLinear()
     //   .domain((props.data.length !== 0)? 
     //     [props.data[0].year, props.data[Object.keys(props.data).length-1].year + 1] : 
@@ -64,7 +64,7 @@ function LineGraph(props: LineGraphProp) {
     //   .x((d, i) => xScale(props.data[i].year + 1))  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
     //   .y((d, i) => yScale(props.data[i].value))
     //   .curve(d3.curveCardinal)
-    
+
     // const xAxis = d3.axisBottom(xScale)
     //   .ticks(Object.keys(props.data).length)
     //   .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
@@ -84,7 +84,7 @@ function LineGraph(props: LineGraphProp) {
       .attr('transform', `translate(0, ${h})`);
     svg.append('g')
       .attr("class", 'yAxis')
-      // .call(yAxis)
+    // .call(yAxis)
 
     svg.append("text")
       .attr("class", "x label")
@@ -92,30 +92,30 @@ function LineGraph(props: LineGraphProp) {
       .attr("x", w / 2)
       .attr("y", h + 50)
       .style('font-family', 'Rubik')
-      .text("Years");    
+      .text("Years");
     svg.append("text")
       .attr("y", -10)
       .style('font-family', 'Rubik')
       .text(() => {
-        if(toExclude.includes(props.variableEncoding)) {
+        if (toExclude.includes(props.variableEncoding)) {
           return "";
-        } 
+        }
         return `Percentage of farmworkers over time for suvery question: ${variableDescription}`;
       });
 
     function update(data: any, xAxis: any, yAxis: any, x: any, y: any) {
       console.log("update called")
-      x.domain((data.length !== 0)? 
-        [data[0].year, data[Object.keys(data).length-1].year + 1] 
-        : 
+      x.domain((data.length !== 0) ?
+        [data[0].year, data[Object.keys(data).length - 1].year + 1]
+        :
         [2007, 2018]) //[2007, 2018] is a temp placeholder before props is updated
-      
+
       svg.selectAll(".xAxis").transition()
         .duration(1000)
         .call(xAxis);
 
       y.domain([.9 * findMinY(data), 1.1 * findMaxY(data)])
-      
+
       svg.selectAll(".yAxis").transition()
         .duration(1000)
         .call(yAxis);
@@ -131,22 +131,22 @@ function LineGraph(props: LineGraphProp) {
         .merge(u)
         .transition()
         .attr('d', d3.line()
-          .x((d, i) => {return x(data[i].year + 1)})  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
-          .y((d, i) => {return y(data[i].value)})
+          .x((d, i) => { return x(data[i].year + 1) })  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
+          .y((d, i) => { return y(data[i].value) })
           .curve(d3.curveCardinal))
         .attr('fill', 'none')
         .attr('stroke', '#FF820C')
         .attr('stroke-width', '4')
-      
+
       u.exit().remove();
     }
     update(props.data, xAxis, yAxis, x, y)
   }, [props.data])
-  
+
   return (
-      <div>
-        <svg id={`linegraph${props.index}`}></svg>
-      </div>  
+    <div>
+      <svg id={`linegraph${props.index}`}></svg>
+    </div>
   )
 }
 

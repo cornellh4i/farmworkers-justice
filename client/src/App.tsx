@@ -15,6 +15,7 @@ import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
 // import MultiColumnChart from "./charts/multiColumnChart";
+// import MultiColumnChart from "./charts/MultiColumnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -49,7 +50,7 @@ function App() {
     const donutResponse = await fetch(urlDonut);
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
-    
+
     const urlFLC = `${API_URL}/NUMFEMPL`;
     const FLCResponse = await fetch(urlFLC);
     const FLCOut = await FLCResponse.json();
@@ -71,10 +72,10 @@ function App() {
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
         <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
-        <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
+        <Route path="/adminUpload" element={<AdminUpload token={token} />} />
         {/* <Route path="multicolumn-chart" element={<MultiColumnChart/>} /> */}
         <Route path='/table' element={<Table data={tableData} />} />
-        <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
+        <Route path='/donut' element={<DonutChart data={donutData} index={2} />} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

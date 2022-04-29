@@ -2,35 +2,42 @@ import Express from "express";
 import { Db } from "mongodb";
 
 
-interface encodingProp {
-  _id: Object;
-  Variable: string;
-  Encoding: number;
-  Description: string
-}
-
 enum VizType {
   Donut = "donut",
   Histogram = "histogram",
   Table = "table",
-  Data = 'data'
+  Data = 'data',
+  Column = 'column'
 }
 
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
+const columnChartGroupings = require('./local-json/columnChartGrouping.json')
+
 const LATEST_ODD_YEAR = 2017;
 const LATEST_EVEN_YEAR = 2018;
 
 
-interface timeSeriesRangesProp {
+interface timeSeriesRangeProp {
   encoding: number,
   start: null | number, 
   end: null | number
 }
 
 interface timeSeriesEncodingsProp {
-  "variable-encoding": string, 
-  "variable-description": string, 
-  "ranges": timeSeriesRangesProp[]
+  "variable-encoding": string,
+  "variable-description": string,
+  "ranges": timeSeriesRangeProp[]
+}
+
+interface columnChartVariableProp {
+  "variable-encoding": string,
+  "variable-description": string
+}
+
+interface columnChartGroupingProp {
+  generalDescription: string, 
+  condensedVariableEncoding: string,
+  variables: columnChartVariableProp[]
 }
 
 interface fileRequest extends Request {
@@ -128,9 +135,9 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
         e["variable-encoding"] === variable);
       
       if (!isNaN(value)) {
-        let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
-            e["encoding"] === value );
-        if (value !== 0 && typeof(range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
+        let range = ranges.ranges.find((e: timeSeriesRangeProp) =>
+          e["encoding"] === value);
+        if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue;
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1);
@@ -163,7 +170,6 @@ function aggregateTimeSeries(arr: [number, number][], variable: string) {
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 function aggregateHistogram(arr: [number, number][]) {
@@ -186,6 +192,7 @@ function aggregateHistogram(arr: [number, number][]) {
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_ODD_YEAR, 0], [LATEST_EVEN_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns a dictionary where the keys are encoding descriptions and the values are the 
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
@@ -220,10 +227,12 @@ async function aggregateDonutChart(arr: [number, number][], variable: string, db
   return output
 }
 
+
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns a dictionary where the keys are encoding descriptions and the values 
  *          are arrays of two values. The first value is the proportion 
  *          percentage of the surveys that answered accordingly, and the second 
@@ -278,8 +287,59 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 
 /**
+ * @param arr is a nested array of lists where each element look like: [column description, [[year, value], [year value], ..]]. 
+ * EX: [
+ *        ["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
+ *        ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
+ *        ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
+ *        ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
+ *     ];
+ * @returns a list of seriesProps that is needed to supplied to the HighCharts Column type 
+ */
+function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
+  interface seriesProps {
+    type: string,
+    name: string, 
+    data: number[]
+  }
+
+  var output: seriesProps[] = [];
+
+  for(let i = 0; i < arr.length; i ++) {
+    var percent = calculatePercent(arr[i][1]);
+    output.push({
+      type: 'column', // always have to be column
+      name: arr[i][0], // x-axis column description label
+      data: [percent]
+    })
+  }
+
+  function calculatePercent(arr : [number, number][]){
+    var counterYes = 0;
+    var counterNo = 0;
+    
+    for (let i = 0; i < arr.length; i++){
+      if(arr[i][1] === 1){
+        counterYes += 1;
+      }
+      else if (arr[i][1] === 0) {
+        counterNo += 1;
+      }
+    } 
+    if (counterYes + counterNo === 0) {
+      return 0
+    } else {
+      return (counterYes / (counterYes + counterNo)) * 100;
+    }
+  }
+  return output;
+}
+
+
+/**
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_EVEN_YEAR, 1], [LATEST_ODD_YEAR, 0]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns an object with attributes percentage and description. 
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
@@ -302,25 +362,38 @@ async function aggregateTable(arr: [number, number][], variable: string, db: Db)
 
 
 /**
- * Takes a string variable
- * @param variable is a variable that is being queried. EX: GENDER
+ * @param variable is the variable that is being queried. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns an array of two elements. The first element is the visualization 
  *          type and the second element indicates whether the variable generates 
  *          a time series visualization as well. *          
  */
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
-  const variableInfo = await db.collection('variable-info').findOne(query)
-  if (variableInfo !== null) {
-    return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
+  var columnEncodings = []
+  for(var i = 0; i < columnChartGroupings.length; i++){
+    columnEncodings.push(columnChartGroupings[i]["condensedVariableEncoding"])
+  }
+  // TODO: CAN BE REMOVED IF MODIFY VARIABLE-INFO COLLECTION DIRECTLY TO CHANGE VARIABLE TYPE TO COLUMN
+  if(columnEncodings.includes(variable)){
+    return [VizType.Column, 0]
   } else {
-    throw "Variable not found in variable-info collection: ", variable
+    const variableInfo = await db.collection('variable-info').findOne(query)
+    if (variableInfo !== null) {
+      if(columnEncodings.includes(variable)){
+        return [VizType.Column, variableInfo["Time Series"]]
+      } else {
+        return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
+      }
+    } else {
+      throw "Variable not found in variable-info collection: ", variable
+    }
   }
 }
 
+
 /**
  * @param variable is a variable to generate queries for
- * @param vizType is the visualization type of the variable
  * @param filterKey1 is the first filter being applied on the variable
  * @param filterValue1 is the filter value corresponding to filterKey1
  * @param filterKey2 is the first filter being applied on the variable
@@ -343,103 +416,126 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   return output;
 }
 
+/**
+ * @param db is the database instance being used to filter data 
+ * @returns a list of all variables that are being visualized on
+ */
 async function getUniqueVariables(db: Db) {
   const variablesInfo = db.collection('variable-info').find({});
   var uniqueVariables: string[] = []
   await variablesInfo.forEach(variableInfo => {
     uniqueVariables.push(variableInfo.Variable)
   });
-  console.log(uniqueVariables)
   return uniqueVariables;
-  
 }
 
 
-// /**
-//  * @returns the the data stored inside of naws/variable-info
-//  */
-// function collectVarInfo(){
-//   const dbo = require("./db/conn");
-//   var db = dbo.getDb();
-//   return db.collection("variable-info");
-// }
-// export { collectVarInfo };
+/**
+ * A helper function for main
+ * @param variable is a variable to generate queries for
+ * @param db is the database instance being used to filter data 
+ * @param filterKey1 is the first filter being applied on the variable
+ * @param filterValue1 is the filter value corresponding to filterKey1
+ * @param filterKey2 is the second filter being applied on the variable
+ * @param filterValue2 is the filter value corresponding to filterKey2
+ * @returns the aggregated data of the variable in the format that is 
+ *          corresponding its visualization type. Ready to be used by 
+ *          visualization components.
+ */
+async function getQueryResult(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+  var queryResult;
+    if (typeof filterKey2 !== 'undefined'){
+      queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
+    }
+    else if (typeof filterKey1 !== 'undefined') {
+      queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!))
+    }
+    else{
+      queryResult = await queryVal(variable, db, true)
+    }
+  return queryResult
+}
 
 
 /**
  * @param variable is a variable to generate queries for
+ * @param db is the database instance being used to filter data 
  * @param vizType is the visualization type of the variable
  * @param filterKey1 is the first filter being applied on the variable
  * @param filterValue1 is the filter value corresponding to filterKey1
- * @param filterKey2 is the first filter being applied on the variable
+ * @param filterKey2 is the second filter being applied on the variable
  * @param filterValue2 is the filter value corresponding to filterKey2
  * @returns the aggregated data of the variable in the format that is 
  *          corresponding its visualization type. Ready to be used by 
  *          visualization components.
  */
 async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
-  var queryResult;
-  if (typeof filterKey2 !== 'undefined'){
-    queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
-  }
-  else if (typeof filterKey1 !== 'undefined') {
-    queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!))
-  }
-  else{
-    queryResult = await queryVal(variable, db, true)
-  }
   var output;
-  if (vizType !== null) {
-    if (vizType === VizType.Histogram) {
-      output = aggregateHistogram(queryResult); 
+  if (vizType === VizType.Column) {
+    const variablesInSameGrouping = columnChartGroupings.find((e: columnChartGroupingProp) =>
+      e["condensedVariableEncoding"] === variable).variables;
+    var queryResults: Array<[string, [number, number][]]> = []
+    for (const v of variablesInSameGrouping) {
+      const queryResult = await getQueryResult(v['variable-encoding'], db, filterKey1, filterValue1, filterKey2, filterValue2)
+      // each arr element supplied to aggregationColumnChart function look like: [column description, [[year, value], [year value], ..]].
+      queryResults.push([v['variable-description'], queryResult])
+    };
+    output = aggregateColumnChart(queryResults)
+  } else {
+    const queryResult = await getQueryResult(variable, db, filterKey1, filterValue1, filterKey2, filterValue2)
+    if (vizType !== null) {
+      if (vizType === VizType.Histogram) {
+        output = aggregateHistogram(queryResult);
+      }
+      else if (vizType === VizType.Table) {
+        output = await aggregateTable(queryResult, variable, db);
+        output = Object.fromEntries(output);
+      }
+      else if (vizType === VizType.Donut) {
+        output = await aggregateDonutChart(queryResult, variable, db);
+        output = Object.fromEntries(output);
+      }
+      else if (vizType === VizType.Data) {
+        output = await getDataHighlights(queryResult, variable, db);
+      }
+    } else {
+      console.log("Variable not found in variable-info collection: ", variable)
     }
-    else if (vizType === VizType.Table) {
-      output = await aggregateTable(queryResult, variable, db);
-      output = Object.fromEntries(output);
-    }
-    else if (vizType === VizType.Donut) {
-      output = await aggregateDonutChart(queryResult, variable, db);
-      output = Object.fromEntries(output);
-    }
-    else if (vizType === VizType.Data) {
-      output = await getDataHighlights(queryResult, variable, db);
-    }
-  }
-  else {
-    console.log("Variable not found in variable-info collection: ", variable)
   }
   return output;
 }
 
-module.exports = () => {
-  const express = require("express");
-  const router = express.Router();
-
-  // const app = express();
-  // const cors = require("cors");
-  // app.use(cors({origin: "http://localhost:3000"}));
-
-  // const multer = require('multer');
-  // // const upload = multer({ dest: './src/db/data/'});
-
-  const UPLOAD_DIRECTORY = 'src/db/data/';
-
-  // let storage = multer.diskStorage({
-  //   destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //       cb(null, UPLOAD_DIRECTORY)
-  //   },
-  //   filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //     cb(null, file.fieldname)
-  //   }
-  // });
-
-  // const upload = multer({storage: storage,
-  //   onFileUploadStart: function (file: fileRequest) {
-  //     console.log(file.originalname + ' is starting ...')
-  //   }
-  // });
-
   /**** Routes ****/
+  // router.get('/column', async (req: Express.Request, res: Express.Response) => {
+  //   const dbo = require("./db/conn");
+  //   const db = dbo.getDb();
+  //   const arr = [
+  //     ["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
+  //     ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
+  //     ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
+  //     ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
+  //   ];
+    
+    
+  //   const output = aggregateColumnChart(arr);
+  //   console.log(output)
+
+  //   const vizOutput = await getVizType("B21x", db);
+  //   console.log("vizOutput: ", vizOutput)
+
+
+  //   res.json({ data: output }); 
+  // })
+  
+  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
+    console.log("check if backend called ", req.body)
+    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
+    var token = null
+    if (haveAccess){
+      token = "token"
+    }
+    res.json({ haveAccess: haveAccess, token: token});
+
   const multer = require('multer')
   const upload = multer({dest: UPLOAD_DIRECTORY})
   const fs = require("fs")

@@ -522,6 +522,7 @@ module.exports = () => {
       token = "token"
     }
     res.json({ haveAccess: haveAccess, token: token});
+  });
 
   const multer = require('multer')
   const upload = multer({dest: UPLOAD_DIRECTORY})
@@ -554,7 +555,8 @@ module.exports = () => {
     } catch (e: any) {
       res.status(500).send(e);
     }
-  })
+  });
+
 
   // This updateData route is placed before the :/variable route to prevent it from getting overriden 
   router.get('/updateData', async (req: Express.Request, res: Express.Response) => {
@@ -627,4 +629,4 @@ module.exports = () => {
   });
 
   return router;
-}
+  }

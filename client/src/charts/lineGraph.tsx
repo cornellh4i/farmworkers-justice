@@ -20,7 +20,6 @@ function findMaxY(data: any) {
 }
 
 function LineGraph(props: LineGraphProp) {
-  // const svgRef: React.MutableRefObject<null> = useRef(null);
   const w = 400;
   const h = 400;
 
@@ -50,41 +49,12 @@ function LineGraph(props: LineGraphProp) {
           return `${d}%`
         }
       });
-    
-    // const xScale = d3.scaleLinear()
-    //   .domain((props.data.length !== 0)? 
-    //     [props.data[0].year, props.data[Object.keys(props.data).length-1].year + 1] : 
-    //     [2007, 2018]) //[2007, 2018] is a temp placeholder before props is updated
-    //   .range([0, w])
-    // const yScale = d3.scaleLinear()
-    //   .domain([.9 * findMinY(props.data), 1.1 * findMaxY(props.data)])
-    //   .range([h, 0])
-
-    // const generatedScaleLine = d3.line()
-    //   .x((d, i) => xScale(props.data[i].year + 1))  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
-    //   .y((d, i) => yScale(props.data[i].value))
-    //   .curve(d3.curveCardinal)
-    
-    // const xAxis = d3.axisBottom(xScale)
-    //   .ticks(Object.keys(props.data).length)
-    //   .tickFormat((d , i) => `${props.data[i].year} - ${props.data[i].year + 1}`)
-    // const yAxis = d3.axisLeft(yScale)
-    //   .ticks(5)
-    //   .tickFormat((d, i) => {
-    //     if(toExclude.includes(props.variableEncoding)) {
-    //       return `${d}`;
-    //     } else {
-    //       return `${d}%`
-    //     }
-    //   });
 
     svg.append('g')
-      // .call(xAxis)
       .attr("class", 'xAxis')
       .attr('transform', `translate(0, ${h})`);
     svg.append('g')
       .attr("class", 'yAxis')
-      // .call(yAxis)
 
     svg.append("text")
       .attr("class", "x label")

@@ -109,6 +109,8 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 function aggregateTimeSeries(arr: [number, any][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2 
+  console.log("minYear: ", minYear)
+  console.log("maxYear: ", maxYear)
   let output = new Array<{ year: number, value: number }>();
   let countEachYear = new Map<number, number>();
   for (let i = 0; i <= (maxYear - minYear - 1)/2; i++) {

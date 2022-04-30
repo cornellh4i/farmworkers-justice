@@ -51,11 +51,11 @@ function App() {
     const donutOut = await donutResponse.json();
     setdonutData(donutOut.data);
     
-    // const urlFLC = `${API_URL}/NUMFEMPL`;
-    // const FLCResponse = await fetch(urlFLC);
-    // const FLCOut = await FLCResponse.json();
-    // setFLCData(FLCOut.data);
-    // setTimeSeriesData(FLCOut.timeSeriesData)
+    const urlFLC = `${API_URL}/NUMFEMPL`;
+    const FLCResponse = await fetch(urlFLC);
+    const FLCOut = await FLCResponse.json();
+    setFLCData(FLCOut.data);
+    setTimeSeriesData(FLCOut.timeSeriesData)
     
     const urlDataHighlight = `${API_URL}/Indigenous`;
     const DataHighlightResponse = await fetch(urlDataHighlight);

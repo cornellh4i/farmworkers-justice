@@ -109,8 +109,6 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 function aggregateTimeSeries(arr: [number, any][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2 
-  console.log("minYear: ", minYear)
-  console.log("maxYear: ", maxYear)
   let output = new Array<{ year: number, value: number }>();
   let countEachYear = new Map<number, number>();
   for (let i = 0; i <= (maxYear - minYear - 1)/2; i++) {
@@ -580,7 +578,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
     console.log('Pipe data from python script ...');

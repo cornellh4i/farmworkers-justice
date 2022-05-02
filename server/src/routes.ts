@@ -525,7 +525,6 @@ module.exports = () => {
   const UPLOAD_DIRECTORY = 'src/db/data/';
   
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
-    console.log("check if backend called ", req.body)
     const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
     var token = null
     if (haveAccess){

@@ -456,7 +456,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 
 /**96 total variables 
  * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
- * total entries: 
+ * total entries: 83 combinations * 96 variable = 
  */
 async function combinationalData(db: Db) {
   var combDatas;
@@ -464,7 +464,7 @@ async function combinationalData(db: Db) {
   var variables: string[];
   combDatas = []
   variables = await getUniqueVariables(db);
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < variables.length; i++) {
     // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);
     var timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variables[i], db)) : null;
@@ -518,6 +518,7 @@ async function combinationalData(db: Db) {
         }
       }
     }
+    console.log("cache population done for: ", variables[i])
   }
   db.collection('cache').drop()
   db.collection('cache').insertMany(combDatas)
@@ -593,7 +594,6 @@ module.exports = () => {
     // dbo.createCollection("cache");
     // dbo.cache.insert(data)
     // console.log("collection created!");
-    console.log("data is " + data.length)
     res.json({ success: true });
   }
   )

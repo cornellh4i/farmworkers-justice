@@ -74,7 +74,6 @@ function LineGraph(props: LineGraphProp) {
       });
 
     function update(data: any, xAxis: any, yAxis: any, x: any, y: any) {
-      console.log("update called")
       x.domain((data.length !== 0)? 
         [data[0].year, data[Object.keys(data).length-1].year + 1] 
         : 

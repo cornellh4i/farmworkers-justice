@@ -48,8 +48,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 		setDataUploadMsg("Data processing ...")
 
 		try {
-			const response = await fetch(`${API_URL}/updateData`, );
-			console.log("handleUpdate response: ", response);
+			const response = await fetch(`${API_URL}/updateData`);
 			if (response.status === 200) {
 				setDataUploadMsg("Data successfully updated")
 			} else {

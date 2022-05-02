@@ -12,6 +12,7 @@ import Donut from './../../charts/donutChart'
 import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
 import LineGraph from './../../charts/lineGraph'
+import ColumnChart from './../../charts/columnChart'
 
 interface DropdownProp {
   index: number
@@ -75,7 +76,6 @@ function Dropdown(props: DropdownProp) {
         // setVisualizationType(output.vizType)
         // setVisualizationData(output.data)
         // setTimeSeriesData(output.timeSeriesData)
-        //TODO: RENDER TIME SERIES
         console.log("fetched data for variable ", props.variable, " : ", output.data)
         if (output.vizType === "histogram") {
           setVisualizationComponent(<Histogram key={props.index.toString()} index={props.index} variableEncoding={props.variable} data={output.data} />)
@@ -85,12 +85,16 @@ function Dropdown(props: DropdownProp) {
           setVisualizationComponent(<DataTable key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "data") {
           setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
+        } else if (output.vizType === "column") {
+          setVisualizationComponent(<ColumnChart key={props.index.toString()} data={output.data} />)
         } else {
           console.log("visualization type not covered ")
         }
-
         if (typeof output.timeSeriesData != 'undefined') {
-          setTimeSeriesComponent(<LineGraph key={props.index.toString()} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
+          console.log("fetched timeseries data for variable ", props.variable, " : ", output.timeSeriesData)
+          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
+        } else {
+          setTimeSeriesComponent(<></>)
         }
       } catch (error) {
         console.log("Failed to fetch: ", props.variable)
@@ -136,7 +140,7 @@ function Dropdown(props: DropdownProp) {
                     {VisualizationComponent}
                   </Grid>
                   <Grid item xs ={3}>
-                    {props.mapFilterSelected === null ? null : <Map mapFilterSelected={props.mapFilterSelected} collapseIndex={props.currentCollapseIndex} />}
+                    {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
                   </Grid>
                   <Grid item xs={12}> 
                     {TimeSeriesComponent}

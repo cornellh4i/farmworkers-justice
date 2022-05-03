@@ -108,7 +108,6 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, any][], variable: string) {
-  console.log("start aggregating time series")
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2
   let output = new Array<{ year: number, value: number }>();
@@ -168,7 +167,6 @@ function aggregateTimeSeries(arr: [number, any][], variable: string) {
       d.value = (d.value / countEachYear.get(d.year)! * 100)
     })
   }
-  console.log("end aggregating time series")
   return output
 }
 
@@ -179,7 +177,6 @@ function aggregateTimeSeries(arr: [number, any][], variable: string) {
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 function aggregateHistogram(arr: [number, any][]) {
-  console.log("start aggregating histogram")
   let recentVals: Array<number> = [];
 
   function iterateFunc(v: [number, any]) {
@@ -191,7 +188,6 @@ function aggregateHistogram(arr: [number, any][]) {
     console.log(error);
   }
   arr.forEach(iterateFunc, errorFunc)
-  console.log("end aggregating histogram")
   return recentVals
 }
 
@@ -206,7 +202,6 @@ function aggregateHistogram(arr: [number, any][]) {
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
 async function aggregateDonutChart(arr: [number, any][], variable: string, db: Db) {
-  console.log("start aggregating doonut chart")
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }
@@ -232,7 +227,6 @@ async function aggregateDonutChart(arr: [number, any][], variable: string, db: D
     });
     output = outputDescription
   }
-  console.log("end aggregating doonut chart")
   return output
 }
 
@@ -249,7 +243,6 @@ async function aggregateDonutChart(arr: [number, any][], variable: string, db: D
  *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
  */
 async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
-  console.log("start aggregating table")
   let sum = new Map<string, number>();
   let output = new Map<string, [number, number]>();
   let n = 0;
@@ -297,7 +290,6 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
       output.set(d, [Math.round(v / n * 100) / 100, v]);
     })
   })
-  console.log("end aggregating table")
   return output;
 }
 
@@ -313,7 +305,6 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
  * @returns a list of seriesProps that is needed to supplied to the HighCharts Column type 
  */
 function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
-  console.log("start aggregating column chart")
   interface seriesProps {
     type: string,
     name: string, 
@@ -349,7 +340,6 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
       return (counterYes / (counterYes + counterNo)) * 100;
     }
   }
-  console.log("end aggregating column chart")
   return output;
 }
 
@@ -363,7 +353,6 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
  *          The description is the binary data option to display
  */
  async function getDataHighlights(arr: [number, any][], variable: string, db: Db) {
-  console.log("start aggregating data highlights")
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
@@ -380,7 +369,6 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
       console.log("Error in getDataHighlights for variable: ", variable, " on value: ", value)
     }
   });
-  console.log("end aggregating data highlights")
   return { description: binaryData!.DisplayDescription, percentage: (displayCount / totalCount * 100).toFixed(1) }
 }
 
@@ -393,7 +381,6 @@ function aggregateColumnChart (arr: Array<[string, [number, number][]]>) {
  *          a time series visualization as well. *          
  */
 async function getVizType(variable: string, db: Db) {
-  console.log("start getVizType")
   let query = { Variable: variable }
   const columnEncodings = ["B21x", "G04x", "NH0x", "NQ10x"]
   // for(var i = 0; i < columnChartGroupings.length; i++){
@@ -413,7 +400,6 @@ async function getVizType(variable: string, db: Db) {
       throw "Variable not found in variable-info collection: ", variable
     }
   }
-  console.log("end getVizType")
 }
 
 
@@ -495,7 +481,6 @@ async function getQueryResult(variable: string, db: Db, filterKey1?: string, fil
  *          visualization components.
  */
 async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
-  console.log("start main func")
   var output;
   if (vizType === VizType.Column) {
     const variablesInSameGrouping = columnChartGroupings.find((e: columnChartGroupingProp) =>
@@ -528,7 +513,6 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
       console.log("Variable not found in variable-info collection: ", variable)
     }
   }
-  console.log("done with main func")
   return output;
 }
 

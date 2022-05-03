@@ -521,12 +521,11 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
  * total entries: 83 combinations * 96 variable = 
  */
 async function combinationalData(db: Db) {
-  var combDatas;
   const filtersEncoding = require('./local-json/filterEncoding.json')
-  var variables : string[];
-  combDatas = []
-  variables = await getUniqueVariables(db);
-  for (let i = 0; i < variables.length; i++) {
+  const variables : string[] = await getUniqueVariables(db);
+  var combDatas: any[] = []
+  for (let i = 1; i < 10; i++) {
+    combDatas = []
     // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);
     const timeSeriesData = timeSeries === 1 ? ( await timeSeriesMain(variables[i], db)) : undefined;
@@ -542,8 +541,6 @@ async function combinationalData(db: Db) {
       "timeSeriesQueryData": timeSeriesData,
     }
     combDatas.push(combData)
-    combData["mainQueryData"] = undefined
-    combData["timeSeriesQueryData"] = undefined
     // loop through filters (fill all filter1 only)
     for (let x = 0; x < 4; x++) {
       let combDataOne = {
@@ -551,18 +548,16 @@ async function combinationalData(db: Db) {
       }
       let value1: string = filters[x]
       combDataOne["filter1"] = value1
-      for (var element of filtersEncoding[value1]) {
+      for (var element1 of filtersEncoding[value1]) {
         let combDataTwo = {
           ...combDataOne
         }
-        combDataTwo["filter1Encoding"] = element["filter-encoding"]
+        combDataTwo["filter1Encoding"] = element1["filter-encoding"]
         combDataTwo["mainQueryData"] = (await main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         if (timeSeries) {
           combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         }
         combDatas.push(combDataTwo) // f1 = filter, f2 = null
-        combDataTwo["mainQueryData"] = undefined
-        combDataTwo["timeSeriesQueryData"] = undefined
         // loop through filters (fill both filter1 and filter2)
         for (let j = x + 1; j < 4; j++) {
           let combDataThree = {
@@ -570,26 +565,24 @@ async function combinationalData(db: Db) {
           }
           let value2: string = filters[j]
           combDataThree["filter2"] = value2
-          for (var element of filtersEncoding[value2]) {
+          for (var element2 of filtersEncoding[value2]) {
             let combDataFour = {
               ...combDataThree
             }
-            combDataFour["filter2Encoding"] = element["filter-encoding"]
+            combDataFour["filter2Encoding"] = element2["filter-encoding"]
             combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             if (timeSeries) {
               combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             }
             combDatas.push(combDataFour) // f1 = filt, f2 = filt
-            combDataFour["mainQueryData"] = undefined
-            combDataFour["timeSeriesQueryData"] = undefined    
           }
         }
       }
     }
     console.log("cache population done for: ", variables[i])
+    db.collection('cache').insertMany(combDatas)
   }
-  db.collection('cache').drop()
-  db.collection('cache').insertMany(combDatas)
+  // db.collection('cache').drop()
   return combDatas;
 }
 
@@ -682,14 +675,19 @@ module.exports = () => {
 
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
-    //const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    let query = { variable: req.params.variable, filter1: "", filter1Encoding: "", filter2: "", filter2Encoding: "" }
-    const cache = await dbo.getDb().collection('cache').findOne(query)
-    const output = cache["mainQueryData"]
-    const vizType: string = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
+    // var timeSeriesData;
+    // let query = { variable: req.params.variable, filter1: "", filter1Encoding: "", filter2: "", filter2Encoding: "" }
+    // const cache = await dbo.getDb().collection('cache').findOne(query)
+    // const output = cache["mainQueryData"]
+    // const vizType: string = cache["vizType"]
+    // if (timeSeriesData != null) {
+    //   timeSeriesData = cache["timeSeriesQueryData"]
+    // }
+    var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
+    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+    const output = await main(req.params.variable, dbo.getDb(), vizType)
+    if (timeSeries) {
+      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
     console.log("variable: ", req.params.variable)
     console.log("output: ", output)

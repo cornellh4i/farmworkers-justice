@@ -522,6 +522,7 @@ module.exports = () => {
       token = "token"
     }
     res.json({ haveAccess: haveAccess, token: token});
+  })
 
   const multer = require('multer')
   const upload = multer({dest: UPLOAD_DIRECTORY})
@@ -627,4 +628,4 @@ module.exports = () => {
   });
 
   return router;
-}
+  }

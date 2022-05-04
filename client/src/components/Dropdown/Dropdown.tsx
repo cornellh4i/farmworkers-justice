@@ -14,6 +14,7 @@ import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
 import LineGraph from './../../charts/lineGraph'
 import ColumnChart from './../../charts/columnChart'
+import domtoimage from 'dom-to-image';
 
 interface DropdownProp {
   index: number
@@ -46,8 +47,8 @@ function Dropdown(props: DropdownProp) {
   // const [visualizationType, setVisualizationType] = useState("")
   // const [visualizationData, setVisualizationData] = useState<any>(null)
   // const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
-  const [VisualizationComponent , setVisualizationComponent] = useState(<></>);
-  const [TimeSeriesComponent , setTimeSeriesComponent] = useState(<></>);
+  const [VisualizationComponent, setVisualizationComponent] = useState(<></>);
+  const [TimeSeriesComponent, setTimeSeriesComponent] = useState(<></>);
 
   function onClickCollapse() {
     if (props.currentCollapseIndex === props.index) {
@@ -93,7 +94,7 @@ function Dropdown(props: DropdownProp) {
         }
         if (typeof output.timeSeriesData != 'undefined') {
           console.log("fetched timeseries data for variable ", props.variable, " : ", output.timeSeriesData)
-          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
+          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable} />)
         } else {
           setTimeSeriesComponent(<></>)
         }
@@ -117,10 +118,25 @@ function Dropdown(props: DropdownProp) {
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filter1Encoding}/${props.filter2Selected[1]}/${filter2Encoding}`;
     }
     getData(url)
-  
+
 
   }, [props.filter1Selected, props.filter2Selected])
 
+  async function handleDownload(event: any) {
+    event.preventDefault();
+
+    var node = document.getElementById("visualizationComponent")!;
+    domtoimage.toJpeg(node)
+      .then(function (dataUrl: any) {
+        var link = document.createElement('a');
+        link.download = "test.jpeg";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch(function (error: Error) {
+        console.error("Something went wrong!", error);
+      })
+  }
 
   return (
     <div>
@@ -136,23 +152,20 @@ function Dropdown(props: DropdownProp) {
             <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
               <div id="visualizationComponent">
                 {props.variable}
-                <Grid container> 
-                  <Grid item xs ={9}>
+                <Grid container>
+                  <Grid item xs={9}>
                     {VisualizationComponent}
                   </Grid>
-                  <Grid item xs ={3}>
+                  <Grid item xs={3}>
                     {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
                   </Grid>
-                  <Grid item xs={12}> 
+                  <Grid item xs={12}>
                     {TimeSeriesComponent}
                   </Grid>
                 </Grid>
               </div>
               <div id="download">
-                <Button variant="contained" 
-                  onClick={
-                    () => {alert("✔️ This works on every component!");}
-                  }>Download</Button>
+                <Button variant="contained" onClick={handleDownload}>Download</Button>
               </div>
             </Collapse>
           </Grid>

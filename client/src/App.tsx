@@ -11,10 +11,10 @@ import Table from './charts/Table'
 import LineGraph from './charts/lineGraph'
 import Minipage from './components/Minipage/Minipage'
 import AdminLanding from './components/AdminLanding/AdminLanding'
-import AdminUpload from "./components/AdminUpload/AdminUpload";
 import DonutChart from "./charts/donutChart";
 import Line from './charts/lineGraph';
-// import MultiColumnChart from "./charts/multiColumnChart";
+import AdminUploadPortal from './components/AdminUploadPortal/AdminUploadPortal';
+import ColumnChart from "./charts/columnChart";
 
 const API_URL = process.env.REACT_APP_API;
 const LATEST_ODD_YEAR = 2017;
@@ -55,7 +55,7 @@ function App() {
     const FLCOut = await FLCResponse.json();
     setFLCData(FLCOut.data);
     setTimeSeriesData(FLCOut.timeSeriesData)
-
+    
     const urlDataHighlight = `${API_URL}/Indigenous`;
     const DataHighlightResponse = await fetch(urlDataHighlight);
     const DataHighlightOut = await DataHighlightResponse.json();
@@ -71,8 +71,8 @@ function App() {
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
         <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
-        <Route path="/adminUpload" element={<AdminUpload token={token}/>} />
-        {/* <Route path="multicolumn-chart" element={<MultiColumnChart/>} /> */}
+        <Route path="/adminUpload" element={<AdminUploadPortal token={token}/>} />
+        {/* <Route path="columnChart" element={<ColumnChart/>} /> */}
         <Route path='/table' element={<Table data={tableData} />} />
         <Route path='/donut' element={<DonutChart data={donutData} index={2}/>} />
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}

@@ -1,27 +1,22 @@
 import Express from "express";
 import { Db } from "mongodb";
 
-
-interface encodingProp {
-  _id: Object;
-  Variable: string;
-  Encoding: number;
-  Description: string
-}
-
 enum VizType {
   Donut = "donut",
   Histogram = "histogram",
   Table = "table",
-  Data = 'data'
+  Data = 'data',
+  Column = 'column'
 }
 
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
+const columnChartGroupings = require('./local-json/columnChartGrouping.json')
+
 const LATEST_ODD_YEAR = 2017;
 const LATEST_EVEN_YEAR = 2018;
 
 
-interface timeSeriesRangesProp {
+interface timeSeriesRangeProp {
   encoding: number,
   start: null | number,
   end: null | number
@@ -30,11 +25,18 @@ interface timeSeriesRangesProp {
 interface timeSeriesEncodingsProp {
   "variable-encoding": string,
   "variable-description": string,
-  "ranges": timeSeriesRangesProp[]
+  "ranges": timeSeriesRangeProp[]
 }
 
-interface fileRequest extends Request {
-  files: any,
+interface columnChartVariableProp {
+  "variable-encoding": string,
+  "variable-description": string
+}
+
+interface columnChartGroupingProp {
+  generalDescription: string,
+  condensedVariableEncoding: string,
+  variables: columnChartVariableProp[]
 }
 
 /**
@@ -74,8 +76,13 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
     }
   }
   var filtered_array: Array<[number, number, number]> = []
+  var result: any[] = [];
   // TODO: USE PROJECTION
-  var result = await db.collection('naws_main').find(query).toArray();
+  try {
+    result = await db.collection('naws-preprocessed').find(query).toArray();
+  } catch (e) {
+    console.log("error in queryVal with query: ", query, " for variable: ", variable)
+  }
   function iterateFunc(doc: any) {
     let lst: [number, number, number] = [doc.FY, doc[variable], doc.PWTYCRD];
     filtered_array.push(lst)
@@ -95,10 +102,10 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
  *          as {year: 2009, value: 0.54}. The year is representative of two years (2019 & 2010 in the example)
+ *          and value is the percentage of 1s / (1s + 0s)
  *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
  *          The value represents the percentage of how often a variable appears in those two years. 
- *          An average value is returned for variables: B11, G01, G03, FWRDays, 
- *          and NUMFEMPL. 
+ *          An average value is returned for variables: B11, G01, G03, FWRDays, and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
 function aggregateTimeSeries(arr: [number, number, number][], variable: string) {
@@ -122,6 +129,9 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
         totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
       }
     })
+    output.forEach((d) => {
+      d.value = (d.value / totalEachYear.get(d.year)!)
+    })
   } else if (variable === "G01" || variable === "G03") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
@@ -132,7 +142,7 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
         e["variable-encoding"] === variable);
 
       if (!isNaN(value)) {
-        let range = ranges.ranges.find((e: timeSeriesRangesProp) =>
+        let range = ranges.ranges.find((e: timeSeriesRangeProp) =>
           e["encoding"] === value);
         if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
@@ -154,13 +164,10 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
         }
       }
     })
+    output.forEach((d) => {
+      d.value = (d.value / totalEachYear.get(d.year)! * 100)
+    })
   }
-  console.log("time series: output before division: ", output)
-  console.log("total each year before division: ", totalEachYear)
-
-  output.forEach((d) => {
-    d.value = Math.round(d.value / totalEachYear.get(d.year)! * 100)
-  })
   return output
 }
 
@@ -168,7 +175,6 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 // TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
@@ -192,6 +198,7 @@ function aggregateHistogram(arr: [number, number, number][]) {
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_ODD_YEAR, 0], [LATEST_EVEN_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns a dictionary where the keys are encoding descriptions and the values are the 
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
@@ -226,10 +233,12 @@ async function aggregateDonutChart(arr: [number, number, number][], variable: st
   return output
 }
 
+
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns a dictionary where the keys are encoding descriptions and the values 
  *          are arrays of two values. The first value is the proportion 
  *          percentage of the surveys that answered accordingly, and the second 
@@ -246,6 +255,9 @@ async function aggregateTable(arr: [number, number, number][], variable: string,
     let query = { Variable: variable }
     try {
       encodingDescrp = await db.collection('description-code').find(query).toArray()
+      if (typeof encodingDescrp == 'undefined') {
+        console.log("check on code: ", variable)
+      }
       return encodingDescrp;
     } catch (error) {
       console.log(error);
@@ -260,19 +272,23 @@ async function aggregateTable(arr: [number, number, number][], variable: string,
         let description;
         if (!isNaN(value)) {
           let j = 0;
-          while (typeof description == 'undefined') {
-            if (encodingDescrp[j].Encoding == value) {
-              description = encodingDescrp[j].Description;
+          try {
+            while (typeof description == 'undefined') {
+              if (encodingDescrp[j].Encoding == value) {
+                description = encodingDescrp[j].Description;
+              }
+              j++;
             }
-            j++;
+            if (sum.has(description)) {
+              sum.set(description, sum.get(description)! + 1 * weight) //TODO: ACCOUNT WEIGHTINGS
+            }
+            else {
+              sum.set(description, 1);
+            }
+            n *= weight; //TODO: ACCOUNT WEIGHTINGS
+          } catch (e) {
+            console.log("erroring for encoding: ", value, " for variable: ", variable)
           }
-          if (sum.has(description)) {
-            sum.set(description, sum.get(description)! + 1 * weight) //TODO: ACCOUNT WEIGHTINGS
-          }
-          else {
-            sum.set(description, 1);
-          }
-          n *= weight; //TODO: ACCOUNT WEIGHTINGS
         }
       }
       sum.forEach((v, d) => {
@@ -285,8 +301,59 @@ async function aggregateTable(arr: [number, number, number][], variable: string,
 
 
 /**
+ * @param arr is a nested array of lists where each element look like: [column description, [[year, value], [year value], ..]]. 
+ * EX: [
+ *        ["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
+ *        ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
+ *        ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
+ *        ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
+ *     ];
+ * @returns a list of seriesProps that is needed to supplied to the HighCharts Column type 
+ */
+function aggregateColumnChart(arr: Array<[string, [number, number, number][]]>) {
+  interface seriesProps {
+    type: string,
+    name: string,
+    data: number[]
+  }
+
+  var output: seriesProps[] = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    var percent = calculatePercent(arr[i][1]);
+    output.push({
+      type: 'column', // always have to be column
+      name: arr[i][0], // x-axis column description label
+      data: [percent]
+    })
+  }
+
+  function calculatePercent(arr: [number, number, number][]) {
+    var counterYes = 0;
+    var counterNo = 0;
+
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i][1] === 1) {
+        counterYes += 1;
+      }
+      else if (arr[i][1] === 0) {
+        counterNo += 1;
+      }
+    }
+    if (counterYes + counterNo === 0) {
+      return 0
+    } else {
+      return (counterYes / (counterYes + counterNo)) * 100;
+    }
+  }
+  return output;
+}
+
+
+/**
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_EVEN_YEAR, 1], [LATEST_ODD_YEAR, 0]]
  * @param variable is the variable that is being aggregated. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns an object with attributes percentage and description. 
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
@@ -297,37 +364,54 @@ async function getDataHighlights(arr: [number, number, number][], variable: stri
   let totalCount = 0
   const binaryData = await db.collection('binary-data').findOne(query)
   arr.forEach(([year, value, weight]) => {
-    if (!isNaN(value)) {
-      totalCount += weight; //TODO: ACCOUNT WEIGHTINGS
-      if (value === binaryData!.DisplayEncoding) {
-        displayCount += weight; //TODO: ACCOUNT WEIGHTINGS
+    try {
+      if (!isNaN(value)) {
+        totalCount += weight; //TODO: ACCOUNT WEIGHTINGS
+        if (value === binaryData!.DisplayEncoding) {
+          displayCount += weight; //TODO: ACCOUNT WEIGHTINGS
+        }
       }
+    } catch (e) {
+      console.log("Error in getDataHighlights for variable: ", variable, " on value: ", value)
     }
   });
-  return { description: binaryData!.DisplayDescription, percentage: Math.round(displayCount / totalCount * 100) }
+  return { description: binaryData!.DisplayDescription, percentage: (displayCount / totalCount * 100).toFixed(1) }
 }
 
 
 /**
- * Takes a string variable
- * @param variable is a variable that is being queried. EX: GENDER
+ * @param variable is the variable that is being queried. EX: GENDER
+ * @param db is the database instance being used to filter data 
  * @returns an array of two elements. The first element is the visualization 
  *          type and the second element indicates whether the variable generates 
  *          a time series visualization as well. *          
  */
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
-  const variableInfo = await db.collection('variable-info').findOne(query)
-  if (variableInfo !== null) {
-    return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
+  var columnEncodings = []
+  for (var i = 0; i < columnChartGroupings.length; i++) {
+    columnEncodings.push(columnChartGroupings[i]["condensedVariableEncoding"])
+  }
+  // TODO: CAN BE REMOVED IF MODIFY VARIABLE-INFO COLLECTION DIRECTLY TO CHANGE VARIABLE TYPE TO COLUMN
+  if (columnEncodings.includes(variable)) {
+    return [VizType.Column, 0]
   } else {
-    throw "Variable not found in variable-info collection: ", variable
+    const variableInfo = await db.collection('variable-info').findOne(query)
+    if (variableInfo !== null) {
+      if (columnEncodings.includes(variable)) {
+        return [VizType.Column, variableInfo["Time Series"]]
+      } else {
+        return [variableInfo["Visualization Type"], variableInfo["Time Series"]]
+      }
+    } else {
+      throw "Variable not found in variable-info collection: ", variable
+    }
   }
 }
 
+
 /**
  * @param variable is a variable to generate queries for
- * @param vizType is the visualization type of the variable
  * @param filterKey1 is the first filter being applied on the variable
  * @param filterValue1 is the filter value corresponding to filterKey1
  * @param filterKey2 is the first filter being applied on the variable
@@ -350,41 +434,33 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
   return output;
 }
 
+/**
+ * @param db is the database instance being used to filter data 
+ * @returns a list of all variables that are being visualized on
+ */
 async function getUniqueVariables(db: Db) {
   const variablesInfo = db.collection('variable-info').find({});
   var uniqueVariables: string[] = []
   await variablesInfo.forEach(variableInfo => {
     uniqueVariables.push(variableInfo.Variable)
   });
-  console.log(uniqueVariables)
   return uniqueVariables;
-
 }
 
 
-// /**
-//  * @returns the the data stored inside of naws/variable-info
-//  */
-// function collectVarInfo(){
-//   const dbo = require("./db/conn");
-//   var db = dbo.getDb();
-//   return db.collection("variable-info");
-// }
-// export { collectVarInfo };
-
-
 /**
+ * A helper function for main
  * @param variable is a variable to generate queries for
- * @param vizType is the visualization type of the variable
+ * @param db is the database instance being used to filter data 
  * @param filterKey1 is the first filter being applied on the variable
  * @param filterValue1 is the filter value corresponding to filterKey1
- * @param filterKey2 is the first filter being applied on the variable
+ * @param filterKey2 is the second filter being applied on the variable
  * @param filterValue2 is the filter value corresponding to filterKey2
  * @returns the aggregated data of the variable in the format that is 
  *          corresponding its visualization type. Ready to be used by 
  *          visualization components.
  */
-async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
+async function getQueryResult(variable: string, db: Db, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var queryResult;
   if (typeof filterKey2 !== 'undefined') {
     queryResult = await queryVal(variable, db, true, filterKey1, parseInt(filterValue1!), filterKey2, parseInt(filterValue2!))
@@ -395,25 +471,54 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   else {
     queryResult = await queryVal(variable, db, true)
   }
+  return queryResult
+}
+
+
+/**
+ * @param variable is a variable to generate queries for
+ * @param db is the database instance being used to filter data 
+ * @param vizType is the visualization type of the variable
+ * @param filterKey1 is the first filter being applied on the variable
+ * @param filterValue1 is the filter value corresponding to filterKey1
+ * @param filterKey2 is the second filter being applied on the variable
+ * @param filterValue2 is the filter value corresponding to filterKey2
+ * @returns the aggregated data of the variable in the format that is 
+ *          corresponding its visualization type. Ready to be used by 
+ *          visualization components.
+ */
+async function main(variable: string, db: Db, vizType: string, filterKey1?: string, filterValue1?: string, filterKey2?: string, filterValue2?: string) {
   var output;
-  if (vizType !== null) {
-    if (vizType === VizType.Histogram) {
-      output = aggregateHistogram(queryResult);
+  if (vizType === VizType.Column) {
+    const variablesInSameGrouping = columnChartGroupings.find((e: columnChartGroupingProp) =>
+      e["condensedVariableEncoding"] === variable).variables;
+    var queryResults: Array<[string, [number, number, number][]]> = []
+    for (const v of variablesInSameGrouping) {
+      const queryResult = await getQueryResult(v['variable-encoding'], db, filterKey1, filterValue1, filterKey2, filterValue2)
+      // each arr element supplied to aggregationColumnChart function look like: [column description, [[year, value], [year value], ..]].
+      queryResults.push([v['variable-description'], queryResult])
+    };
+    output = aggregateColumnChart(queryResults)
+  } else {
+    const queryResult = await getQueryResult(variable, db, filterKey1, filterValue1, filterKey2, filterValue2)
+    if (vizType !== null) {
+      if (vizType === VizType.Histogram) {
+        output = aggregateHistogram(queryResult);
+      }
+      else if (vizType === VizType.Table) {
+        output = await aggregateTable(queryResult, variable, db);
+        output = Object.fromEntries(output);
+      }
+      else if (vizType === VizType.Donut) {
+        output = await aggregateDonutChart(queryResult, variable, db);
+        output = Object.fromEntries(output);
+      }
+      else if (vizType === VizType.Data) {
+        output = await getDataHighlights(queryResult, variable, db);
+      }
+    } else {
+      console.log("Variable not found in variable-info collection: ", variable)
     }
-    else if (vizType === VizType.Table) {
-      output = await aggregateTable(queryResult, variable, db);
-      output = Object.fromEntries(output);
-    }
-    else if (vizType === VizType.Donut) {
-      output = await aggregateDonutChart(queryResult, variable, db);
-      output = Object.fromEntries(output);
-    }
-    else if (vizType === VizType.Data) {
-      output = await getDataHighlights(queryResult, variable, db);
-    }
-  }
-  else {
-    console.log("Variable not found in variable-info collection: ", variable)
   }
   return output;
 }
@@ -422,31 +527,17 @@ module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
-  // const app = express();
-  // const cors = require("cors");
-  // app.use(cors({origin: "http://localhost:3000"}));
-
-  // const multer = require('multer');
-  // // const upload = multer({ dest: './src/db/data/'});
-
   const UPLOAD_DIRECTORY = 'src/db/data/';
 
-  // let storage = multer.diskStorage({
-  //   destination: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //       cb(null, UPLOAD_DIRECTORY)
-  //   },
-  //   filename: function (req: Express.Request, file: fileRequest, cb: Callback) {
-  //     cb(null, file.fieldname)
-  //   }
-  // });
+  router.post('/admin', async (req: Express.Request, res: Express.Response) => {
+    const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
+    var token = null
+    if (haveAccess) {
+      token = "token"
+    }
+    res.json({ haveAccess: haveAccess, token: token });
+  })
 
-  // const upload = multer({storage: storage,
-  //   onFileUploadStart: function (file: fileRequest) {
-  //     console.log(file.originalname + ' is starting ...')
-  //   }
-  // });
-
-  /**** Routes ****/
   const multer = require('multer')
   const upload = multer({ dest: UPLOAD_DIRECTORY })
   const fs = require("fs")
@@ -491,7 +582,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
       console.log('Pipe data from python script ...');
@@ -503,6 +594,7 @@ module.exports = () => {
       // send data to browser
       res.send(dataToSend)
     });
+
   });
 
 
@@ -514,9 +606,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
     }
+    console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
@@ -528,9 +620,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal)
     }
+    console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
 
   });
@@ -543,9 +635,9 @@ module.exports = () => {
     if (timeSeries) {
       timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb(), req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
     }
+    console.log("variable: ", req.params.variable)
     console.log("output: ", output)
     console.log("timeseries output: ", timeSeriesData)
-    console.log("viz type: ", vizType)
     res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 

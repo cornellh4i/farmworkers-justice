@@ -155,7 +155,7 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
       }
     })
   }
-  console.log("output before division: ", output)
+  console.log("time series: output before division: ", output)
   console.log("total each year before division: ", totalEachYear)
 
   output.forEach((d) => {

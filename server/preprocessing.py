@@ -3,7 +3,7 @@ import pandas as pd
 from pymongo import MongoClient
 import os
 
-latestFY = 2020
+latestFY = 2018
 earliestFY = (latestFY + 1) - 10
 
 def preprocessing():

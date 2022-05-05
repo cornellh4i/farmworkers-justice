@@ -2,6 +2,7 @@ import "@fontsource/rubik";
 import './Dropdown.scss';
 import Grid from '@mui/material/Grid';
 import ListItemButton from '@mui/material/ListItemButton';
+import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -13,6 +14,7 @@ import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
 import LineGraph from './../../charts/lineGraph'
 import ColumnChart from './../../charts/columnChart'
+import domtoimage from 'dom-to-image';
 
 interface DropdownProp {
   index: number
@@ -120,6 +122,23 @@ function Dropdown(props: DropdownProp) {
 
   }, [props.filter1Selected, props.filter2Selected])
 
+  async function handleDownload(event: any) {
+    event.preventDefault();
+
+    console.log("Hello");
+
+    var node = document.getElementById("visualizationComponent")!;
+    domtoimage.toJpeg(node, {bgcolor: "white"})
+      .then(function (dataUrl: any) {
+        var link = document.createElement('a');
+        link.download = `test.jpeg`;
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch(function (error: Error) {
+        console.error("Something went wrong!", error);
+      })
+  }
 
   return (
     <div>
@@ -146,6 +165,9 @@ function Dropdown(props: DropdownProp) {
                     {TimeSeriesComponent}
                   </Grid>
                 </Grid>
+              </div>
+              <div id="download">
+                <Button variant="contained" onClick={handleDownload}>Download</Button>
               </div>
             </Collapse>
           </Grid>

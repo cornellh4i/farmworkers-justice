@@ -6,6 +6,8 @@ import { getVariablesByCategory } from "./../Homepage/Homepage"
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import FilterPanel from "../FilterPanel/FilterPanel";
+import Button from "@mui/material/Button";
+import domtoimage from "dom-to-image";
 
 function Minipage() {
     const params = useParams();
@@ -35,9 +37,30 @@ function Minipage() {
         setVariableDescriptions(descriptions)
     }, [])
 
+    async function handleDownload(event: any) {
+        event.preventDefault();
+
+        console.log("Hello")
+
+        var node = document.getElementById("all")!;
+        domtoimage.toJpeg(node)
+            .then(function (dataUrl: any) {
+                var link = document.createElement('a');
+                link.download = "test.jpeg";
+                link.href = dataUrl;
+                link.click();
+            })
+            .catch(function (error: Error) {
+                console.error("Something went wrong!", error);
+            })
+    }
+
 
     return (
         <div>
+            <div id="download">
+                <Button variant="contained" onClick={handleDownload}>Download All</Button>
+            </div>
             <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
            <ul>
                 {variableDescriptions.map((variableDescription, index) => 

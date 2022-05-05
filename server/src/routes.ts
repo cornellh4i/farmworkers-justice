@@ -1,4 +1,4 @@
-import Express from "express";
+import Express, { query } from "express";
 import { Db } from "mongodb";
 
 
@@ -50,8 +50,7 @@ interface fileRequest extends Request {
  */
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
   // TODO: return corresponding weightings 
-  var query = {}
-  var weights = {}
+  var query;
   if (typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
       query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
@@ -73,9 +72,9 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
       query = {}
     }
   }
-  var filtered_array: Array<[number, number, number]> = []
+  var filtered_array: Array<[number, any, number]> = []
   // TODO: USE PROJECTION
-  var result = await db.collection('naws_main').find(query).toArray();
+  var result = await db.collection('naws-preprocessed').find(query).toArray();
   function iterateFunc(doc: any) {
     let lst: [number, number, number] = [doc.FY, doc[variable], doc.PWTYCRD];
     filtered_array.push(lst)
@@ -101,7 +100,7 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
  *          and NUMFEMPL. 
  *          The dictionaries are arranged in ascending order based on year
  */
-function aggregateTimeSeries(arr: [number, number, number][], variable: string) {
+function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
   const minYear: number = Math.ceil(Math.min(...arr.map(function (a) { return a[0]; })) / 2) * 2 - 1
   const maxYear: number = Math.ceil(Math.max(...arr.map(function (a) { return a[0]; })) / 2) * 2
   let output = new Array<{ year: number, value: number }>();
@@ -155,7 +154,6 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
       }
     })
   }
-  console.log("output before division: ", output)
   console.log("total each year before division: ", totalEachYear)
 
   output.forEach((d) => {
@@ -172,7 +170,7 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 // TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
-function aggregateHistogram(arr: [number, number, number][]) {
+function aggregateHistogram(arr: [number, any, number][]) {
   let recentVals: Array<number> = [];
 
   function iterateFunc(v: [number, number, number]) {
@@ -196,12 +194,11 @@ function aggregateHistogram(arr: [number, number, number][]) {
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
-async function aggregateDonutChart(arr: [number, number, number][], variable: string, db: Db) {
+async function aggregateDonutChart(arr: [number, any, number][], variable: string, db: Db) {
   var output = new Map<string, number>();
   let totalCounts = 0
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
-  console.log("encoding descrp: ", encodingDescrp)
   arr.forEach(([year, val, weight]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
@@ -236,7 +233,7 @@ async function aggregateDonutChart(arr: [number, number, number][], variable: st
  *          value is the number of count for that response.
  *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
  */
-async function aggregateTable(arr: [number, number, number][], variable: string, db: Db) {
+async function aggregateTable(arr: [number, any, number][], variable: string, db: Db) {
   let sum = new Map<string, number>();
   let output = new Map<string, [number, number]>();
   let n = 0;
@@ -291,7 +288,7 @@ async function aggregateTable(arr: [number, number, number][], variable: string,
  *          The percentage represents the proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
-async function getDataHighlights(arr: [number, number, number][], variable: string, db: Db) {
+async function getDataHighlights(arr: [number, any, number][], variable: string, db: Db) {
   let query = { Variable: variable }
   let displayCount = 0
   let totalCount = 0
@@ -395,6 +392,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   else {
     queryResult = await queryVal(variable, db, true)
   }
+  console.log("query result: ", queryResult)
   var output;
   if (vizType !== null) {
     if (vizType === VizType.Histogram) {
@@ -491,7 +489,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
       console.log('Pipe data from python script ...');

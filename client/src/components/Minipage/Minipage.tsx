@@ -38,13 +38,17 @@ function Minipage() {
 
     return (
         <div>
+            <div className="filterPanel">
             <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
+            </div>
+            <div className="dropDowns">
            <ul>
                 {variableDescriptions.map((variableDescription, index) => 
                     <Dropdown key={index.toString()} variableDescription={variableDescription} index={index} 
                     variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
                     currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
             </ul>
+            </div>
         </div>
     )
 }

@@ -51,7 +51,6 @@ interface columnChartGroupingProp {
  *          EX: [[2010, 2], [2010, 2]]
  */
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
-  // TODO: return corresponding weightings 
   var query;
   if (typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
@@ -124,8 +123,8 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
       const weight: number = v[2];
       const yrIdx: number = Math.floor((yr - minYear) / 2) // Have odd then even years in one group
       if (!isNaN(value)) {
-        output[yrIdx].value += value * weight; //TODO: ACCOUNT WEIGHTINGS
-        totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
+        output[yrIdx].value += value * weight;
+        totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight);
       }
     })
     output.forEach((d) => {
@@ -145,8 +144,8 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
           e["encoding"] === value);
         if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
-          output[yrIdx].value += midValue; // question this //TODO: ACCOUNT WEIGHTINGS
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
+          output[yrIdx].value += weight * midValue;
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight);
         }
       }
     })
@@ -158,8 +157,8 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
       const yrIdx: number = Math.floor((yr - minYear) / 2)
       if (!isNaN(value)) {
         if (value == 1 || value == 0) { // Only consider Yes & No answers for the rest of the variables 
-          output[yrIdx].value += value * weight; //TODO: ACCOUNT WEIGHTINGS
-          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
+          output[yrIdx].value += value * weight;
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight);
         }
       }
     })
@@ -210,8 +209,8 @@ async function aggregateDonutChart(arr: [number, any, number][], variable: strin
   arr.forEach(([year, val, weight]) => {
     if (!isNaN(val)) {
       let currCount = output.get(val.toString())
-      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + weight) //TODO: ACCOUNT WEIGHTINGS
-      totalCounts += weight //TODO: ACCOUNT WEIGHTINGS
+      output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + weight)
+      totalCounts += weight
     }
   });
 

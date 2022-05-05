@@ -137,7 +137,7 @@ function aggregateTimeSeries(arr: [number, number, number][], variable: string) 
         if (value !== 0 && typeof (range) !== 'undefined') { // Responses with encoding 0, 97 are excluded
           let midValue = (range.start + range.end + 1) / 2
           output[yrIdx].value += midValue; // question this //TODO: ACCOUNT WEIGHTINGS
-          totalEachYear.set(yr, totalEachYear.get(yr)! + weight * 1); //TODO: ACCOUNT WEIGHTINGS
+          totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight); //TODO: ACCOUNT WEIGHTINGS
         }
       }
     })

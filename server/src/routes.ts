@@ -208,12 +208,13 @@ function aggregateHistogram(arr: [number, any, number][], variable: string) {
   // arr.forEach(iterateFunc, errorFunc)
   // return recentVals
 
-  const histogramBinRanges = require('../local-json/histogramBinRanges.json')
+  const histogramBinRanges = require('./local-json/histogramBinRanges.json')
   // const maxHeight = 400;
 
   // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
 
   const length = arr.length; //TODO: ACCOUNT WEIGHTINGS
+  // need to get the total weights
   var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
     h["variable-encoding"] === variable)["bin-ranges"];
 
@@ -225,6 +226,12 @@ function aggregateHistogram(arr: [number, any, number][], variable: string) {
 
   for (x = 0; x < binRanges.length; x++) {
     total[x] = 0;
+  }
+
+  let i = 0;
+  let weightSum = 0;
+  for (i = 0; i < arr.length; i++) {
+    weightSum += arr[i][2];
   }
   // TODO: FIX SORTING FOR VARIALBES WITH ENCODINGS
   arr.forEach(d => {
@@ -270,7 +277,7 @@ function aggregateHistogram(arr: [number, any, number][], variable: string) {
   });
   let maxBin = 0;
   for (let j = 0; j < total.length; j++) {
-    total[j] = (total[j] / length);
+    total[j] = (total[j] / weightSum);
     if (total[j] > maxBin) {
       maxBin = total[j]
     }
@@ -369,7 +376,7 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
             else {
               sum.set(description, 1);
             }
-            n *= weight; //TODO: ACCOUNT WEIGHTINGS
+            n += weight; //TODO: ACCOUNT WEIGHTINGS
           } catch (e) {
             console.log("erroring for encoding: ", value, " for variable: ", variable)
           }

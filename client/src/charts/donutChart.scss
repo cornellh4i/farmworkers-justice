@@ -1,8 +1,19 @@
 .legend-row {
-    padding: 2px;
+    padding: 3px;
+    display: grid;
+    gap: 1rem;
+    grid-auto-flow: column;
+    justify-content: start;
 
     .rect{
         width: 25px;
         height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .description {
+        margin: 0;
     }
 }

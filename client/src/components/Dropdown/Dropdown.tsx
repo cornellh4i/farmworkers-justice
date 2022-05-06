@@ -124,32 +124,28 @@ function Dropdown(props: DropdownProp) {
   return (
     <div>
       <div className="dropdownContainer">
-        <Grid container >
-          <Grid item xs={9}>
-            <ListItemButton onClick={onClickCollapse}>
-              <h4 className="variableHeader">
-                {props.variableDescription}
-              </h4>
-              {collapse ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
-              <div id="visualizationComponent">
-                {props.variable}
-                <Grid container> 
-                  <Grid item xs ={9}>
-                    {VisualizationComponent}
-                  </Grid>
-                  <Grid item xs ={3}>
-                    {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
-                  </Grid>
-                  <Grid item xs={12}> 
-                    {TimeSeriesComponent}
-                  </Grid>
-                </Grid>
-              </div>
-            </Collapse>
-          </Grid>
-        </Grid>
+        <ListItemButton onClick={onClickCollapse}>
+          <h4 className="variableHeader">
+            {props.variableDescription}
+          </h4>
+          {collapse ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
+          <div id="visualizationComponent">
+            {props.variable}
+            <Grid container> 
+              <Grid item xs ={9}>
+                {VisualizationComponent}
+              </Grid>
+              <Grid item xs ={3}>
+                {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
+              </Grid>
+              <Grid item xs={12}> 
+                {TimeSeriesComponent}
+              </Grid>
+            </Grid>
+          </div>
+        </Collapse>
       </div >
     </div >
   )

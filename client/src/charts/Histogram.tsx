@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import $ from 'jquery';
 import './Histogram.scss';
 import { useEffect, useRef } from 'react';
 
@@ -91,6 +92,17 @@ function Histogram(props: histogramProp) {
       maxBin = total[j] 
     }
   }
+
+  var chart = $(`#histogram${props.index}`),
+  aspect = chart.width()!  / chart.height()!,
+  container = chart.parent();
+$(window).on("resize", function() {
+  var targetWidth = container.width();
+  chart.attr("width", targetWidth!);
+  chart.attr("height", Math.round(targetWidth! / aspect));
+}).trigger("resize");
+
+
   // Updates the visualization 
   function update(total: number[]) {
     var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
@@ -138,7 +150,6 @@ function Histogram(props: histogramProp) {
       .style("left", function(d, i) { return xScale(i) + "px"})
       .style('top', function(d, i) { return yScale(total[i]) - 30 + "px"}) //-30 to go two rows above bar
       .text(function(d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%"});
-
 
     labels.enter()
       .append("text")

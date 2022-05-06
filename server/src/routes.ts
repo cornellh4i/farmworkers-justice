@@ -675,19 +675,13 @@ module.exports = () => {
 
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    // var timeSeriesData;
-    // let query = { variable: req.params.variable, filter1: "", filter1Encoding: "", filter2: "", filter2Encoding: "" }
-    // const cache = await dbo.getDb().collection('cache').findOne(query)
-    // const output = cache["mainQueryData"]
-    // const vizType: string = cache["vizType"]
-    // if (timeSeriesData != null) {
-    //   timeSeriesData = cache["timeSeriesQueryData"]
-    // }
-    var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType)
-    if (timeSeries) {
-      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    var timeSeriesData;
+    let query = { $and: [{variable: req.params.variable}, {filter1: ""}, {filter1Encoding: ""}, {filter2: ""}, {filter2Encoding: ""}] }
+    const cache = await dbo.getDb().collection('cache').findOne(query)
+    const output = cache["mainQueryData"]
+    const vizType: string = cache["vizType"]
+    if (timeSeriesData != null) {
+      timeSeriesData = cache["timeSeriesQueryData"]
     }
     console.log("variable: ", req.params.variable)
     console.log("output: ", output)
@@ -698,7 +692,7 @@ module.exports = () => {
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: "", filter2Encoding: "" }
+    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: req.params.filterVal1}, {filter2: ""}, {filter2Encoding: ""}] }
     const cache = await dbo.getDb().collection('cache').findOne(query)
     const output = cache["mainQueryData"]
     const vizType = cache["vizType"]
@@ -714,7 +708,7 @@ module.exports = () => {
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    let query = { variable: req.params.variable, filter1: req.params.filterKey1, filter1Encoding: req.params.filterVal1, filter2: req.params.filterKey2, filter2Encoding: req.params.filterVal2 }
+    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: req.params.filterVal1}, {filter2: req.params.filterKey2}, {filter2Encoding: req.params.filterVal2}] }
     const cache = await dbo.getDb().collection('cache').findOne(query)
     const output = cache["mainQueryData"]
     const vizType = cache["vizType"]

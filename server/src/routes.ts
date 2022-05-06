@@ -524,7 +524,7 @@ async function combinationalData(db: Db) {
   const filtersEncoding = require('./local-json/filterEncoding.json')
   const variables : string[] = await getUniqueVariables(db);
   var combDatas: any[] = []
-  for (let i = 1; i < 10; i++) {
+  for (let i = 40; i < 50; i++) {
     combDatas = []
     // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);
@@ -596,10 +596,9 @@ module.exports = () => {
 
   router.get('/testData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    await combinationalData(dbo.getDb());
-    // dbo.createCollection("cache");
-    // dbo.cache.insert(data)
-    // console.log("collection created!");
+    await combinationalData(dbo.getDb());    
+    // const db = dbo.getDb()
+    // db.collection('cache').deleteMany({variable: "A09"})
     res.json({ success: true });
   })
   
@@ -675,15 +674,18 @@ module.exports = () => {
 
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
     let query = { $and: [{variable: req.params.variable}, {filter1: ""}, {filter1Encoding: ""}, {filter2: ""}, {filter2Encoding: ""}] }
     try {
+      // var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
+      // const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+      // const output = await main(req.params.variable, dbo.getDb(), vizType)
+      // if (timeSeries) {
+      //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+      // }
       const cache = await dbo.getDb().collection('cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType: string = cache["vizType"]
-      if (timeSeriesData != null) {
-        timeSeriesData = cache["timeSeriesQueryData"]
-      }
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
       console.log("variable: ", req.params.variable)
       console.log("output: ", output)
       console.log("timeseries output: ", timeSeriesData)
@@ -696,16 +698,12 @@ module.exports = () => {
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
     let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey}, {filter1Encoding: Number(req.params.filterVal)}, {filter2: ""}, {filter2Encoding: ""}] }
-    console.log("query: ", query)
     try {
       const cache = await dbo.getDb().collection('cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
-      if (timeSeriesData != null) {
-        timeSeriesData = cache["timeSeriesQueryData"]
-      }
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
       console.log("variable: ", req.params.variable)
       console.log("output: ", output)
       console.log("timeseries output: ", timeSeriesData)
@@ -718,15 +716,12 @@ module.exports = () => {
 
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
     let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: Number(req.params.filterVal1)}, {filter2: req.params.filterKey2}, {filter2Encoding: Number(req.params.filterVal2)}] }
     try {
       const cache = await dbo.getDb().collection('cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
-      if (timeSeriesData != null) {
-        timeSeriesData = cache["timeSeriesQueryData"]
-      }
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
       console.log("variable: ", req.params.variable)
       console.log("output: ", output)
       console.log("timeseries output: ", timeSeriesData)

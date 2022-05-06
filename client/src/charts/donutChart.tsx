@@ -87,7 +87,7 @@ function DonutChart(props: DonutChartProps) {
                 <div className='rect' style={{backgroundColor: colors(index.toString())}}></div>
               </Grid>
               <Grid item xs={10} alignItems='center' display='flex'>
-                {element} ({data[index]* 100}%)
+                {element} ({Math.round(data[index]* 100)}%)
               </Grid>
             </Grid>
           )}

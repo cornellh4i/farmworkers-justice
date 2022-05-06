@@ -16,6 +16,24 @@ const LATEST_ODD_YEAR = 2017;
 const LATEST_EVEN_YEAR = 2018;
 
 
+interface binProp {
+  "start": null | number,
+  "end": null | number
+  "start-encoding": null | number
+  "end-encoding": null | number
+}
+
+interface histogramProp {
+  variableEncoding: string;
+  data: number[],
+  index: number
+}
+
+interface histogramBinRangesProp {
+  "variable-encoding": string,
+  "variable-description": string
+  "bin-ranges": Array<binProp>
+}
 interface timeSeriesRangeProp {
   encoding: number,
   start: null | number,
@@ -176,19 +194,88 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
  * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
  */
 // TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
-function aggregateHistogram(arr: [number, any, number][]) {
-  let recentVals: Array<number> = [];
+function aggregateHistogram(arr: [number, any, number][], variable: string) {
+  // let recentVals: Array<number> = [];
 
-  function iterateFunc(v: [number, number, number]) {
-    if (!isNaN(v[1])) {
-      recentVals.push(v[1])
+  // function iterateFunc(v: [number, number, number]) {
+  //   if (!isNaN(v[1])) {
+  //     recentVals.push(v[1])
+  //   }
+  // }
+  // function errorFunc(error: any) {
+  //   console.log(error);
+  // }
+  // arr.forEach(iterateFunc, errorFunc)
+  // return recentVals
+
+  const histogramBinRanges = require('../local-json/histogramBinRanges.json')
+  // const maxHeight = 400;
+
+  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
+
+  const length = arr.length; //TODO: ACCOUNT WEIGHTINGS
+  var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
+    h["variable-encoding"] === variable)["bin-ranges"];
+
+  let maxValue: number = Math.max(...arr.map(e => e[1]));
+  maxValue = Math.ceil(maxValue / 10) * 10;
+  // const xScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
+  let total: number[] = []
+  let x = 0;
+
+  for (x = 0; x < binRanges.length; x++) {
+    total[x] = 0;
+  }
+  // TODO: FIX SORTING FOR VARIALBES WITH ENCODINGS
+  arr.forEach(d => {
+    total.forEach((element, index) => {
+      if (binRanges[index]["start-encoding"] != null) {
+        if (binRanges[index].start == null) {
+          if (d[1] <= binRanges[index]["end-encoding"]!) {
+            let curr = total[index] + 1 * d[2]; //TODO: ACCOUNT WEIGHTINGS
+            total[index] = curr;
+          }
+        }
+        else if (binRanges[index].end == null) {
+          if (d[1] >= binRanges[index]["start-encoding"]!) {
+            let curr = total[index] + 1 * d[2];
+            total[index] = curr;
+          }
+        }
+
+        if (d[1] <= binRanges[index]["end-encoding"]! && d[1] >= binRanges[index]["start-encoding"]!) {
+          let curr = total[index] + 1 * d[2];
+          total[index] = curr;
+        }
+      } else {
+        if (binRanges[index].start == null) {
+          if (d[1] <= binRanges[index]["end"]!) {
+            let curr = total[index] + 1 * d[2];
+            total[index] = curr;
+          }
+        }
+        else if (binRanges[index].end == null) {
+          if (d[1] >= binRanges[index]["start"]!) {
+            let curr = total[index] + 1 * d[2];
+            total[index] = curr;
+          }
+        }
+
+        if (d[1] <= binRanges[index]["end"]! && d[1] >= binRanges[index]["start"]!) {
+          let curr = total[index] + 1 * d[2];
+          total[index] = curr;
+        }
+      }
+    });
+  });
+  let maxBin = 0;
+  for (let j = 0; j < total.length; j++) {
+    total[j] = (total[j] / length);
+    if (total[j] > maxBin) {
+      maxBin = total[j]
     }
   }
-  function errorFunc(error: any) {
-    console.log(error);
-  }
-  arr.forEach(iterateFunc, errorFunc)
-  return recentVals
+  return total
 }
 
 
@@ -500,7 +587,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
     const queryResult = await getQueryResult(variable, db, filterKey1, filterValue1, filterKey2, filterValue2)
     if (vizType !== null) {
       if (vizType === VizType.Histogram) {
-        output = aggregateHistogram(queryResult);
+        output = aggregateHistogram(queryResult, variable);
       }
       else if (vizType === VizType.Table) {
         output = await aggregateTable(queryResult, variable, db);

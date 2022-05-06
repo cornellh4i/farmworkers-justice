@@ -235,15 +235,13 @@ async function aggregateDonutChart(arr: [number, any][], variable: string, db: D
  * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @param db is the database instance being used to filter data 
- * @returns a dictionary where the keys are encoding descriptions and the values 
- *          are arrays of two values. The first value is the proportion 
- *          percentage of the surveys that answered accordingly, and the second 
- *          value is the number of count for that response.
- *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
+ * @returns a dictionary where the keys are encoding descriptions and the value
+ *          is the proportion percentage of the surveys that answered accordingly
+ *          EX. {"Mexican/American": 11.1, "Mexican": 64.9, "Chicano": 10.0, "Other Hispanic": 4.0, "Puerto Rican": 8.0, "Not Hispanic or Latino": 2.0}
  */
 async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
   let sum = new Map<string, number>();
-  let output = new Map<string, [number, number]>();
+  let output = new Map<string, number>();
   let n = 0;
 
   var encodingDescrp: any;
@@ -287,7 +285,7 @@ async function aggregateTable(arr: [number, any][], variable: string, db: Db) {
       }
     }
     sum.forEach((v, d) => {
-      output.set(d, [Math.round(v/n * 100) / 100, v]);
+      output.set(d, Number((v/n * 100).toFixed(1)));
     })
   });
   return output;

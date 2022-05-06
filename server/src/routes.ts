@@ -677,48 +677,64 @@ module.exports = () => {
     const dbo = require("./db/conn");
     var timeSeriesData;
     let query = { $and: [{variable: req.params.variable}, {filter1: ""}, {filter1Encoding: ""}, {filter2: ""}, {filter2Encoding: ""}] }
-    const cache = await dbo.getDb().collection('cache').findOne(query)
-    const output = cache["mainQueryData"]
-    const vizType: string = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
+    try {
+      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType: string = cache["vizType"]
+      if (timeSeriesData != null) {
+        timeSeriesData = cache["timeSeriesQueryData"]
+      }
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({status: false})
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: req.params.filterVal1}, {filter2: ""}, {filter2Encoding: ""}] }
-    const cache = await dbo.getDb().collection('cache').findOne(query)
-    const output = cache["mainQueryData"]
-    const vizType = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
+    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey}, {filter1Encoding: Number(req.params.filterVal)}, {filter2: ""}, {filter2Encoding: ""}] }
+    console.log("query: ", query)
+    try {
+      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType = cache["vizType"]
+      if (timeSeriesData != null) {
+        timeSeriesData = cache["timeSeriesQueryData"]
+      }
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({status: false})
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     var timeSeriesData;
-    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: req.params.filterVal1}, {filter2: req.params.filterKey2}, {filter2Encoding: req.params.filterVal2}] }
-    const cache = await dbo.getDb().collection('cache').findOne(query)
-    const output = cache["mainQueryData"]
-    const vizType = cache["vizType"]
-    if (timeSeriesData != null) {
-      timeSeriesData = cache["timeSeriesQueryData"]
+    let query = { $and: [{variable: req.params.variable}, {filter1: req.params.filterKey1}, {filter1Encoding: Number(req.params.filterVal1)}, {filter2: req.params.filterKey2}, {filter2Encoding: Number(req.params.filterVal2)}] }
+    try {
+      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType = cache["vizType"]
+      if (timeSeriesData != null) {
+        timeSeriesData = cache["timeSeriesQueryData"]
+      }
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({status: false})
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   return router;

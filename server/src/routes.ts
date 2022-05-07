@@ -309,7 +309,7 @@ async function aggregateDonutChart(arr: [number, any, number][], variable: strin
  */
 async function aggregateTable(arr: [number, any, number][], variable: string, db: Db) {
   let sum = new Map<string, number>();
-  let output = new Map<string, [number, number]>();
+  let output = new Map<string, number>();
   let n = 0;
 
   var encodingDescrp: any;
@@ -353,10 +353,11 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
           }
         }
       }
-      sum.forEach((v, d) => {
-        output.set(d, [Math.round(v / n * 100) / 100, v]);
-      })
-    });
+    }
+    sum.forEach((v, d) => {
+      output.set(d, Number((v/n * 100).toFixed(1)));
+    })
+  });
   return output;
 
 }

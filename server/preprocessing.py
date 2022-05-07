@@ -27,6 +27,7 @@ def preprocessing():
     necessaryVariables = sys.argv[1].split(",")
     necessaryVariables.append("FY")
     necessaryVariables.append("REGION6")
+    necessaryVariables.append("PWTYCRD")
 
     # Processes dropping the variables that are not in necessaryVariables
     necessaryVariablesFinal = ["value"]*len(necessaryVariables)

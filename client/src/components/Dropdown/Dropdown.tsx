@@ -47,6 +47,7 @@ function Dropdown(props: DropdownProp) {
   // const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
   const [VisualizationComponent , setVisualizationComponent] = useState(<></>);
   const [TimeSeriesComponent , setTimeSeriesComponent] = useState(<></>);
+  console.log("mapFilterSelected: ", props.mapFilterSelected)
 
   function onClickCollapse() {
     if (props.currentCollapseIndex === props.index) {
@@ -134,18 +135,18 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
               <div id="visualizationComponent">
-                {props.variable}
-                <Grid container> 
-                  <Grid item xs ={9}>
+                {/* {props.variable} */}
+                {/* <Grid container> 
+                  <Grid item xs ={9}> */}
                     {VisualizationComponent}
-                  </Grid>
-                  <Grid item xs ={3}>
-                    {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />}
-                  </Grid>
-                  <Grid item xs={12}> 
+                  {/* </Grid>
+                  <Grid item xs ={3}> */}
+                    {/* {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />} */}
+                  {/* </Grid>
+                  <Grid item xs={12}>  */}
                     {TimeSeriesComponent}
-                  </Grid>
-                </Grid>
+                  {/* </Grid>
+                </Grid> */}
               </div>
             </Collapse>
           </Grid>

@@ -96,7 +96,11 @@ function Histogram(props: histogramProp) {
     var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
     const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 100 + 10]); // +10 due to chart transform
     var axis = d3.select<SVGSVGElement, unknown>(`#axis${props.index}`)
-    axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
+    axis
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(yScale)
+      .tickFormat(d3.format(".0%")))
 
     // Update selection: Resize and position existing 
     // DOM elements with data bound to them.
@@ -123,7 +127,8 @@ function Histogram(props: histogramProp) {
       })
       .style("margin-top", function(d){ 
         return (maxHeight - d/maxBin*maxHeight) + "px"; 
-      });
+      })
+      .transition();      
 
     // Exit selection: Remove elements without data from the DOM
     bins.exit().remove();

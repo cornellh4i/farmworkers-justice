@@ -65,8 +65,8 @@ interface columnChartGroupingProp {
  * @param filter_key1, @param filter_key2 are selected filter option. EX: GENDER, FLC, REGION6
  * @param filter_value1, @param filter_value2 are the selected filter value corresponding to filter_key
  * @returns a nested array where each element corresponds to each document of 
- *          the query result and is in the form [FY, value of the variable key]. 
- *          EX: [[2010, 2], [2010, 2]]
+ *          the query result and is in the form [FY, value of the variable key, weighting of the entry]. 
+ *          EX: [[2010, 2, 2.9], [2010, 2, 0.81]]
  */
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
   var query;
@@ -93,7 +93,6 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
   }
   var filtered_array: Array<[number, any, number]> = []
   var result: any[] = [];
-  // TODO: USE PROJECTION
   try {
     result = await db.collection('naws-preprocessed').find(query).toArray();
   } catch (e) {
@@ -113,12 +112,12 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
+ * @param arr is a nested array of lists that look like: [year, value, weighting]. EX: [[2008, 0, 2.93], [2009, 1, 0.8]]
  *        it assumes that the number of distinct years is even
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @returns an array of dictionaries where each dictionary element is formatted
  *          as {year: 2009, value: 0.54}. The year is representative of two years (2019 & 2010 in the example)
- *          and value is the percentage of 1s / (1s + 0s)
+ *          and value is the weighted percentage of 1s / (1s + 0s)
  *          Note: years are always presented odd first then even (2007-2008, 2009-2010)
  *          The value represents the percentage of how often a variable appears in those two years. 
  *          An average value is returned for variables: B11, G01, G03, FWRDays, and NUMFEMPL. 
@@ -190,91 +189,80 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[2008, 0], [2009, 1]]
- * @returns an array of all values from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value, weighting]. EX: [[LATEST_ODD_YEAR, 0, 2.93], [LATEST_EVEN_YEAR, 1, 0.8]]
+ * @param variable is the variable that is being aggregated. EX: GENDER
+ * @returns an array of aggregated, weighted percentages from the LATEST_ODD_YEAR and LATEST_EVEN_YEAR 
+ *          in order of the corresponding bin ranges in histogramBinRanges.json
+ *          EX output: [0.43, 0.24, 0.35, 0.15, 0.03]
  */
-// TODO: MOVE AGGREGATION CODE FROM FRONTEND TO HERE
 function aggregateHistogram(arr: [number, any, number][], variable: string) {
-  // let recentVals: Array<number> = [];
-
-  // function iterateFunc(v: [number, number, number]) {
-  //   if (!isNaN(v[1])) {
-  //     recentVals.push(v[1])
-  //   }
-  // }
-  // function errorFunc(error: any) {
-  //   console.log(error);
-  // }
-  // arr.forEach(iterateFunc, errorFunc)
-  // return recentVals
-
   const histogramBinRanges = require('./local-json/histogramBinRanges.json')
   var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
     h["variable-encoding"] === variable)["bin-ranges"];
 
-  let total: number[] = []
+  let aggregated: number[] = []
   let x = 0;
 
   for (x = 0; x < binRanges.length; x++) {
-    total[x] = 0;
+    aggregated[x] = 0;
   }
 
   let weightSum = 0;
   arr.forEach(d => {
     if (!isNaN(d[1])) {
       weightSum += d[2];
-      total.forEach((element, index) => {
+      aggregated.forEach((element, index) => {
         if (binRanges[index]["start-encoding"] != null) {
           if (binRanges[index].start == null) {
             if (d[1] <= binRanges[index]["end-encoding"]!) {
-              let curr = total[index] + 1 * d[2]; 
-              total[index] = curr;
+              let curr = aggregated[index] + 1 * d[2]; 
+              aggregated[index] = curr;
             }
           }
           else if (binRanges[index].end == null) {
             if (d[1] >= binRanges[index]["start-encoding"]!) {
-              let curr = total[index] + 1 * d[2];
-              total[index] = curr;
+              let curr = aggregated[index] + 1 * d[2];
+              aggregated[index] = curr;
             }
           }
           else if (d[1] <= binRanges[index]["end-encoding"]! && d[1] >= binRanges[index]["start-encoding"]!) {
-            let curr = total[index] + 1 * d[2];
-            total[index] = curr;
+            let curr = aggregated[index] + 1 * d[2];
+            aggregated[index] = curr;
           }
         } else {
           if (binRanges[index].start == null) {
             if (d[1] <= binRanges[index]["end"]!) {
-              let curr = total[index] + 1 * d[2];
-              total[index] = curr;
+              let curr = aggregated[index] + 1 * d[2];
+              aggregated[index] = curr;
             }
           }
           else if (binRanges[index].end == null) {
             if (d[1] >= binRanges[index]["start"]!) {
-              let curr = total[index] + 1 * d[2];
-              total[index] = curr;
+              let curr = aggregated[index] + 1 * d[2];
+              aggregated[index] = curr;
             }
           }
           else if (d[1] <= binRanges[index]["end"]! && d[1] >= binRanges[index]["start"]!) {
-            let curr = total[index] + 1 * d[2];
-            total[index] = curr;
+            let curr = aggregated[index] + 1 * d[2];
+            aggregated[index] = curr;
           }
         }
       });
     }
   });
-  for (let j = 0; j < total.length; j++) {
-    total[j] = (total[j] / weightSum);
+  for (let j = 0; j < aggregated.length; j++) {
+    aggregated[j] = (aggregated[j] / weightSum);
   }
-  return total
+  return aggregated
 }
 
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [LATEST_YEAR, value]. EX: [[LATEST_ODD_YEAR, 0], [LATEST_EVEN_YEAR, 1]]
+ * @param arr is a nested array of lists that look like: [LATEST_YEAR, value, weighting]. EX: [[LATEST_ODD_YEAR, 0, 0.22], [LATEST_EVEN_YEAR, 1, 1.3]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @param db is the database instance being used to filter data 
- * @returns a dictionary where the keys are encoding descriptions and the values are the 
+ * @returns a dictionary where the keys are encoding descriptions and the values are the weighted
  *          percentage of times that encoding appears in the LATEST_ODD_YEAR and LATEST_EVEN_YEAR.
  *          EX. {"By the hour": 0.25, "By the piece": 0, "Combination hourly wage and piece rate": 0.5, "Salary or other": 0.25}
  */
@@ -310,11 +298,11 @@ async function aggregateDonutChart(arr: [number, any, number][], variable: strin
 
 /**
  * Takes an array and a string variable
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_ODD_YEAR, 1]]
+ * @param arr is a nested array of lists that look like: [year, value, weighting]. EX: [LATEST_YEAR, value, weighting]. EX: [[LATEST_ODD_YEAR, 0, 0.22], [LATEST_EVEN_YEAR, 1, 1.3]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @param db is the database instance being used to filter data 
  * @returns a dictionary where the keys are encoding descriptions and the values 
- *          are arrays of two values. The first value is the proportion 
+ *          are arrays of two values. The first value is the proportion weighted
  *          percentage of the surveys that answered accordingly, and the second 
  *          value is the number of count for that response.
  *          EX. {"Mexican/American": [0.11, 110], "Mexican": [0.65, 650], "Chicano": [0.10, 100], "Other Hispanic": [0.04: 40], "Puerto Rican": [0.08, 80], "Not Hispanic or Latino": [0.02, 20]}
@@ -354,12 +342,12 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
               j++;
             }
             if (sum.has(description)) {
-              sum.set(description, sum.get(description)! + 1 * weight) //TODO: ACCOUNT WEIGHTINGS
+              sum.set(description, sum.get(description)! + 1 * weight) 
             }
             else {
               sum.set(description, 1);
             }
-            n += weight; //TODO: ACCOUNT WEIGHTINGS
+            n += weight; 
           } catch (e) {
             console.log("erroring for encoding: ", value, " for variable: ", variable)
           }
@@ -375,12 +363,12 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
 
 
 /**
- * @param arr is a nested array of lists where each element look like: [column description, [[year, value], [year value], ..]]. 
+ * @param arr is a nested array of lists where each element look like: [column description, [[year, value, weighting], [year value, weighting], ..]]. 
  * EX: [
- *        ["English", [[2002, 0], [2012, 1], [2047, 97], [1993, 0], [1992, 1]]],
- *        ["Spanish", [[2002, 0], [2012, 1], [2047, 1], [1993, 23]]],
- *        ["Mixtec", [[2002, 1], [2012, 1], [2047, 1], [1993, 1]]],
- *        ["Other", [[2002, 0], [2012, 0], [2047, 0], [1993, 1]]]
+ *        ["English", [[2002, 0, 0.2], [2012, 1, 1.2], [2047, 97, 4.2], [1993, 0, 2.3], [1992, 1, 1.1]]],
+ *        ["Spanish", [[2002, 0, 0.9], [2012, 1, 0.8], [2047, 1, 3.1], [1993, 23, 4]]],
+ *        ["Mixtec", [[2002, 1, 0.9]], [2012, 1, 0.9]], [2047, 1, 0.9]], [1993, 1, 0.9]]]]],
+ *        ["Other", [[2002, 0, 0.91], [2012, 0, 0.91], [2047, 0, 0.91], [1993, 1, 0.91]]]
  *     ];
  * @returns a list of seriesProps that is needed to supplied to the HighCharts Column type 
  */
@@ -425,11 +413,11 @@ function aggregateColumnChart(arr: Array<[string, [number, number, number][]]>) 
 
 
 /**
- * @param arr is a nested array of lists that look like: [year, value]. EX: [[LATEST_EVEN_YEAR, 0], [LATEST_EVEN_YEAR, 1], [LATEST_ODD_YEAR, 0]]
+ * @param arr is a nested array of lists that look like: [year, value]. EX: [LATEST_YEAR, value, weighting]. EX: [[LATEST_ODD_YEAR, 0, 0.22], [LATEST_EVEN_YEAR, 1, 1.3]]
  * @param variable is the variable that is being aggregated. EX: GENDER
  * @param db is the database instance being used to filter data 
  * @returns an object with attributes percentage and description. 
- *          The percentage represents the proprotion of respondents answering the chosen option. 
+ *          The percentage represents the weighted proprotion of respondents answering the chosen option. 
  *          The description is the binary data option to display
  */
 async function getDataHighlights(arr: [number, any, number][], variable: string, db: Db) {
@@ -440,9 +428,9 @@ async function getDataHighlights(arr: [number, any, number][], variable: string,
   arr.forEach(([year, value, weight]) => {
     try {
       if (!isNaN(value)) {
-        totalCount += weight; //TODO: ACCOUNT WEIGHTINGS
+        totalCount += weight; 
         if (value === binaryData!.DisplayEncoding) {
-          displayCount += weight; //TODO: ACCOUNT WEIGHTINGS
+          displayCount += weight; 
         }
       }
     } catch (e) {

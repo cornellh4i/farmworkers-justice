@@ -5,7 +5,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import Map from './../../charts/Map';
 import { useEffect, useState } from 'react';
 import Histogram from './../../charts/Histogram';
 import Donut from './../../charts/donutChart'
@@ -18,7 +17,6 @@ interface DropdownProp {
   index: number
   variableDescription: string
   variable: string
-  mapFilterSelected: null | string
   setCurrentCollapseIndex: Function
   currentCollapseIndex: number | null
   filter1Selected: null | string[]
@@ -42,12 +40,8 @@ const filterEncodings = require("./../../local-json/filterEncoding.json")
 
 function Dropdown(props: DropdownProp) {
   const [collapse, setCollapse] = useState(false)
-  // const [visualizationType, setVisualizationType] = useState("")
-  // const [visualizationData, setVisualizationData] = useState<any>(null)
-  // const [timeSeriesData, setTimeSeriesData] = useState<{ year: number, value: number }[]>([])
   const [VisualizationComponent , setVisualizationComponent] = useState(<></>);
   const [TimeSeriesComponent , setTimeSeriesComponent] = useState(<></>);
-  console.log("mapFilterSelected: ", props.mapFilterSelected)
 
   function onClickCollapse() {
     if (props.currentCollapseIndex === props.index) {
@@ -74,9 +68,6 @@ function Dropdown(props: DropdownProp) {
       try {
         response = await fetch(url);
         output = await response.json();
-        // setVisualizationType(output.vizType)
-        // setVisualizationData(output.data)
-        // setTimeSeriesData(output.timeSeriesData)
         console.log("fetched data for variable ", props.variable, " : ", output.data)
         if (output.vizType === "histogram") {
           setVisualizationComponent(<Histogram key={props.index.toString()} index={props.index} variableEncoding={props.variable} data={output.data} />)

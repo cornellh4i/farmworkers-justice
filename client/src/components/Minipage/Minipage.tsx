@@ -49,7 +49,7 @@ function Minipage() {
                     <ul>
                         {variableDescriptions.map((variableDescription, index) => 
                             <Dropdown key={index.toString()} variableDescription={variableDescription} index={index} 
-                            variable={variableEncodings[index]} mapFilterSelected={mapFilterSelected} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
+                            variable={variableEncodings[index]} filter1Selected={filter1Selected} filter2Selected={filter2Selected}
                             currentCollapseIndex={currentCollapseIndex} setCurrentCollapseIndex={setCurrentCollapseIndex}></Dropdown>)}
                     </ul>
                 </div>

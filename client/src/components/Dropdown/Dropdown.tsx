@@ -135,18 +135,9 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
               <div id="visualizationComponent">
-                {/* {props.variable} */}
-                {/* <Grid container> 
-                  <Grid item xs ={9}> */}
-                    {VisualizationComponent}
-                  {/* </Grid>
-                  <Grid item xs ={3}> */}
-                    {/* {props.mapFilterSelected === null ? null : <Map key={props.index} mapFilterSelected={props.mapFilterSelected} />} */}
-                  {/* </Grid>
-                  <Grid item xs={12}>  */}
-                    {TimeSeriesComponent}
-                  {/* </Grid>
-                </Grid> */}
+                {props.variable}
+                {VisualizationComponent}
+                {TimeSeriesComponent}
               </div>
             </Collapse>
           </Grid>

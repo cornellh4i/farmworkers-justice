@@ -353,10 +353,9 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
           }
         }
       }
-    }
-    sum.forEach((v, d) => {
-      output.set(d, Number((v/n * 100).toFixed(1)));
-    })
+      sum.forEach((v, d) => {
+        output.set(d, Number((v/n * 100).toFixed(1)));
+      })
   });
   return output;
 

@@ -209,18 +209,9 @@ function aggregateHistogram(arr: [number, any, number][], variable: string) {
   // return recentVals
 
   const histogramBinRanges = require('./local-json/histogramBinRanges.json')
-  // const maxHeight = 400;
-
-  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
-
-  const length = arr.length; //TODO: ACCOUNT WEIGHTINGS
-  // need to get the total weights
   var binRanges: binProp[] = histogramBinRanges["histogram-variables"].find((h: histogramBinRangesProp) =>
     h["variable-encoding"] === variable)["bin-ranges"];
 
-  let maxValue: number = Math.max(...arr.map(e => e[1]));
-  maxValue = Math.ceil(maxValue / 10) * 10;
-  // const xScale = d3.scaleLinear().domain([0, binRanges.length * 10]).range([0, chartWidth]);
   let total: number[] = []
   let x = 0;
 
@@ -228,59 +219,51 @@ function aggregateHistogram(arr: [number, any, number][], variable: string) {
     total[x] = 0;
   }
 
-  let i = 0;
   let weightSum = 0;
-  for (i = 0; i < arr.length; i++) {
-    weightSum += arr[i][2];
-  }
-  // TODO: FIX SORTING FOR VARIALBES WITH ENCODINGS
   arr.forEach(d => {
-    total.forEach((element, index) => {
-      if (binRanges[index]["start-encoding"] != null) {
-        if (binRanges[index].start == null) {
-          if (d[1] <= binRanges[index]["end-encoding"]!) {
-            let curr = total[index] + 1 * d[2]; //TODO: ACCOUNT WEIGHTINGS
+    if (!isNaN(d[1])) {
+      weightSum += d[2];
+      total.forEach((element, index) => {
+        if (binRanges[index]["start-encoding"] != null) {
+          if (binRanges[index].start == null) {
+            if (d[1] <= binRanges[index]["end-encoding"]!) {
+              let curr = total[index] + 1 * d[2]; 
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d[1] >= binRanges[index]["start-encoding"]!) {
+              let curr = total[index] + 1 * d[2];
+              total[index] = curr;
+            }
+          }
+          else if (d[1] <= binRanges[index]["end-encoding"]! && d[1] >= binRanges[index]["start-encoding"]!) {
+            let curr = total[index] + 1 * d[2];
             total[index] = curr;
           }
-        }
-        else if (binRanges[index].end == null) {
-          if (d[1] >= binRanges[index]["start-encoding"]!) {
+        } else {
+          if (binRanges[index].start == null) {
+            if (d[1] <= binRanges[index]["end"]!) {
+              let curr = total[index] + 1 * d[2];
+              total[index] = curr;
+            }
+          }
+          else if (binRanges[index].end == null) {
+            if (d[1] >= binRanges[index]["start"]!) {
+              let curr = total[index] + 1 * d[2];
+              total[index] = curr;
+            }
+          }
+          else if (d[1] <= binRanges[index]["end"]! && d[1] >= binRanges[index]["start"]!) {
             let curr = total[index] + 1 * d[2];
             total[index] = curr;
           }
         }
-
-        if (d[1] <= binRanges[index]["end-encoding"]! && d[1] >= binRanges[index]["start-encoding"]!) {
-          let curr = total[index] + 1 * d[2];
-          total[index] = curr;
-        }
-      } else {
-        if (binRanges[index].start == null) {
-          if (d[1] <= binRanges[index]["end"]!) {
-            let curr = total[index] + 1 * d[2];
-            total[index] = curr;
-          }
-        }
-        else if (binRanges[index].end == null) {
-          if (d[1] >= binRanges[index]["start"]!) {
-            let curr = total[index] + 1 * d[2];
-            total[index] = curr;
-          }
-        }
-
-        if (d[1] <= binRanges[index]["end"]! && d[1] >= binRanges[index]["start"]!) {
-          let curr = total[index] + 1 * d[2];
-          total[index] = curr;
-        }
-      }
-    });
+      });
+    }
   });
-  let maxBin = 0;
   for (let j = 0; j < total.length; j++) {
     total[j] = (total[j] / weightSum);
-    if (total[j] > maxBin) {
-      maxBin = total[j]
-    }
   }
   return total
 }

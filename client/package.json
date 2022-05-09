@@ -5,6 +5,7 @@
   "dependencies": {
     "dom-to-image": "^2.6.0",
     "dom-to-pdf": "^0.2.9",
+    "@types/dom-to-image": "^2.6.4",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@fontsource/rubik": "^4.5.3",

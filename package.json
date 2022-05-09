@@ -6,15 +6,17 @@
     "server": "cd server && npm start",
     "react-dev": "cd client && npm start",
     "test": "cd server && npm test",
-    
     "installClient": "cd client && npm install",
     "installServer": "cd server && npm install",
     "install": "concurrently \"npm run installClient\" \"npm run installServer\"",
-    
     "build": "cd client && npm run build"
   },
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^7.1.0"
+    "concurrently": "^7.1.0",
+    "dom-to-image": "^2.6.0"
+  },
+  "engines": {
+    "node": "6.11.1"
   }
 }

@@ -143,7 +143,6 @@ function Dropdown(props: DropdownProp) {
             </ListItemButton>
             <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
               <div id="visualizationComponent">
-                {props.variable}
                 {VisualizationComponent}
                 {TimeSeriesComponent}
               </div>

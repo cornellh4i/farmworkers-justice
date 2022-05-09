@@ -16,9 +16,8 @@ import Line from './charts/lineGraph';
 import AdminUploadPortal from './components/AdminUploadPortal/AdminUploadPortal';
 import ColumnChart from "./charts/columnChart";
 
-const API_URL = process.env.REACT_APP_API;
-const LATEST_ODD_YEAR = 2017;
-const LATEST_EVEN_YEAR = 2018;
+export const LATEST_ODD_YEAR = 2017;
+export const LATEST_EVEN_YEAR = 2018;
 
 
 function App() {
@@ -67,14 +66,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/visualizations/:categoryEncoding" element={<Minipage />} />
-        <Route path="/linegraph" element={<Line data={timeSeriesData} index={1} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
+        {/* <Route path="/linegraph" element={<Line data={timeSeriesData} index={1} variableEncoding={"G01"} variableDescription={"What was your total income last year in USD?"} />} />
         <Route path='/data' element={<DataHighlight data={dataHighlightData} />} />
-        <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} />
+        <Route path="histogram" element={<Histogram data={histogramData} variableEncoding={"A08"} index={0} />} /> */}
         <Route path="/admin" element={<AdminLanding setToken={setToken} />} />
         <Route path="/adminUpload" element={<AdminUploadPortal token={token} />} />
         {/* <Route path="columnChart" element={<ColumnChart/>} /> */}
-        <Route path='/table' element={<Table data={tableData} />} />
-        <Route path='/donut' element={<DonutChart data={donutData} index={2} />} />
+        {/* <Route path='/table' element={<Table data={tableData} />} />
+        <Route path='/donut' element={<DonutChart data={donutData} index={2} />} /> */}
         {/* <Route path='/map' element={<Map regionEncoding={"1"} />} /> */}
 
         {/* <h3 style={{ marginBottom: "1px", marginLeft: "200px" }}>\

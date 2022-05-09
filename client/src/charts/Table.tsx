@@ -3,14 +3,12 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 type rowProp = {
     id: number,
     response_description: string,
-    response: [number, number]
+    response: number
 }
 
 type tableProp = {
-    data: { [key: string]: [number, number] }
+    data: { [key: string]: number }
 }
-const PECENTAGE_INDEX = 0
-const COUNT_INDEX = 1
 
 function Table(props: tableProp) {
     let entries: rowProp[] = [];
@@ -22,7 +20,7 @@ function Table(props: tableProp) {
         },
         {
             name: "Percentage",
-            selector: row => row.response[PECENTAGE_INDEX] * 100 + "%" + " (" + row.response[COUNT_INDEX] + ")"
+            selector: row => row.response + "%"
         }
     ];
     let count: number = 0

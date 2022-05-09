@@ -83,14 +83,10 @@ function DonutChart(props: DonutChartProps) {
       <Grid item xs alignItems='center' display='flex'>
         <div>
           {descriptions.map((element: string, index: number) => 
-            <Grid container spacing={2} className="legend-row" key={index}>
-              <Grid item xs={2}>
+            <div className="legend-row">
                 <div className='rect' style={{backgroundColor: colors(index.toString())}}></div>
-              </Grid>
-              <Grid item xs={10} alignItems='center' display='flex'>
-                {element} ({Math.round(data[index]* 100)}%)
-              </Grid>
-            </Grid>
+                <p className="description">{element} ({data[index]* 100}%)</p>
+            </div>
           )}
         </div>
       </Grid>

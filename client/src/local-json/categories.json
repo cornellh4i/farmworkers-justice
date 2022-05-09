@@ -123,7 +123,7 @@
                     "variable-description": "While you are working for your employer, what is your living arrangement?"
                 },
                 {
-                    "variable-encoding": "D34x",
+                    "variable-encoding": "D34ax",
                     "variable-description": "What kind of living quarters do you live in now?"
                 },
                 {

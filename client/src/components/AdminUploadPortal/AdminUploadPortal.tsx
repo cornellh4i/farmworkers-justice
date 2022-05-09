@@ -74,7 +74,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 			</form>
 			<p>{fileUploadMsg}</p>
 			<div className="preprocess">
-				<p>Verify that both files were uploaded, then click the UPDATA DATA button below to preprocess the data</p>
+				<p>Verify that both files were uploaded, then click the UPDATE DATA button below to preprocess the data</p>
 				<Button onClick = {handleUpdate} variant="contained">Update Data</Button>
 			</div>
 			<p>{dataUploadMsg}</p>

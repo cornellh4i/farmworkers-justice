@@ -86,7 +86,7 @@ function Dropdown(props: DropdownProp) {
         }
         if (typeof output.timeSeriesData != 'undefined') {
           console.log("fetched timeseries data for variable ", props.variable, " : ", output.timeSeriesData)
-          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable}/>)
+          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable} />)
         } else {
           setTimeSeriesComponent(<></>)
         }
@@ -110,7 +110,7 @@ function Dropdown(props: DropdownProp) {
       url = `${API_URL}/${props.variable}/${props.filter1Selected![1]}/${filter1Encoding}/${props.filter2Selected[1]}/${filter2Encoding}`;
     }
     getData(url)
-  
+
 
   }, [props.filter1Selected, props.filter2Selected])
 

@@ -59,6 +59,7 @@ function DonutChart(props: DonutChartProps) {
       path
       .enter()
       .append("path")
+      .transition()
         .attr("class","piechart")
         .attr("fill", function(d,i){ return colors(i.toString()); })
         .attr("d", createArc);

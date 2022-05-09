@@ -9,8 +9,5 @@
     "install": "cd client && npm install",
     "build": "cd client && npm run build"
   },
-  "license": "ISC",
-  "dependencies": {
-    "multer": "^1.4.4"
-  }
+  "license": "ISC"
 }

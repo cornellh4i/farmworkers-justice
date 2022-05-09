@@ -110,6 +110,7 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 }
 
 
+
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value, weighting]. EX: [[2008, 0, 2.93], [2009, 1, 0.8]]
@@ -165,6 +166,9 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
           totalEachYear.set(yr, totalEachYear.get(yr)! + 1 * weight);
         }
       }
+    })
+    output.forEach((d) => {
+      d.value = (d.value / totalEachYear.get(d.year)!)
     })
   } else {
     arr.forEach((v) => {
@@ -358,7 +362,6 @@ async function aggregateTable(arr: [number, any, number][], variable: string, db
       })
   });
   return output;
-
 }
 
 
@@ -450,11 +453,10 @@ async function getDataHighlights(arr: [number, any, number][], variable: string,
  */
 async function getVizType(variable: string, db: Db) {
   let query = { Variable: variable }
-  var columnEncodings = []
-  for (var i = 0; i < columnChartGroupings.length; i++) {
-    columnEncodings.push(columnChartGroupings[i]["condensedVariableEncoding"])
-  }
-  // TODO: CAN BE REMOVED IF MODIFY VARIABLE-INFO COLLECTION DIRECTLY TO CHANGE VARIABLE TYPE TO COLUMN
+  const columnEncodings = ["B21x", "G04x", "NH0x", "NQ10x"]
+  // for(var i = 0; i < columnChartGroupings.length; i++){
+  //   columnEncodings.push(columnChartGroupings[i]["condensedVariableEncoding"])
+  // }
   if (columnEncodings.includes(variable)) {
     return [VizType.Column, 0]
   } else {
@@ -585,11 +587,93 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
+/**96 total variables 
+ * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
+ * total entries: 83 combinations * 96 variable = 
+ */
+async function combinationalData(db: Db) {
+  const filtersEncoding = require('./local-json/filterEncoding.json')
+  var variables: string[] = await getUniqueVariables(db);
+  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
+  variables = variables.concat(columnVariables)
+  var combDatas: any[] = []
+  for (let i = 0; i < variables.length; i++) {
+    combDatas = []
+    // no filters
+    var [vizType, timeSeries] = await getVizType(variables[i], db);
+    const timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variables[i], db)) : undefined;
+    const filters = ["GENDER", "FLC", "REGION6", "currstat"]
+    let combData = {
+      "variable": variables[i],
+      "vizType": vizType,
+      "filter1": "",
+      "filter1Encoding": "",
+      "filter2": "",
+      "filter2Encoding": "",
+      "mainQueryData": (await main(variables[i], db, vizType)),
+      "timeSeriesQueryData": timeSeriesData,
+    }
+    combDatas.push(combData)
+    // loop through filters (fill all filter1 only)
+    for (let x = 0; x < 4; x++) {
+      let combDataOne = {
+        ...combData
+      }
+      let value1: string = filters[x]
+      combDataOne["filter1"] = value1
+      for (var element1 of filtersEncoding[value1]) {
+        let combDataTwo = {
+          ...combDataOne
+        }
+        combDataTwo["filter1Encoding"] = element1["filter-encoding"]
+        combDataTwo["mainQueryData"] = (await main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+        if (timeSeries) {
+          combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+        }
+        combDatas.push(combDataTwo) // f1 = filter, f2 = null
+        // loop through filters (fill both filter1 and filter2)
+        for (let j = x + 1; j < 4; j++) {
+          let combDataThree = {
+            ...combDataTwo
+          }
+          let value2: string = filters[j]
+          combDataThree["filter2"] = value2
+          for (var element2 of filtersEncoding[value2]) {
+            let combDataFour = {
+              ...combDataThree
+            }
+            combDataFour["filter2Encoding"] = element2["filter-encoding"]
+            combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+            if (timeSeries) {
+              combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+            }
+            combDatas.push(combDataFour) // f1 = filt, f2 = filt
+          }
+        }
+      }
+    }
+    console.log("cache population done for: ", variables[i])
+    db.collection('weighted-cache').insertMany(combDatas)
+  }
+  // db.collection('cache').drop()
+  return combDatas;
+}
+
+
+
 module.exports = () => {
   const express = require("express");
   const router = express.Router();
 
-  const UPLOAD_DIRECTORY = 'src/db/data/';
+  /**** Routes ****/
+
+  router.get('/testData', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    await combinationalData(dbo.getDb());
+    // const db = dbo.getDb()
+    // db.collection('cache').deleteMany({variable: "A09"})
+    res.json({ success: true });
+  })
 
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
@@ -600,7 +684,9 @@ module.exports = () => {
     res.json({ haveAccess: haveAccess, token: token });
   })
 
+  // This updateData route is placed before the :/variable route to prevent it from getting overriden 
   const multer = require('multer')
+  const UPLOAD_DIRECTORY = 'src/db/data/';
   const upload = multer({ dest: UPLOAD_DIRECTORY })
   const fs = require("fs")
   router.post('/updateData', upload.single('selectedFile'), async (req: any, res: Express.Response) => {
@@ -656,51 +742,73 @@ module.exports = () => {
       // send data to browser
       res.send(dataToSend)
     });
-
   });
 
-
+  // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType)
-    if (timeSeries) {
-      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+    let query = { $and: [{ variable: req.params.variable }, { filter1: "" }, { filter1Encoding: "" }, { filter2: "" }, { filter2Encoding: "" }] }
+    try {
+      // var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
+      // const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
+      // const output = await main(req.params.variable, dbo.getDb(), vizType)
+      // if (timeSeries) {
+      //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
+      // }
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType: string = cache["vizType"]
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({ status: false })
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
   });
 
   router.get('/:variable/:filterKey/:filterVal', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey, req.params.filterVal)
-    if (timeSeries) {
-      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb(), req.params.filterKey, req.params.filterVal)
+    let query = { $and: [{ variable: req.params.variable }, { filter1: req.params.filterKey }, { filter1Encoding: Number(req.params.filterVal) }, { filter2: "" }, { filter2Encoding: "" }] }
+    try {
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType = cache["vizType"]
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({ status: false })
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
-
   });
 
   router.get('/:variable/:filterKey1/:filterVal1/:filterKey2/:filterVal2', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    var timeSeriesData;
-    const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-    const output = await main(req.params.variable, dbo.getDb(), vizType, req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
-    if (timeSeries) {
-      timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb(), req.params.filterKey1, req.params.filterVal1, req.params.filterKey2, req.params.filterVal2)
+    const filters = ["GENDER", "FLC", "REGION6", "currstat"]
+    let query = { $and: [{ variable: req.params.variable }, { filter1: req.params.filterKey1 }, { filter1Encoding: Number(req.params.filterVal1) }, { filter2: req.params.filterKey2 }, { filter2Encoding: Number(req.params.filterVal2) }] }
+    let idx1 = filters.indexOf(req.params.filterKey1)
+    let idx2 = filters.indexOf(req.params.filterKey2)
+    if (idx1 > idx2) {
+      query = { $and: [{ variable: req.params.variable }, { filter1: req.params.filterKey2 }, { filter1Encoding: Number(req.params.filterVal2) }, { filter2: req.params.filterKey1 }, { filter2Encoding: Number(req.params.filterVal1) }] }
     }
-    console.log("variable: ", req.params.variable)
-    console.log("output: ", output)
-    console.log("timeseries output: ", timeSeriesData)
-    res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    try {
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
+      const output = cache["mainQueryData"]
+      const vizType = cache["vizType"]
+      const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
+      console.log("variable: ", req.params.variable)
+      console.log("output: ", output)
+      console.log("timeseries output: ", timeSeriesData)
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+    } catch {
+      console.log("Variable doesn't exist in cache: ", req.params.variable)
+      res.send({ status: false })
+    }
   });
 
   return router;

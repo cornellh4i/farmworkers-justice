@@ -164,9 +164,13 @@ function Dropdown(props: DropdownProp) {
                   </Grid>
                 </Grid>
               </div>
-              <div id="download-btn">
-                <Button variant="contained" onClick={handleDownload}>Download Chart</Button>
-              </div>
+              <Button 
+                variant="contained" 
+                onClick={handleDownload}
+                sx={{ backgroundColor: '#FFB83F', margin: '1rem'}}
+              > 
+                Download Chart
+              </Button>
             </Collapse>
           </Grid>
         </Grid>

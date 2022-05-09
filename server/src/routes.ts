@@ -593,9 +593,11 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
  */
 async function combinationalData(db: Db) {
   const filtersEncoding = require('./local-json/filterEncoding.json')
-  const variables: string[] = await getUniqueVariables(db);
+  var variables: string[] = await getUniqueVariables(db);
+  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
+  variables = variables.concat(columnVariables)
   var combDatas: any[] = []
-  for (let i = 95; i < 98; i++) {
+  for (let i = 71; i < variables.length; i++) {
     combDatas = []
     // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);
@@ -651,7 +653,7 @@ async function combinationalData(db: Db) {
       }
     }
     console.log("cache population done for: ", variables[i])
-    db.collection('cache').insertMany(combDatas)
+    db.collection('weighted-cache').insertMany(combDatas)
   }
   // db.collection('cache').drop()
   return combDatas;
@@ -753,7 +755,7 @@ module.exports = () => {
       // if (timeSeries) {
       //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
       // }
-      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType: string = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
@@ -771,7 +773,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     let query = { $and: [{ variable: req.params.variable }, { filter1: req.params.filterKey }, { filter1Encoding: Number(req.params.filterVal) }, { filter2: "" }, { filter2Encoding: "" }] }
     try {
-      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
@@ -795,7 +797,7 @@ module.exports = () => {
       query = { $and: [{ variable: req.params.variable }, { filter1: req.params.filterKey2 }, { filter1Encoding: Number(req.params.filterVal2) }, { filter2: req.params.filterKey1 }, { filter2Encoding: Number(req.params.filterVal1) }] }
     }
     try {
-      const cache = await dbo.getDb().collection('cache').findOne(query)
+      const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]

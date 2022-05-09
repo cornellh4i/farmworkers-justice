@@ -102,7 +102,7 @@ function LineGraph(props: LineGraphProp) {
         .attr('d', d3.line()
           .x((d, i) => { return x(data[i].year + 1) })  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
           .y((d, i) => { return y(data[i].value) })
-          .curve(d3.curveCardinal))
+          .curve(d3.curveLinear))
         .attr('fill', 'none')
         .attr('stroke', '#FF820C')
         .attr('stroke-width', '4')

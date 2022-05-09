@@ -9,6 +9,7 @@ import FilterPanel from "../FilterPanel/FilterPanel";
 import Grid from "@mui/material/Grid"
 import Map from './../../charts/Map';
 
+import Button from "@mui/material/Button";
 
 function Minipage() {
     const params = useParams();
@@ -38,9 +39,28 @@ function Minipage() {
         setVariableDescriptions(descriptions)
     }, [])
 
+    async function handleDownload(event: any) {
+        event.preventDefault();
+
+        // var node = document.getElementById("all")!;
+        // domtoimage.toJpeg(node)
+        //     .then(function (dataUrl: any) {
+        //         var link = document.createElement('a');
+        //         link.download = "test.jpeg";
+        //         link.href = dataUrl;
+        //         link.click();
+        //     })
+        //     .catch(function (error: Error) {
+        //         console.error("Something went wrong!", error);
+        //     })
+    }
+
 
     return (
         <Grid container>
+            {/* <div id="download">
+                <Button variant="contained" onClick={handleDownload}>Download All</Button>
+            </div> */}
             <Grid className="filterPanel" item xs={9}>
                 <div className="filterPanel">
                     <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />

@@ -129,7 +129,7 @@ function Dropdown(props: DropdownProp) {
     domtoimage.toJpeg(node, {bgcolor: "white"})
       .then(function (dataUrl: any) {
         var link = document.createElement('a');
-        link.download = `test.jpeg`;
+        link.download = `${props.variableDescription}.jpeg`;
         link.href = dataUrl;
         link.click();
       })
@@ -167,7 +167,13 @@ function Dropdown(props: DropdownProp) {
               <Button 
                 variant="contained" 
                 onClick={handleDownload}
-                sx={{ backgroundColor: '#FFB83F', margin: '1rem'}}
+                sx={{ 
+                  backgroundColor: '#FFB83F', 
+                  margin: '1rem', 
+                  '&:hover': {
+                    backgroundColor: '#FFB83F',
+                    opacity: 0.6}
+                  }}
               > 
                 Download Chart
               </Button>

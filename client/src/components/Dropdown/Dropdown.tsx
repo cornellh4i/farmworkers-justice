@@ -125,8 +125,6 @@ function Dropdown(props: DropdownProp) {
   async function handleDownload(event: any) {
     event.preventDefault();
 
-    console.log("Hello");
-
     var node = document.getElementById("visualizationComponent")!;
     domtoimage.toJpeg(node, {bgcolor: "white"})
       .then(function (dataUrl: any) {

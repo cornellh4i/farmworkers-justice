@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import FilterPanel from "../FilterPanel/FilterPanel";
 import Button from "@mui/material/Button";
-import domtoimage from "dom-to-image";
+// import domtopdf from "dom-to-pdf";
 
 function Minipage() {
     const params = useParams();
@@ -40,19 +40,17 @@ function Minipage() {
     async function handleDownload(event: any) {
         event.preventDefault();
 
-        console.log("Hello")
-
-        var node = document.getElementById("all")!;
-        domtoimage.toJpeg(node)
-            .then(function (dataUrl: any) {
-                var link = document.createElement('a');
-                link.download = "test.jpeg";
-                link.href = dataUrl;
-                link.click();
-            })
-            .catch(function (error: Error) {
-                console.error("Something went wrong!", error);
-            })
+        // var node = document.getElementById("all")!;
+        // domtoimage.toJpeg(node)
+        //     .then(function (dataUrl: any) {
+        //         var link = document.createElement('a');
+        //         link.download = "test.jpeg";
+        //         link.href = dataUrl;
+        //         link.click();
+        //     })
+        //     .catch(function (error: Error) {
+        //         console.error("Something went wrong!", error);
+        //     })
     }
 
 

@@ -56,9 +56,9 @@ function Minipage() {
 
     return (
         <div>
-            <div id="download">
+            {/* <div id="download">
                 <Button variant="contained" onClick={handleDownload}>Download All</Button>
-            </div>
+            </div> */}
             <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
            <ul>
                 {variableDescriptions.map((variableDescription, index) => 

@@ -164,8 +164,8 @@ function Dropdown(props: DropdownProp) {
                   </Grid>
                 </Grid>
               </div>
-              <div id="download">
-                <Button variant="contained" onClick={handleDownload}>Download</Button>
+              <div id="download-btn">
+                <Button variant="contained" onClick={handleDownload}>Download Chart</Button>
               </div>
             </Collapse>
           </Grid>

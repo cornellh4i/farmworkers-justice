@@ -1,6 +1,7 @@
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
 import "@fontsource/rubik";
+import { useEffect, useState } from 'react';
 
 interface seriesProps {
   type: string,
@@ -13,7 +14,17 @@ interface ColumnChartProps {
 }
 
 function ColumnChart(props: ColumnChartProps) {
-  console.log("column chart data: ", props.data[0].data[0]);
+  // const [roundedData, setRoundedData] = useState(props.data)
+  // // TEMPORARY SOLUTION BEFORE CACHE GETS UPDATED WITH ONLY 2dp
+  // useEffect(() => {
+  //   var newRoundedData = [...roundedData]
+  //   newRoundedData.forEach(element => {
+  //     element.data = [Number(element.data[0].toFixed(2))]
+  //   });
+  //   setRoundedData(newRoundedData)
+    
+  // }, [props.data])
+
   const options = {
     chart: {
       type: 'column'
@@ -56,8 +67,4 @@ function ColumnChart(props: ColumnChartProps) {
   )
 }
 
-function calcPercent(ind: number, data: number[]) {
-  var total = data.reduce(function (a, b) { return a + b; });
-  return data[ind] / total * 100;
-}
 export default ColumnChart;

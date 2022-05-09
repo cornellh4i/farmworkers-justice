@@ -408,7 +408,7 @@ function aggregateColumnChart(arr: Array<[string, [number, number, number][]]>) 
     if (counterYes + counterNo === 0) {
       return 0
     } else {
-      return (counterYes / (counterYes + counterNo)) * 100;
+      return Number(((counterYes / (counterYes + counterNo)) * 100).toFixed(2)); //TODO: RUN CACHE AGAIN FOR COLUMN CHART
     }
   }
   return output;

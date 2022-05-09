@@ -597,7 +597,7 @@ async function combinationalData(db: Db) {
   const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
   variables = variables.concat(columnVariables)
   var combDatas: any[] = []
-  for (let i = 71; i < variables.length; i++) {
+  for (let i = 0; i < variables.length; i++) {
     combDatas = []
     // no filters
     var [vizType, timeSeries] = await getVizType(variables[i], db);

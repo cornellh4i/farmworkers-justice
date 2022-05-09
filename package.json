@@ -6,11 +6,12 @@
     "server": "cd server && npm start",
     "react-dev": "cd client && npm start",
     "test": "cd server && npm test",
-    "install": "cd client && npm install",
+    
+    "installClient": "cd client && npm install",
     "installServer": "cd server && npm install",
-    "installAll": "concurrently \"npm run install\" \"npm run installServer\"",
+    "install": "concurrently \"npm run installClient\" \"npm run installServer\"",
+    
     "build": "cd client && npm run build",
-    "heroku-postbuild": "concurrently \"npm run installAll\" \"npm run build\""
   },
   "license": "ISC",
   "dependencies": {

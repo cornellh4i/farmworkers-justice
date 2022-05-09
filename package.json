@@ -11,7 +11,7 @@
     "installServer": "cd server && npm install",
     "install": "concurrently \"npm run installClient\" \"npm run installServer\"",
     
-    "build": "cd client && npm run build",
+    "build": "cd client && npm run build"
   },
   "license": "ISC",
   "dependencies": {

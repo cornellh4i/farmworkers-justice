@@ -85,7 +85,7 @@ function DonutChart(props: DonutChartProps) {
           {descriptions.map((element: string, index: number) => 
             <div className="legend-row">
                 <div className='rect' style={{backgroundColor: colors(index.toString())}}></div>
-                <p className="description">{element} ({data[index]* 100}%)</p>
+                <p className="description">{element} ({Math.round(data[index]* 100)}%)</p>
             </div>
           )}
         </div>

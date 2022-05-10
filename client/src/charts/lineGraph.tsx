@@ -68,9 +68,10 @@ function LineGraph(props: LineGraphProp) {
       .style('font-family', 'Rubik')
       .text(() => {
         if (toExclude.includes(props.variableEncoding)) {
-          return "";
+          return `Average over time for survey question: ${variableDescription}`;
+        } else {
+        return `Percentage of farmworkers over time for survey question: ${variableDescription}`;
         }
-        return `Percentage of farmworkers over time for suvery question: ${variableDescription}`;
       });
 
     function update(data: any, xAxis: any, yAxis: any, x: any, y: any) {

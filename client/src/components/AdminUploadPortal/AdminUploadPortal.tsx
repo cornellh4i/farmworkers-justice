@@ -14,6 +14,8 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 	const navigate = useNavigate();
 	const [fileUploadMsg, setFileUploadMsg] = useState("")
 	const [dataUploadMsg, setDataUploadMsg] = useState("")
+	const [firstFileUploadMsg, setFirstFileUploadMsg] = useState("")
+	const [secondFileUploadMsg, setSecondFileUploadMsg] = useState("")
 	
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()		
@@ -29,7 +31,15 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 			});
 			const result = await response.json();
 			if (result.status) {
-				setFileUploadMsg(result.message + ": " + selectedFile!.name)
+				if (selectedFile!.name === "NAWS_A2E191.csv"){
+					setFirstFileUploadMsg(result.message + ": " + selectedFile!.name)
+					setFileUploadMsg("")
+				} else if (selectedFile!.name === "NAWS_F2Y191.csv") {
+					setSecondFileUploadMsg(result.message + ": " + selectedFile!.name)
+					setFileUploadMsg("")
+				} else {
+					setFileUploadMsg("Please name your file accordingly before uploading!")
+				}
 			} else {
 				setFileUploadMsg(result.message)
 			}
@@ -73,6 +83,8 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 				<input type="submit" value="Upload" />
 			</form>
 			<p>{fileUploadMsg}</p>
+			<p>{firstFileUploadMsg}</p>
+			<p>{secondFileUploadMsg}</p>
 			<div className="preprocess">
 				<p>Verify that both files were uploaded, then click the UPDATE DATA button below to preprocess the data</p>
 				<Button onClick = {handleUpdate} variant="contained">Update Data</Button>

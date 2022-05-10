@@ -134,7 +134,7 @@ function aggregateTimeSeries(arr: [number, any, number][], variable: string) {
     totalEachYear.set(minYear + i * 2, 0)
   }
 
-  if (variable === "B11" || variable === "FWRDays" || variable === "NUMFEMPL") {
+  if (variable === "B11" || variable === "FWRDAYS" || variable === "NUMFEMPL") {
     arr.forEach((v) => {
       const yr: number = Math.ceil(v[0] / 2) * 2 - 1;
       const value: number = v[1];
@@ -276,7 +276,7 @@ async function aggregateDonutChart(arr: [number, any, number][], variable: strin
   const query = { Variable: variable }
   const encodingDescrp = await db.collection('description-code').find(query).toArray()
   arr.forEach(([year, val, weight]) => {
-    if (!isNaN(val)) {
+    if (!isNaN(val) || (variable == "STREAMS" && val.length > 0)) {
       let currCount = output.get(val.toString())
       output.set(val.toString(), (typeof currCount == 'undefined') ? 0 : currCount! + weight)
       totalCounts += weight
@@ -408,7 +408,7 @@ function aggregateColumnChart(arr: Array<[string, [number, number, number][]]>) 
     if (counterYes + counterNo === 0) {
       return 0
     } else {
-      return (counterYes / (counterYes + counterNo)) * 100;
+      return Number(((counterYes / (counterYes + counterNo)) * 100).toFixed(2)); //TODO: RUN CACHE AGAIN FOR COLUMN CHART
     }
   }
   return output;
@@ -671,7 +671,7 @@ module.exports = () => {
     const dbo = require("./db/conn");
     await combinationalData(dbo.getDb());
     // const db = dbo.getDb()
-    // db.collection('cache').deleteMany({variable: "A09"})
+    // db.collection('weighted-cache').deleteMany({variable: "D34ax"})
     res.json({ success: true });
   })
 

@@ -38,7 +38,7 @@ function Histogram(props: histogramProp) {
     // Updates the visualization 
     function update(total: number[]) {
       var yScale = d3.scaleLinear().domain([0, maxBin]).range([maxHeight, 0]);
-      const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 100 + 10]); // +10 due to chart transform
+      const xScale = d3.scaleLinear().domain([0, binRanges.length]).range([0, binRanges.length * 80 + 10]); // +10 due to chart transform
       var axis = d3.select<SVGSVGElement, unknown>(`#axis${props.index}`)
       axis.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 
@@ -78,7 +78,7 @@ function Histogram(props: histogramProp) {
         .style("font-size", "12px")
         .style("position", "fixed")
         .style("text-align", "center")
-        .style("width", "100px") // corresponding to bar width
+        .style("width", "80px") // corresponding to bar width
         .style("left", function (d, i) { return xScale(i) + "px" })
         .style('top', function (d, i) { return yScale(total[i]) - 30 + "px" }) //-30 to go two rows above bar
         .text(function (d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%" });
@@ -90,7 +90,7 @@ function Histogram(props: histogramProp) {
         .style("font-size", "12px")
         .style("position", "fixed")
         .style("text-align", "center")
-        .style("width", "100px") // corresponding to bar width
+        .style("width", "80px") // corresponding to bar width
         .style("left", function (d, i) { return xScale(i) + "px" })
         .style('top', function (d, i) { return yScale(total[i]) - 30 + "px" }) //-30 to go two rows above bar
         .text(function (d, i) { return (d.start === null ? " " : d.start) + " - " + (d.end === null ? " " : d.end) + " , " + Math.round(total[i] * 100) + "%" });

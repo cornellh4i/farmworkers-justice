@@ -11,7 +11,8 @@ import category7Image from "./../../images/category7.jpg";
 import category8Image from "./../../images/category8.jpg";
 import "@fontsource/rubik";
 import './Homepage.scss';
-import variablesInCategories from './../../local-json/categories.json';
+
+const variablesInCategories = require('./../../local-json/categories.json')
 
 /**
   * @param categoryIndex 0-based order of category appearing on the homepage

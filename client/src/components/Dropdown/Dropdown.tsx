@@ -13,7 +13,7 @@ import DataTable from './../../charts/Table'
 import DataHighlight from './../../charts/DataHighlight'
 import LineGraph from './../../charts/lineGraph'
 import ColumnChart from './../../charts/columnChart'
-import domtoimage from 'dom-to-image';
+const domtoimage = require('dom-to-image')
 
 interface DropdownProp {
   index: number

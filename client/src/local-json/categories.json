@@ -5,32 +5,36 @@
             "category-encoding": 0,
             "variables": [
                 {
-                    "variable-encoding": "A08",
-                    "variable-description": "In what year did you/they first enter the US to live or work? (if foreign-born)"
-                },
-                {
                     "variable-encoding": "B02",
                     "variable-description": "Race"
                 },
                 {
-                    "variable-encoding": "A07",
-                    "variable-description": "Where were you/they born?"
+                    "variable-encoding": "B01",
+                    "variable-description": "Ethnicity"
                 },
                 {
-                    "variable-encoding": "STREAMS",
-                    "variable-description": "Streams by Zone Eastern Midwest and Western"
-                },
-                {
-                    "variable-encoding": "B17",
-                    "variable-description": "What country did you live in before coming to the US? (if foreign born)"
+                    "variable-encoding": "FOREIGNB",
+                    "variable-description": "Foreign Born"
                 },
                 {
                     "variable-encoding": "currstat",
                     "variable-description": "Current Work Authorization Status (Immigration status)"
                 },
                 {
-                    "variable-encoding": "FOREIGNB",
-                    "variable-description": "Foreign Born"
+                    "variable-encoding": "MixedFam",
+                    "variable-description": "Farmworker is unauthorized but has US Citizen children"
+                },
+                {
+                    "variable-encoding": "A08",
+                    "variable-description": "In what year did you/they first enter the US to live or work? (if foreign-born)"
+                },                
+                {
+                    "variable-encoding": "A07",
+                    "variable-description": "Where were you/they born?"
+                },
+                {
+                    "variable-encoding": "B17",
+                    "variable-description": "What country did you live in before coming to the US? (if foreign born)"
                 },
                 {
                     "variable-encoding": "Indigenous",
@@ -41,17 +45,9 @@
                     "variable-description": "Migrant"
                 },
                 {
-                    "variable-encoding": "MixedFam",
-                    "variable-description": "Farmworker is unauthorized but has US Citizen children"
-                },
-                {
-                    "variable-encoding": "AdultOtherIndg",
-                    "variable-description": "Has other adult language indigenous."
-                },
-                {
-                    "variable-encoding": "B01",
-                    "variable-description": "Ethnicity"
-                }
+                    "variable-encoding": "STREAMS",
+                    "variable-description": "Streams by Zone Eastern Midwest and Western"
+                }             
             ]
         },
         {   
@@ -59,24 +55,24 @@
             "category-encoding": 1,
             "variables": [
                 {
+                    "variable-encoding": "GENDER",
+                    "variable-description": "Gender"
+                },
+                {
                     "variable-encoding": "AGE",
                     "variable-description": "Respondent Age"
                 },
-                    {
+                {
+                    "variable-encoding": "MARRIED",
+                    "variable-description": "Married"
+                },
+                {
                     "variable-encoding": "HHKID",
                     "variable-description": "Number of Children in Household"
                 },
                     {
                     "variable-encoding": "HHPARENT",
                     "variable-description": "Number of Parents in Household"
-                },
-                    {
-                    "variable-encoding": "GENDER",
-                    "variable-description": "Gender"
-                },
-                    {
-                    "variable-encoding": "MARRIED",
-                    "variable-description": "Married"
                 }
             ]
         },
@@ -97,16 +93,20 @@
                     "variable-description": "How well do you read English?"
                 },
                 {
-                    "variable-encoding": "B21x",
-                    "variable-description": "Do you speak ..."
-                },
-                {
                     "variable-encoding": "B22b",
                     "variable-description": "How well do you speak Spanish?"
                 },
                 {
                     "variable-encoding": "B23b",
                     "variable-description": "How well do you read Spanish?"
+                },
+                {
+                    "variable-encoding": "AdultOtherIndg",
+                    "variable-description": "Has other adult language indigenous."
+                },
+                {
+                    "variable-encoding": "B21x",
+                    "variable-description": "Do you speak ..."
                 },
                 {
                     "variable-encoding": "B24",
@@ -127,16 +127,16 @@
                     "variable-description": "What kind of living quarters do you live in now?"
                 },
                 {
-                    "variable-encoding": "D37",
-                    "variable-description": "At your current job, how do you get to work?"
-                },
-                {
                     "variable-encoding": "D50MTCOD",
                     "variable-description": "How much do you pay for housing each month?"
                 },
                 {
                     "variable-encoding": "CROWDED1",
                     "variable-description": "Household is crowded, based on U.S. census bureau definition"
+                },
+                {
+                    "variable-encoding": "D37",
+                    "variable-description": "At your current job, how do you get to work?"
                 }
             ]
         },
@@ -144,6 +144,10 @@
             "category-description": "Employment Patterns and Farm Job Characteristics",
             "category-encoding": 4,
             "variables": [
+                {
+                    "variable-encoding": "FLC",
+                    "variable-description": "Employer is a Farm Labor Contractor"
+                },
                 {
                     "variable-encoding": "C09WEEKS",
                     "variable-description": "Number of weeks at current job"
@@ -175,10 +179,6 @@
                 {
                     "variable-encoding": "WAGET1",
                     "variable-description": "Wage for work task"
-                },
-                {
-                    "variable-encoding": "FLC",
-                    "variable-description": "Employer is a Farm Labor Contractor"
                 },
                 {
                     "variable-encoding": "BLWAGE",
@@ -219,12 +219,12 @@
             "category-encoding": 5,
             "variables": [
                 {
-                    "variable-encoding": "B11",
-                    "variable-description": "How many years have you done farmwork"
-                },
-                {
                     "variable-encoding": "NUMFEMPL",
                     "variable-description": "Number of employers in work grid"
+                },
+                {
+                    "variable-encoding": "B11",
+                    "variable-description": "How many years have you done farmwork"
                 },
                 {
                     "variable-encoding": "E02",
@@ -242,6 +242,10 @@
             "category-encoding": 7,
             "variables": [
                 {
+                    "variable-encoding": "FAMPOV",
+                    "variable-description": "Family Income Below Poverty line"
+                },
+                {
                     "variable-encoding": "G01",
                     "variable-description": "What was your total income last year in USD?"
                 },
@@ -252,10 +256,6 @@
                 {
                     "variable-encoding": "G04x",
                     "variable-description": "In the last two years, has anyone in your household used ..."
-                },
-                {
-                    "variable-encoding": "FAMPOV",
-                    "variable-description": "Family Income Below Poverty line"
                 }
             ]
         },
@@ -263,18 +263,6 @@
             "category-description": "Health Care in the United States",
             "category-encoding": 8,
             "variables": [
-                {
-                    "variable-encoding": "NH0x",
-                    "variable-description": "Have you ever been told by a nurse or doctor that you had ..."
-                }, 
-                {
-                    "variable-encoding": "NQ03bx",
-                    "variable-description": "The last time you used a health care provider, where did you go?"
-                }, 
-                {
-                    "variable-encoding": "NQ10x",
-                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face?"
-                }, 
                 {
                     "variable-encoding": "A21a",
                     "variable-description": "Does the Farmworker have health insurance?"
@@ -302,7 +290,19 @@
                 {
                     "variable-encoding": "NQ01x",
                     "variable-description": "In the last two years, have you used any type of health care services?"
-                } 
+                },
+                {
+                    "variable-encoding": "NH0x",
+                    "variable-description": "Have you ever been told by a nurse or doctor that you had ..."
+                }, 
+                {
+                    "variable-encoding": "NQ03bx",
+                    "variable-description": "The last time you used a health care provider, where did you go?"
+                }, 
+                {
+                    "variable-encoding": "NQ10x",
+                    "variable-description": "When you want to get health care in the US, what are the main difficulties you face?"
+                }
             ]
         }
     ]

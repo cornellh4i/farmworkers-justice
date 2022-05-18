@@ -677,7 +677,7 @@ module.exports = () => {
 
   router.post('/admin', async (req: Express.Request, res: Express.Response) => {
     const haveAccess = req.body.password === process.env.ADMIN_PASSWORD
-    var token = null
+    var token: null | string = null
     if (haveAccess) {
       token = "token"
     }

@@ -8,7 +8,7 @@
     "preinstall": "cd server && npm install",
     "installClient": "cd client && npm install",
     "installServer": "cd server && npm install",
-    "install": "npm install concurrently && concurrently \"npm run installClient\" \"npm run installServer\"",
+    "install": "concurrently \"npm run installClient\" \"npm run installServer\"",
     "build": "cd client && npm run build"
   },
   "license": "ISC",

@@ -2,25 +2,17 @@
   "name": "mern-app",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run react-dev\"",
-    "server": "cd server && npm start",
+    "start": "cd server && npm start",
     "react-dev": "cd client && npm start",
     "test": "cd server && npm test",
+    "preinstall": "cd server && npm install",
     "installClient": "cd client && npm install",
     "installServer": "cd server && npm install",
-    "install": "concurrently \"npm run installClient\" \"npm run installServer\"",
+    "install": "npm install concurrently && concurrently \"npm run installClient\" \"npm run installServer\"",
     "build": "cd client && npm run build"
   },
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^7.1.0",
-    "dom-to-image": "^2.6.0"
-  },
-  "engines": {
-    "node": "^10.0.0"
-  },
-  "devDependencies": {
-    "@types/react-dom": "^18.0.3",
-    "sass": "^1.51.0"
+    "concurrently": "^7.2.0"
   }
 }

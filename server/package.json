@@ -5,6 +5,7 @@
   "scripts": {
     "start": "ts-node src/index.ts"
   },
+  "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",

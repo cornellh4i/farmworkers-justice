@@ -662,8 +662,8 @@ async function combinationalData(db: Db) {
 
 
 module.exports = () => {
-  const express = require("express");
-  const router = express.Router();
+  const Express = require("express");
+  const router = Express.Router();
 
   /**** Routes ****/
 

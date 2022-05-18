@@ -1,4 +1,4 @@
-import Express, { query } from "express";
+import Express from "express";
 import { Db } from "mongodb";
 
 enum VizType {

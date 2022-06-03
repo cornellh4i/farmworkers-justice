@@ -133,35 +133,31 @@ function Dropdown(props: DropdownProp) {
   return (
     <div>
       <div className="dropdownContainer">
-        <Grid container >
-          <Grid item xs={9}>
-            <ListItemButton onClick={onClickCollapse}>
-              <h4 className="variableHeader">
-                {props.variableDescription}
-              </h4>
-              {collapse ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
-              <div id="visualizationComponent">
-                {VisualizationComponent}
-                {TimeSeriesComponent}
-              </div>
-              <Button 
-                variant="contained" 
-                onClick={handleDownload}
-                sx={{ 
-                  backgroundColor: '#FFB83F', 
-                  margin: '1rem', 
-                  '&:hover': {
-                    backgroundColor: '#FFB83F',
-                    opacity: 0.6}
-                  }}
-              > 
-                Download Chart
-              </Button>
-            </Collapse>
-          </Grid>
-        </Grid>
+        <ListItemButton onClick={onClickCollapse}>
+          <h4 className="variableHeader">
+            {props.variableDescription}
+          </h4>
+          {collapse ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={collapse} timeout="auto" mountOnEnter unmountOnExit>
+          <div id="visualizationComponent">
+            {VisualizationComponent}
+            {TimeSeriesComponent}
+          </div>
+          <Button 
+            variant="contained" 
+            onClick={handleDownload}
+            sx={{ 
+              backgroundColor: '#FFB83F', 
+              margin: '1rem', 
+              '&:hover': {
+                backgroundColor: '#FFB83F',
+                opacity: 0.6}
+              }}
+          > 
+            Download Chart
+          </Button>
+        </Collapse>
       </div >
     </div >
   )

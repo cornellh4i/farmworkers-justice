@@ -1,10 +1,17 @@
-.filterPanel{
+.minipage-header{
     position: sticky;
     top:0px;
     width: 100%;
     z-index: 1;
     background: white;
 }
+
+
 .dropDowns{
     z-index: 0;
+}
+
+.sticky-map {
+    position: sticky;
+    top:0px;
 }

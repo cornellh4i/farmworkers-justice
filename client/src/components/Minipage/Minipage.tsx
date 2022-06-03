@@ -5,6 +5,7 @@ import "@fontsource/rubik";
 import { getVariablesByCategory } from "./../Homepage/Homepage"
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FilterPanel from "../FilterPanel/FilterPanel";
 import Grid from "@mui/material/Grid"
 import Map from './../../charts/Map';
@@ -21,10 +22,10 @@ function Minipage() {
     const [filter1Selected, setFilter1Selected] = useState<null | string[]>(null);
     const [filter2Selected, setFilter2Selected] = useState<null | string[]>(null);
     const [variableDescriptions, setVariableDescriptions] = useState<string[]>([]);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
-
         function getVariablesEncoding(categoryIndex: number) {
             var variables = variablesInCategories["categories"][categoryIndex]["variables"]
             var allvariableEncodings: string[] = []
@@ -54,15 +55,33 @@ function Minipage() {
         //         console.error("Something went wrong!", error);
         //     })
     }
-
+    
+    function handleBack() {
+        navigate(`/`)
+    }
 
     return (
         <Grid container>
             {/* <div id="download">
                 <Button variant="contained" onClick={handleDownload}>Download All</Button>
             </div> */}
-            <Grid className="filterPanel" item xs={9}>
-                <div className="filterPanel">
+            
+            <Grid item xs={9}>
+                <div className="minipage-header">
+                    <Button 
+                        variant="contained" 
+                        onClick={handleBack}
+                        sx={{ 
+                        backgroundColor: '#FF820C', 
+                        marginLeft: '5%', 
+                        marginBottom: '1rem',
+                        '&:hover': {
+                            backgroundColor: '#FF820C',
+                            opacity: 0.6}
+                        }}
+                    >
+                        Back
+                    </Button>
                     <FilterPanel mapFilterSelected={mapFilterSelected} setMapFilterSelected={setMapFilterSelected} filter1Selected={filter1Selected} setFilter1Selected={setFilter1Selected} filter2Selected={filter2Selected} setFilter2Selected={setFilter2Selected} />
                 </div>
                 <div className="dropDowns">
@@ -75,7 +94,13 @@ function Minipage() {
                 </div>
             </Grid>
             <Grid item xs={3}>
-                {mapFilterSelected === null ? null : <Map mapFilterSelected={mapFilterSelected} />}
+                {mapFilterSelected === null ? 
+                    null 
+                    : 
+                    <div className="sticky-map">
+                        <Map mapFilterSelected={mapFilterSelected} />
+                    </div>
+                }
             </Grid>
         </Grid>
     )

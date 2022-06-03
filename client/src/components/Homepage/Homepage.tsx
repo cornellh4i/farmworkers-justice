@@ -29,6 +29,9 @@ export function getVariablesByCategory(categoryIndex: number) {
 
 }
 
+/**
+ * The category with encoding 6 is not displayed because there are no variables under the category. 
+ */
 function Homepage() {
   return (
     <div>
@@ -61,8 +64,6 @@ The NAWS does not include data from workers on H-2A temporary agricultural work 
         categoryEncoding={4} image={category4Image} />
       <CategoryCard categoryTitle="Employment Experience"
         categoryEncoding={5} image={category5Image} />
-      <CategoryCard categoryTitle="Non-Crop Work Activities During the Year"
-        categoryEncoding={6} image={category6Image} />
       <CategoryCard categoryTitle="Income, Assets, and Use of Assistance Programs"
         categoryEncoding={7} image={category7Image} />
       <CategoryCard categoryTitle="Health Care in the United States"

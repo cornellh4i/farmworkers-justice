@@ -1,12 +1,12 @@
 import CategoryCard from "../CategoryCard/CategoryCard";
 import headerImage from "./../../images/headerImage.jpg";
+import fjLogo from "./../../images/FJlogo.jpg"
 import category0Image from "./../../images/category0.jpg";
 import category1Image from "./../../images/category1.jpg";
 import category2Image from "./../../images/category2.jpg";
 import category3Image from "./../../images/category3.jpg";
 import category4Image from "./../../images/category4.jpg";
 import category5Image from "./../../images/category5.jpg";
-import category6Image from "./../../images/category6.jpg";
 import category7Image from "./../../images/category7.jpg";
 import category8Image from "./../../images/category8.jpg";
 import "@fontsource/rubik";
@@ -37,8 +37,9 @@ function Homepage() {
     <div>
       <div className="headerContainer">
         <img src={headerImage} alt="Workers in a field" className="imageStyle"></img>
+        <img src={fjLogo} alt="Farmworker Justice logo" className="fj-logo"></img>
         <div className="header">
-          <h1 className="h1-top">Visualization of Data from the</h1>
+          <h2 className="h2-top">Visualization of Data from the</h2>
           <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
           <div id="rectangle"></div>
         </div>

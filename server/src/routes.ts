@@ -652,10 +652,11 @@ async function combinationalData(db: Db) {
         }
       }
     }
-    console.log("cache population done for: ", variables[i])
-    db.collection('weighted-cache').insertMany(combDatas)
+    console.log("cache data computed  for: ", variables[i])
+    db.collection('deployment-test-cache').insertMany(combDatas)
   }
-  // db.collection('cache').drop()
+  // db.collection('deployment-test-cache').drop()
+  console.log("cache population done for all variables")
   return combDatas;
 }
 
@@ -670,8 +671,6 @@ module.exports = () => {
   router.get('/testData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     await combinationalData(dbo.getDb());
-    // const db = dbo.getDb()
-    // db.collection('weighted-cache').deleteMany({variable: "D34ax"})
     res.json({ success: true });
   })
 
@@ -742,6 +741,7 @@ module.exports = () => {
       // send data to browser
       res.send(dataToSend)
     });
+    await combinationalData(dbo.getDb());
   });
 
   // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }

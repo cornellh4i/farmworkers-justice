@@ -39,8 +39,8 @@ function Homepage() {
         <img src={headerImage} alt="Workers in a field" className="imageStyle"></img>
         <img src={fjLogo} alt="Farmworker Justice logo" className="fj-logo"></img>
         <div className="header">
-          <h2 className="h2-top">Visualization of Data from the</h2>
-          <h1 className="h1-bottom">National Agricultural Workers Survey (NAWS)</h1>
+          <h2 className="title-top">Visualization of Data from the</h2>
+          <h1 className="title-bottom">National Agricultural Workers Survey (NAWS)</h1>
           <div id="rectangle"></div>
         </div>
       </div>

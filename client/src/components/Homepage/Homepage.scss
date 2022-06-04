@@ -27,21 +27,20 @@ body {
       font-style: normal;
       text-align: left;
       font-weight: bold;
-      line-height: 30px;
       width: 100%;
   
-      .h2-top{
-        font-size: 2vw;
+      .title-top{
         padding-left: 5%;
         padding-right: 5%;
-        margin-top: 0;
+        margin: 0;
+        font-size: 3vw;
       }
     
-      .h1-bottom{
-        font-size: 4vw;
+      .title-bottom{
         padding-left: 5%;
         padding-right: 5%;
-        margin-top: 0;
+        margin: 0;
+        font-size: 4.5vw;
       }
   
       #rectangle{

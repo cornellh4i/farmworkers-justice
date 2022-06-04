@@ -15,10 +15,6 @@ function AdminLanding(props: AdminLandingProps) {
   const [attemptsLeft, setAttemptsLeft] = useState(3)
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("Attempts left: ", attemptsLeft)
-  })
-
   async function handleKeypress(event: any) {
     if (event.code === "Enter" || event.code === "NumpadEnter") {
       event.preventDefault();
@@ -27,7 +23,6 @@ function AdminLanding(props: AdminLandingProps) {
   }
 
   async function handleSubmit(event: any) {
-    console.log("password submitted: ", password)
     //`${API_URL}/admin`
     const haveAccess = await fetch(`${API_URL}/admin`, {
       method: 'POST',

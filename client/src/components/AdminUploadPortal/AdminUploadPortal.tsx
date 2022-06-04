@@ -19,7 +19,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 	
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault()		
-	
+		setFileUploadMsg("Uploading file...")
 		try {
 			// TODO: CHECK FILE NAMES
 			const formData = new FormData();

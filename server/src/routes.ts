@@ -653,9 +653,10 @@ async function combinationalData(db: Db) {
       }
     }
     console.log("cache data computed  for: ", variables[i])
+    db.collection('new-weighted-cache').insertMany(combDatas)
   }
   db.collection('weighted-cache').drop()
-  db.collection('weighted-cache').insertMany(combDatas)
+  db.collection('new-weighted-cache').rename("weighted-cache")
   console.log("cache population done for all variables")
   return combDatas;
 }

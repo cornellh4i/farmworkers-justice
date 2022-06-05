@@ -60,7 +60,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 		try {
 			const response = await fetch(`${API_URL}/updateData`);
 			if (response.status === 200) {
-				setDataUploadMsg("Data successfully updated")
+				setDataUploadMsg("The visualization data is updating. This might take 30 minutes.")
 			} else {
 				setDataUploadMsg("There is an error in updating the data")
 			}

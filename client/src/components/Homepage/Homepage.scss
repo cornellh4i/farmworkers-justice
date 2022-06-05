@@ -3,69 +3,80 @@ body {
 }
 
 .headerContainer {
-    position: relative;
+  position: relative;
+
+  .imageStyle  {
+    width:100%;
+    height:50%;
+  }
+
+  .fj-logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-left: 2%;
+    margin-top: 2%;
+    width: 10%
+  }
+
+  .header{
+    position: absolute;
+    bottom: 0;
+    color: white;
+    font-family: "Rubik";
+    font-style: normal;
+    text-align: left;
+    font-weight: bold;
+    width: 100%;
+
+    .title-top{
+      padding-left: 5%;
+      padding-right: 5%;
+      margin: 0;
+      font-size: 3vw;
+    }
   
-    .imageStyle  {
-      width:100%;
-      height:50%;
+    .title-bottom{
+      padding-left: 5%;
+      padding-right: 5%;
+      margin: 0;
+      font-size: 4.5vw;
     }
 
-    .fj-logo {
-      position: absolute;
-      left: 0;
-      top: 0;
+    #rectangle{
+      background-color: white;
+      height: 6vw;
       margin-left: 2%;
-      margin-top: 2%;
-      width: 10%
+      margin-right: 2%
     }
-  
-    .header{
-      position: absolute;
-      bottom: 0;
-      color: white;
-      font-family: "Rubik";
-      font-style: normal;
-      text-align: left;
-      font-weight: bold;
-      width: 100%;
-  
-      .title-top{
-        padding-left: 5%;
-        padding-right: 5%;
-        margin: 0;
-        font-size: 3vw;
-      }
-    
-      .title-bottom{
-        padding-left: 5%;
-        padding-right: 5%;
-        margin: 0;
-        font-size: 4.5vw;
-      }
-  
-      #rectangle{
-        background-color: white;
-        height: 6vw;
-        margin-left: 2%;
-        margin-right: 2%
-      }
-  
-    }
+
   }
-    
-  .introduction-text{
-    font-family: Rubik;
-    font-style: normal;
-    font-size: 16px;
-    padding-left: 5%;
-    padding-right: 5%;
+}
   
-    h3{
-      font-weight: bold;
-    }
-    
-    h4 {
-      font-weight: normal;
-      text-align: justify;
-    }
+.introduction-text{
+  font-family: Rubik;
+  font-style: normal;
+  font-size: 16px;
+  padding-left: 5%;
+  padding-right: 5%;
+
+  h3{
+    font-weight: bold;
   }
+  
+  h4 {
+    font-weight: normal;
+    text-align: justify;
+  }
+}
+
+.contribution {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  .h4i-logo {
+    width: 50px
+  }
+}

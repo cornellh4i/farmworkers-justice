@@ -1,6 +1,7 @@
 import CategoryCard from "../CategoryCard/CategoryCard";
 import headerImage from "./../../images/headerImage.jpg";
 import fjLogo from "./../../images/FJlogo.jpg"
+import h4iLogo from "./../../images/h4i-logo.png"
 import category0Image from "./../../images/category0.jpg";
 import category1Image from "./../../images/category1.jpg";
 import category2Image from "./../../images/category2.jpg";
@@ -11,6 +12,7 @@ import category7Image from "./../../images/category7.jpg";
 import category8Image from "./../../images/category8.jpg";
 import "@fontsource/rubik";
 import './Homepage.scss';
+import Divider from '@mui/material/Divider';
 
 const variablesInCategories = require('./../../local-json/categories.json')
 
@@ -69,6 +71,11 @@ The NAWS does not include data from workers on H-2A temporary agricultural work 
         categoryEncoding={7} image={category7Image} />
       <CategoryCard categoryTitle="Health Care in the United States"
         categoryEncoding={8} image={category8Image} />
+      <Divider sx={{padding: '2rem'}}/>
+      <div className="contribution">
+        <img src={h4iLogo} alt="Hack4Impact logo" className="h4i-logo"></img>
+        <p>Website contributed by Cornell Hack4Impact</p>
+      </div>
     </div>
   )
 

@@ -741,8 +741,8 @@ module.exports = () => {
       console.log(`child process close all stdio with code ${code}`);
       // send data to browser
       res.send(dataToSend)
+      combinationalData(dbo.getDb());
     });
-    await combinationalData(dbo.getDb());
   });
 
   // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }

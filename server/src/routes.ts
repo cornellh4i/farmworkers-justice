@@ -731,7 +731,7 @@ module.exports = () => {
       return new Promise(() => {
         // spawn new child process to call the python script
         // switch this to python if your terminal uses python instead of py
-        const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+        const python = spawn('python3', ['preprocessing.py', variables, ATLAS_URI]);
         // collect data from script
         python.stdout.on('data', function (data: any) {
           console.log('Pipe data from python script ...');

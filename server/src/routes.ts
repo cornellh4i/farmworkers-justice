@@ -724,25 +724,27 @@ module.exports = () => {
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;
-
     const { spawn } = require('child_process');
-
     var dataToSend: any;
-    // spawn new child process to call the python script
-    // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
-    // collect data from script
-    python.stdout.on('data', function (data: any) {
-      console.log('Pipe data from python script ...');
-      dataToSend = data.toString();
-    });
-    // in close event we are sure that stream from child process is closed
-    python.on('close', (code: any) => {
+    
+    const preprocessingPromise = new Promise(() => {
+      // spawn new child process to call the python script
+      // switch this to python if your terminal uses python insteal of py
+      const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+      // collect data from script
+      python.stdout.on('data', function (data: any) {
+        console.log('Pipe data from python script ...');
+        dataToSend = data.toString();
+      });
+      // in close event we are sure that stream from child process is closed
+      python.on('close', (code: any) => {
       console.log(`child process close all stdio with code ${code}`);
       // send data to browser
       res.send(dataToSend)
-    }).then(
-      combinationalData(dbo.getDb())
+    })})
+    preprocessingPromise.then( () => {
+      console.log("Starting to combine data")
+      combinationalData(dbo.getDb())}
     )
   });
 

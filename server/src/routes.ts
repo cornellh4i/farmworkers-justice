@@ -724,35 +724,25 @@ module.exports = () => {
     const dbo = require("./db/conn");
     let variables: string = (await getUniqueVariables(dbo.getDb())).toString();
     const ATLAS_URI = process.env.ATLAS_URI;
-    const { spawn } = require('child_process');
-    var dataToSend: any;
 
-    function preprocessing() {
-      return new Promise(() => {
-        // spawn new child process to call the python script
-        // switch this to python if your terminal uses python instead of py
-        const python = spawn('python3', ['preprocessing.py', variables, ATLAS_URI]);
-        // collect data from script
-        python.stdout.on('data', function (data: any) {
-          console.log('Pipe data from python script ...');
-          dataToSend = data.toString();
-        });
-        // in close event we are sure that stream from child process is closed
-        python.on('close', (code: any) => {
-        console.log(`child process close all stdio with code ${code}`);
-        // send data to browser
-        res.send(dataToSend)
-      })
+    const { spawn } = require('child_process');
+
+    var dataToSend: any;
+    // spawn new child process to call the python script
+    // switch this to python if your terminal uses python insteal of py
+    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    // collect data from script
+    python.stdout.on('data', function (data: any) {
+      console.log('Pipe data from python script ...');
+      dataToSend = data.toString();
+    });
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code: any) => {
+      console.log(`child process close all stdio with code ${code}`);
+      // send data to browser
+      res.send(dataToSend)
     })
-    }
-    async function populateCache() {
-    // preprocessingPromise.then( () => {
-      await preprocessing()
-      console.log("Starting to combine data")
-      await combinationalData(dbo.getDb())
-    // )}
-    }
-    populateCache()
+    combinationalData(dbo.getDb())
   });
 
   // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }

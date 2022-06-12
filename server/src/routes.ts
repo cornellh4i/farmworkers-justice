@@ -727,7 +727,7 @@ module.exports = () => {
     const { spawn } = require('child_process');
     var dataToSend: any;
     
-    const preprocessingPromise = new Promise(() => {
+    // const preprocessingPromise = new Promise(() => {
       // spawn new child process to call the python script
       // switch this to python if your terminal uses python insteal of py
       const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
@@ -741,12 +741,13 @@ module.exports = () => {
       console.log(`child process close all stdio with code ${code}`);
       // send data to browser
       res.send(dataToSend)
-    })})
-    preprocessingPromise.then( () => {
+    })
+  // })
+    // preprocessingPromise.then( () => {
       console.log("Starting to combine data")
       combinationalData(dbo.getDb())}
-    )
-  });
+    // )}
+  );
 
   // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {

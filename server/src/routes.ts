@@ -736,6 +736,11 @@ module.exports = () => {
       console.log('Pipe data from python script ...');
       dataToSend = data.toString();
     });
+
+    python.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
     // in close event we are sure that stream from child process is closed
     python.on('close', (code: any) => {
       console.log(`child process close all stdio with code ${code}`);

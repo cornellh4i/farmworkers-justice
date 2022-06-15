@@ -28,7 +28,14 @@ export function getVariablesByCategory(categoryIndex: number) {
     descriptionsByCategory.push(variables[i]["variable-description"])
   }
   return descriptionsByCategory
+}
 
+function getCategoryTitle(categoryIndex: number) {
+  return variablesInCategories["categories"][categoryIndex]["category-title"]
+}
+
+function getCategoryDescription(categoryIndex: number) {
+  return variablesInCategories["categories"][categoryIndex]["category-description"]
 }
 
 /**
@@ -55,21 +62,21 @@ The NAWS does not include data from workers on H-2A temporary agricultural work 
         <h3>What data visualizations are presented on this site?</h3>
         <h4>The data visualizations presented on this site are a collection of some of the most significant NAWS questions identified by Farmworker Justice. In most cases, they are limited to the most recent two-year cycle of data.  To access additional questions and the raw data that forms the basis of these visualizations, you can visit <a href='https://www.dol.gov/agencies/eta/national-agricultural-workers-survey/data'>here</a>.</h4>
       </div>
-      <CategoryCard categoryTitle="Birthplace, Work Authorization, and Migrant Types"
+      <CategoryCard categoryTitle={getCategoryTitle(0)} categoryDescription={getCategoryDescription(0)}
         categoryEncoding={0} image={category0Image} />
-      <CategoryCard categoryTitle="Demographics, Family Size, Children, and Household Structure"
+      <CategoryCard categoryTitle={getCategoryTitle(1)} categoryDescription={getCategoryDescription(1)}
         categoryEncoding={1} image={category1Image} />
-      <CategoryCard categoryTitle="Language, Education, and English Skills"
+      <CategoryCard categoryTitle={getCategoryTitle(2)} categoryDescription={getCategoryDescription(2)}
         categoryEncoding={2} image={category2Image} />
-      <CategoryCard categoryTitle="Housing Characteristics and Distance to Work"
+      <CategoryCard categoryTitle={getCategoryTitle(3)} categoryDescription={getCategoryDescription(3)}
         categoryEncoding={3} image={category3Image} />
-      <CategoryCard categoryTitle="Employment Patterns and Farm Job Characteristics"
+      <CategoryCard categoryTitle={getCategoryTitle(4)} categoryDescription={getCategoryDescription(4)}
         categoryEncoding={4} image={category4Image} />
-      <CategoryCard categoryTitle="Employment Experience"
+      <CategoryCard categoryTitle={getCategoryTitle(5)} categoryDescription={getCategoryDescription(5)}
         categoryEncoding={5} image={category5Image} />
-      <CategoryCard categoryTitle="Income, Assets, and Use of Assistance Programs"
+      <CategoryCard categoryTitle={getCategoryTitle(7)} categoryDescription={getCategoryDescription(7)}
         categoryEncoding={7} image={category7Image} />
-      <CategoryCard categoryTitle="Health Care in the United States"
+      <CategoryCard categoryTitle={getCategoryTitle(8)} categoryDescription={getCategoryDescription(8)}
         categoryEncoding={8} image={category8Image} />
       <Divider sx={{padding: '2rem'}}/>
       <div className="contribution">

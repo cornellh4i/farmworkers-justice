@@ -1,8 +1,9 @@
 {
     "categories": [
         {
-            "category-description": "Birthplace, Work Authorization, and Migrant Types",
+            "category-title": "Birthplace, Work Authorization, and Migrant Types",
             "category-encoding": 0,
+            "category-description": "The data visualizations in this category provide information on race, ethnicity, work authorization status, and migration patterns.",
             "variables": [
                 {
                     "variable-encoding": "B02",
@@ -51,8 +52,9 @@
             ]
         },
         {   
-            "category-description": "Demographics, Family Size, Children, and Household Structure",
+            "category-title": "Demographics, Family Size, Children, and Household Structure",
             "category-encoding": 1,
+            "category-description": "The data visualizations in this category provide information on gender, age, marriage status, and household structure.",
             "variables": [
                 {
                     "variable-encoding": "GENDER",
@@ -77,8 +79,9 @@
             ]
         },
         {
-            "category-description": "Language, Education, and English Skills",
+            "category-title": "Language, Education, and English Skills",
             "category-encoding": 2,
+            "category-description": "The data visualizations in this category provide information on education and language.",
             "variables": [
                 {
                     "variable-encoding": "A09",
@@ -115,8 +118,9 @@
             ]
         },
         {
-            "category-description": "Housing Characteristics and Distance to Work",
+            "category-title": "Housing Characteristics and Distance to Work",
             "category-encoding": 3,
+            "category-description": "The data visualizations in this category provide information on living arrangements and transportation to work.",
             "variables": [
                 {
                     "variable-encoding": "D33A",
@@ -141,8 +145,9 @@
             ]
         },
         {
-            "category-description": "Employment Patterns and Farm Job Characteristics",
+            "category-title": "Employment Patterns and Farm Job Characteristics",
             "category-encoding": 4,
+            "category-description": "The data visualizations in this category provide information on work arrangements and working conditions.",
             "variables": [
                 {
                     "variable-encoding": "FLC",
@@ -215,8 +220,9 @@
             ]
         },
         {
-            "category-description": "Employment Experience",
+            "category-title": "Employment Experience",
             "category-encoding": 5,
+            "category-description": "The data visualizations in this category provide information on work history.",
             "variables": [
                 {
                     "variable-encoding": "NUMFEMPL",
@@ -233,13 +239,15 @@
             ]
         },
         {
-            "category-description": "Non-Crop Work Activities During the Year",
+            "category-title": "Non-Crop Work Activities During the Year",
             "category-encoding": 6,
+            "category-description": "",
             "variables": []
         },
         {
-            "category-description": "Income, Assets, and Use of Assistance Programs",
+            "category-title": "Income, Assets, and Use of Assistance Programs",
             "category-encoding": 7,
+            "category-description": "The data visualizations in this category provide information about individual and family income and use of public assistance programs (such as SNAP and Medicaid).",
             "variables": [
                 {
                     "variable-encoding": "FAMPOV",
@@ -260,8 +268,9 @@
             ]
         },
         {
-            "category-description": "Health Care in the United States",
+            "category-title": "Health Care in the United States",
             "category-encoding": 8,
+            "category-description": "The data visualizations in this category provide information about health insurance coverage and health care access.",
             "variables": [
                 {
                     "variable-encoding": "A21a",

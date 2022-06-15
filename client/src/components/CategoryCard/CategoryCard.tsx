@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface CategoryCardProp {
     categoryTitle: string,
+    categoryDescription: string,
     categoryEncoding: number,
     image: string
 }
@@ -67,7 +68,7 @@ function CategoryCard(props: CategoryCardProp) {
                         </Button>
                     </Grid>
                     <Grid item xs={9}>
-                        <h3 className="body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pulvinar dui at fermentum pulvinar. Convallis sed orci nullam enim penatibus lobortis. Euismod morbi condimentum nec est enim ut feugiat volutpat. Massa euismod et elit ultricies congue sit dui. </h3>
+                        <h3 className="body">{props.categoryDescription}</h3>
                         <ListItemButton onClick={() => { setOpen(!open) }}>
                             <h4 className="variables-list-collapse"> What NAWS questions are covered in this category? </h4>
                             {open ? <ExpandLess /> : <ExpandMore />}

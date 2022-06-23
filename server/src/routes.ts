@@ -654,6 +654,7 @@ async function combinationalData(db: Db) {
     }
     console.log("cache data computed  for: ", variables[i])
     db.collection('new-weighted-cache').insertMany(combDatas)
+    console.log("first combData: ", combDatas[0])
   }
   db.collection('weighted-cache').drop()
   db.collection('new-weighted-cache').rename("weighted-cache")
@@ -730,7 +731,7 @@ module.exports = () => {
     var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
-    const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
+    const python = spawn('py', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
     python.stdout.on('data', function (data: any) {
       console.log('Pipe data from python script ...');
@@ -746,8 +747,8 @@ module.exports = () => {
       console.log(`child process close all stdio with code ${code}`);
       // send data to browser
       res.send(dataToSend)
+      combinationalData(dbo.getDb())
     })
-    combinationalData(dbo.getDb())
   });
 
   // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }

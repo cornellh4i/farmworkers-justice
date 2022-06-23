@@ -654,7 +654,6 @@ async function combinationalData(db: Db) {
     }
     console.log("cache data computed  for: ", variables[i])
     db.collection('new-weighted-cache').insertMany(combDatas)
-    console.log("first combData: ", combDatas[0])
   }
   db.collection('weighted-cache').drop()
   db.collection('new-weighted-cache').rename("weighted-cache")

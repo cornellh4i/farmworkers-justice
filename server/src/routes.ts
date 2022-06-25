@@ -727,14 +727,12 @@ module.exports = () => {
 
     const { spawn } = require('child_process');
 
-    var dataToSend: any;
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
     const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
     // collect data from script
-    python.stdout.on('data', function (data: any) {
+    python.stdout.on('data', function () {
       console.log('Pipe data from python script ...');
-      dataToSend = data.toString();
     });
 
     python.stderr.on('data', (data) => {
@@ -745,7 +743,7 @@ module.exports = () => {
     python.on('close', (code: any) => {
       console.log(`child process close all stdio with code ${code}`);
       // send data to browser
-      res.send(dataToSend)
+      res.status(200)
       combinationalData(dbo.getDb())
     })
   });

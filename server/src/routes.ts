@@ -653,9 +653,9 @@ async function combinationalData(db: Db) {
       }
     }
     console.log("cache data computed  for: ", variables[i])
-    db.collection('new-weighted-cache').insertMany(combDatas)
+    await db.collection('new-weighted-cache').insertMany(combDatas)
   }
-  db.collection('weighted-cache').drop()
+  await db.collection('weighted-cache').drop()
   db.collection('new-weighted-cache').rename("weighted-cache")
   console.log("cache population done for all variables")
   return combDatas;
@@ -669,9 +669,11 @@ module.exports = () => {
 
   /**** Routes ****/
 
-  router.get('/testData', async (req: Express.Request, res: Express.Response) => {
+  router.get('/backupData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
-    await combinationalData(dbo.getDb());
+    const db = dbo.getDb()
+    const allData = await db.collection("weighted-cache").find({}).toArray()
+    db.collection("backup-weighted-cache").insertMany(allData)
     res.json({ success: true });
   })
 
@@ -740,11 +742,10 @@ module.exports = () => {
     });
 
     // in close event we are sure that stream from child process is closed
-    python.on('close', (code: any) => {
-      console.log(`child process close all stdio with code ${code}`);
-      // send data to browser
+    python.on('close', async (code: any) => {
+      console.log(`childt process close all stdio with code ${code}`);
+      await combinationalData(dbo.getDb())
       res.status(200)
-      combinationalData(dbo.getDb())
     })
   });
 

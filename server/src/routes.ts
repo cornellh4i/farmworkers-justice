@@ -698,18 +698,29 @@ async function combinationalDatas(db: Db) {
     await db.collection('new-weighted-cache').insertMany(combDatas)
   }
 
-  // splits variables into two halfs to process because MongoDB Atlas has a 500 connection limit for M0 cluster
-  const firstHalf = variables.slice(0, variables.length/2)
-  const secondHalf = variables.slice(variables.length/2)
-  assert (firstHalf.length + secondHalf.length === variables.length)
+  // splits variables into quarters to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
+  const firstQuarter = variables.slice(0, variables.length/4)
+  const secondQuarter = variables.slice(variables.length/4, variables.length/2)
+  const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
+  const fourthQuarter = variables.slice(3 * variables.length/4)
+  assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
 
-  await Promise.all(firstHalf.map(async (variable) => {
+  await Promise.all(firstQuarter.map(async (variable) => {
     await combinationalData(variable)
   }));
 
-  await Promise.all(secondHalf.map(async (variable) => {
+  await Promise.all(secondQuarter.map(async (variable) => {
     await combinationalData(variable)
   }));
+
+  await Promise.all(thirdQuarter.map(async (variable) => {
+    await combinationalData(variable)
+  }));
+
+  await Promise.all(fourthQuarter.map(async (variable) => {
+    await combinationalData(variable)
+  }))
+
   try {
     await db.collection('weighted-cache').drop()
   } catch (err) {

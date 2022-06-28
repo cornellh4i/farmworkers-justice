@@ -39,7 +39,6 @@ function Table(props: tableProp) {
         <DataTable columns={columns} data={entries}
         />
     )
-
 }
 
 export default Table;

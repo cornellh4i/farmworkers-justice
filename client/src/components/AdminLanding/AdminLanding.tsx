@@ -23,7 +23,6 @@ function AdminLanding(props: AdminLandingProps) {
   }
 
   async function handleSubmit(event: any) {
-    //`${API_URL}/admin`
     const haveAccess = await fetch(`${API_URL}/admin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

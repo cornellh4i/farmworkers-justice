@@ -1,5 +1,4 @@
 import { useState } from "react";
-import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -168,8 +167,6 @@ function FilterPanel(props: FilterPanelProps) {
         </Grid>
       </Grid>
 
-
-
       < div className="chip">
         <h3 className="filter-applied-text">Filters applied:</h3>
         {props.filter1Selected === null ?
@@ -186,10 +183,6 @@ function FilterPanel(props: FilterPanelProps) {
         }
       </div>
     </div>
-
-
-
-
   )
 }
 

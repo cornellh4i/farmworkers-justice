@@ -7,7 +7,6 @@ import './Map.scss'
 
 interface MapProp {
   mapFilterSelected : string;
-  // collapseIndex: null | number;
 }
 
 interface RegionToStatesProps {

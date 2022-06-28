@@ -1,6 +1,5 @@
 import "@fontsource/rubik";
 import './Dropdown.scss';
-import Grid from '@mui/material/Grid';
 import ListItemButton from '@mui/material/ListItemButton';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';

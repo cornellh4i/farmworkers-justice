@@ -1,3 +1,4 @@
+import { assert } from "console";
 import Express from "express";
 import { Db } from "mongodb";
 
@@ -96,7 +97,7 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
   try {
     result = await db.collection('naws-preprocessed').find(query).toArray();
   } catch (e) {
-    console.log("error in queryVal with query: ", query, " for variable: ", variable)
+    console.log("error in queryVal with query: ", query, " for variable: ", variable, "with error: ", e)
   }
   function iterateFunc(doc: any) {
     let lst: [number, number, number] = [doc.FY, doc[variable], doc.PWTYCRD];
@@ -587,30 +588,71 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
+async function notifyDataUploadSuccess() {
+  const sendmail = require('sendmail')();
+
+  sendmail({
+      from: 'miyukigoay@gmail.com',
+      to: 'wg237@cornell.edu, miyukigoay@gmail.com',
+      subject: 'test sendmail',
+      html: 'Mail of test sendmail ',
+    }, function(err, reply) {
+      console.log(err && err.stack);
+      console.dir(reply);
+  });
+  // var nodemailer = require('nodemailer');
+  // // create reusable transporter object using the default SMTP transport
+  // const transporter = nodemailer.createTransport({
+  //   port: 465,               // true for 465, false for other ports
+  //   host: "smtp.gmail.com",
+  //     auth: {
+  //       // user: 'farmworkers.justice2022@gmail.com',
+  //       // pass: 'password',
+  //       user: "miyukigoay@gmail.com",
+  //       pass: "beHAPPY8998"
+  //   },
+  //   secure: true,
+  // });
+  // const mailData = {
+  //   from: 'miyukigoay@gmail.com', 
+  //   to: 'wg237@cornell.edu, miyukigoay@gmail.com',
+  //   subject: 'NAWS data updated!',
+  //   text: 'Data to the NAWS visualization app has been successfully updated! Check it out now!',
+  // };
+  // transporter.sendMail(mailData, function(error, info){
+  //   if (error) {
+  //     console.log(error);
+  //   } else {
+  //     console.log('Email sent: ' + info.response);
+  //   }
+  // });
+}
+
 /**96 total variables 
  * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
  * total entries: 83 combinations * 96 variable = 
  */
-async function combinationalData(db: Db) {
+async function combinationalDatas(db: Db) {
+  console.log("start one half")
   const filtersEncoding = require('./local-json/filterEncoding.json')
   var variables: string[] = await getUniqueVariables(db);
   const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
   variables = variables.concat(columnVariables)
-  var combDatas: any[] = []
-  for (let i = 0; i < variables.length; i++) {
-    combDatas = []
+
+  async function combinationalData(variable: string){
+    var combDatas: any[] = []
     // no filters
-    var [vizType, timeSeries] = await getVizType(variables[i], db);
-    const timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variables[i], db)) : undefined;
+    var [vizType, timeSeries] = await getVizType(variable, db);
+    const timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variable, db)) : undefined;
     const filters = ["GENDER", "FLC", "REGION6", "currstat"]
     let combData = {
-      "variable": variables[i],
+      "variable": variable,
       "vizType": vizType,
       "filter1": "",
       "filter1Encoding": "",
       "filter2": "",
       "filter2Encoding": "",
-      "mainQueryData": (await main(variables[i], db, vizType)),
+      "mainQueryData": (await main(variable, db, vizType)),
       "timeSeriesQueryData": timeSeriesData,
     }
     combDatas.push(combData)
@@ -626,9 +668,9 @@ async function combinationalData(db: Db) {
           ...combDataOne
         }
         combDataTwo["filter1Encoding"] = element1["filter-encoding"]
-        combDataTwo["mainQueryData"] = (await main(variables[i], db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+        combDataTwo["mainQueryData"] = (await main(variable, db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         if (timeSeries) {
-          combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+          combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
         }
         combDatas.push(combDataTwo) // f1 = filter, f2 = null
         // loop through filters (fill both filter1 and filter2)
@@ -643,24 +685,40 @@ async function combinationalData(db: Db) {
               ...combDataThree
             }
             combDataFour["filter2Encoding"] = element2["filter-encoding"]
-            combDataFour["mainQueryData"] = (await main(variables[i], db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+            combDataFour["mainQueryData"] = (await main(variable, db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             if (timeSeries) {
-              combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variables[i], db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+              combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
             }
             combDatas.push(combDataFour) // f1 = filt, f2 = filt
           }
         }
       }
     }
-    console.log("cache data computed  for: ", variables[i])
+    console.log("cache data computed  for: ", variable)
     await db.collection('new-weighted-cache').insertMany(combDatas)
   }
-  await db.collection('weighted-cache').drop()
-  db.collection('new-weighted-cache').rename("weighted-cache")
-  console.log("cache population done for all variables")
-  return combDatas;
-}
 
+  // splits variables into two halfs to process because MongoDB Atlas has a 500 connection limit for M0 cluster
+  const firstHalf = variables.slice(0, variables.length/2)
+  const secondHalf = variables.slice(variables.length/2)
+  assert (firstHalf.length + secondHalf.length === variables.length)
+
+  await Promise.all(firstHalf.map(async (variable) => {
+    await combinationalData(variable)
+  }));
+
+  await Promise.all(secondHalf.map(async (variable) => {
+    await combinationalData(variable)
+  }));
+  try {
+    await db.collection('weighted-cache').drop()
+  } catch (err) {
+    console.error(`weighted-cache collection does not exist`);
+  }
+  await db.collection('new-weighted-cache').rename("weighted-cache")
+  console.log("cache population done for all variables")
+  // await notifyDataUploadSuccess()
+}
 
 
 module.exports = () => {
@@ -668,6 +726,14 @@ module.exports = () => {
   const router = Express.Router();
 
   /**** Routes ****/
+  router.get('/ping', async (req: Express.Request, res: Express.Response) => {
+    res.json({ success: true });
+  })
+
+  router.get('/test', async (req: Express.Request, res: Express.Response) => {
+    notifyDataUploadSuccess()
+    res.json({ success: true });
+  })
 
   router.get('/backupData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
@@ -744,22 +810,15 @@ module.exports = () => {
     // in close event we are sure that stream from child process is closed
     python.on('close', async (code: any) => {
       console.log(`childt process close all stdio with code ${code}`);
-      await combinationalData(dbo.getDb())
       res.status(200)
+      await combinationalDatas(dbo.getDb())
     })
   });
 
-  // query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
   router.get('/:variable', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     let query = { $and: [{ variable: req.params.variable }, { filter1: "" }, { filter1Encoding: "" }, { filter2: "" }, { filter2Encoding: "" }] }
     try {
-      // var timeSeriesData; // timeSeriesData is undefined if not needed to display variable with time series graph
-      // const [vizType, timeSeries] = await getVizType(req.params.variable, dbo.getDb())
-      // const output = await main(req.params.variable, dbo.getDb(), vizType)
-      // if (timeSeries) {
-      //   timeSeriesData = await timeSeriesMain(req.params.variable, dbo.getDb())
-      // }
       const cache = await dbo.getDb().collection('weighted-cache').findOne(query)
       const output = cache["mainQueryData"]
       const vizType: string = cache["vizType"]

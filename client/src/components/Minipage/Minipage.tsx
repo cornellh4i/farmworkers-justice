@@ -40,21 +40,6 @@ function Minipage() {
         setVariableDescriptions(descriptions)
     }, [])
 
-    async function handleDownload(event: any) {
-        event.preventDefault();
-
-        // var node = document.getElementById("all")!;
-        // domtoimage.toJpeg(node)
-        //     .then(function (dataUrl: any) {
-        //         var link = document.createElement('a');
-        //         link.download = "test.jpeg";
-        //         link.href = dataUrl;
-        //         link.click();
-        //     })
-        //     .catch(function (error: Error) {
-        //         console.error("Something went wrong!", error);
-        //     })
-    }
     
     function handleBack() {
         navigate(`/`)
@@ -62,10 +47,6 @@ function Minipage() {
 
     return (
         <Grid container>
-            {/* <div id="download">
-                <Button variant="contained" onClick={handleDownload}>Download All</Button>
-            </div> */}
-            
             <Grid item xs={9}>
                 <div className="minipage-header">
                     <Button 

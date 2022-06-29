@@ -12,9 +12,8 @@ export const LATEST_EVEN_YEAR = 2018;
 
 function App() {
   const [token, setToken] = useState("");
-  const API_URL = process.env.REACT_APP_API;
   const cronTasks = [{
-    fn: fetch(`${API_URL}/ping`)
+    fn: fetch(`/`)
       .then(res => console.log(`response-ok: ${res.ok}, status: ${res.status}`))
       .catch(err => console.log(err)),
     config: '25 * * * *' // this runs every 25 minutes to prevent heroku dyno from sleeping
@@ -30,9 +29,9 @@ function App() {
           <Route path="/adminUpload" element={<AdminUploadPortal token={token} />} />
         </Routes>
       </BrowserRouter>
-      <Crontab 
-        tasks={cronTasks} 
-        timeZone='UTC' 
+      <Crontab
+        tasks={cronTasks}
+        timeZone='UTC'
         dashboard={{
           hidden: false, // if true, dashboard is hidden
           route: '/cron' // dashboard will only appear in '/' route

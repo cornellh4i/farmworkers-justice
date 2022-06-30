@@ -13,7 +13,7 @@ server.listen(port, () => {
         if (err) console.error(err);
     });
     console.log(`${appName} running on port ${port}!`)
-    cron.schedule('* * * * *', () => {
+    cron.schedule('25 * * * *', () => {
         console.log('running a task every 25 minutes');
         fetch(`/`)
             .then(res => console.log(`response-ok: ${res.ok}, status: ${res.status}`))

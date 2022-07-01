@@ -111,7 +111,6 @@ async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, fil
 }
 
 
-
 /**
  * Takes an array and a string variable
  * @param arr is a nested array of lists that look like: [year, value, weighting]. EX: [[2008, 0, 2.93], [2009, 1, 0.8]]
@@ -806,7 +805,10 @@ module.exports = () => {
 
     const { spawn } = require('child_process');
 
-    // TODO: HANDLE R14 ERROR
+    // Currently Heroku throws R14 error for exceeding the memory quota
+    // The process has been tested and was only hitting R14 error and not R15 error
+    // This error is not yet handled, but R14 let the process continues while R15 would kill the process
+
     // spawn new child process to call the python script
     // switch this to python if your terminal uses python insteal of py
     const python = spawn('python', ['preprocessing.py', variables, ATLAS_URI]);
@@ -835,9 +837,6 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType: string = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      console.log("variable: ", req.params.variable)
-      console.log("output: ", output)
-      console.log("timeseries output: ", timeSeriesData)
       res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)
@@ -853,9 +852,6 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      console.log("variable: ", req.params.variable)
-      console.log("output: ", output)
-      console.log("timeseries output: ", timeSeriesData)
       res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)
@@ -877,9 +873,6 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      console.log("variable: ", req.params.variable)
-      console.log("output: ", output)
-      console.log("timeseries output: ", timeSeriesData)
       res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)

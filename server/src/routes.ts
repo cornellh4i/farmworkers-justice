@@ -503,11 +503,13 @@ async function timeSeriesMain(variable: string, db: Db, filterKey1?: string, fil
  * @returns a list of all variables that are being visualized on
  */
 async function getUniqueVariables(db: Db) {
-  const variablesInfo = db.collection('variable-info').find({});
-  var uniqueVariables: string[] = []
-  await variablesInfo.forEach(variableInfo => {
-    uniqueVariables.push(variableInfo.Variable)
-  });
+  const uniqueVariables = await db.collection('variable-info').distinct('Variable');
+  // const variablesInfo = db.collection('variable-info').find({});
+  // var uniqueVariables: string[] = []
+  // await variablesInfo.forEach(variableInfo => {
+  //   uniqueVariables.push(variableInfo.Variable)
+  // });
+  console.log("uniqueVariables: ", uniqueVariables)
   return uniqueVariables;
 }
 
@@ -627,98 +629,116 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 //   });
 // }
 
-/**96 total variables 
- * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
- * total entries: 83 combinations * 96 variable = 
- */
-async function combinationalDatas(db: Db) {
-  console.log("start one half")
-  const filtersEncoding = require('./local-json/filterEncoding.json')
-  var variables: string[] = await getUniqueVariables(db);
-  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
-  variables = variables.concat(columnVariables)
-
-  async function combinationalData(variable: string){
-    var combDatas: any[] = []
-    // no filters
-    var [vizType, timeSeries] = await getVizType(variable, db);
-    const timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variable, db)) : undefined;
-    const filters = ["GENDER", "FLC", "REGION6", "currstat"]
-    let combData = {
-      "variable": variable,
-      "vizType": vizType,
-      "filter1": "",
-      "filter1Encoding": "",
-      "filter2": "",
-      "filter2Encoding": "",
-      "mainQueryData": (await main(variable, db, vizType)),
-      "timeSeriesQueryData": timeSeriesData,
-    }
-    combDatas.push(combData)
-    // loop through filters (fill all filter1 only)
-    for (let x = 0; x < 4; x++) {
-      let combDataOne = {
-        ...combData
-      }
-      let value1: string = filters[x]
-      combDataOne["filter1"] = value1
-      for (var element1 of filtersEncoding[value1]) {
-        let combDataTwo = {
-          ...combDataOne
-        }
-        combDataTwo["filter1Encoding"] = element1["filter-encoding"]
-        combDataTwo["mainQueryData"] = (await main(variable, db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
-        if (timeSeries) {
-          combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
-        }
-        combDatas.push(combDataTwo) // f1 = filter, f2 = null
-        // loop through filters (fill both filter1 and filter2)
-        for (let j = x + 1; j < 4; j++) {
-          let combDataThree = {
-            ...combDataTwo
-          }
-          let value2: string = filters[j]
-          combDataThree["filter2"] = value2
-          for (var element2 of filtersEncoding[value2]) {
-            let combDataFour = {
-              ...combDataThree
-            }
-            combDataFour["filter2Encoding"] = element2["filter-encoding"]
-            combDataFour["mainQueryData"] = (await main(variable, db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
-            if (timeSeries) {
-              combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
-            }
-            combDatas.push(combDataFour) // f1 = filt, f2 = filt
-          }
-        }
-      }
-    }
-    console.log("cache data computed  for: ", variable)
-    await db.collection('new-weighted-cache').insertMany(combDatas)
-  }
-
+async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
   // splits variables into quarters to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
   const firstQuarter = variables.slice(0, variables.length/4)
   const secondQuarter = variables.slice(variables.length/4, variables.length/2)
   const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
   const fourthQuarter = variables.slice(3 * variables.length/4)
-  assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
+  // assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
+  
+  const firstHalf = variables.slice(0, variables.length)
+  const secondHalf = variables.slice(variables.length)
 
-  await Promise.all(firstQuarter.map(async (variable) => {
-    await combinationalData(variable)
+  await Promise.all(firstHalf.map(async (variable) => {
+    await aggregateDataForCachingVariable(db, variable)
   }));
 
-  await Promise.all(secondQuarter.map(async (variable) => {
-    await combinationalData(variable)
+  await Promise.all(secondHalf.map(async (variable) => {
+    await aggregateDataForCachingVariable(db, variable)
   }));
 
-  await Promise.all(thirdQuarter.map(async (variable) => {
-    await combinationalData(variable)
-  }));
+  // await Promise.all(thirdQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }));
 
-  await Promise.all(fourthQuarter.map(async (variable) => {
-    await combinationalData(variable)
-  }))
+  // await Promise.all(fourthQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }))
+}
+
+async function aggregateDataForCachingVariable(db: Db, variable: string){
+  const filtersEncoding = require('./local-json/filterEncoding.json')
+  var combDatas: any[] = []
+  // no filters
+  var [vizType, timeSeries] = await getVizType(variable, db);
+  const timeSeriesData = timeSeries === 1 ? (await timeSeriesMain(variable, db)) : undefined;
+  const filters = ["GENDER", "FLC", "REGION6", "currstat"]
+  let combData = {
+    "variable": variable,
+    "vizType": vizType,
+    "filter1": "",
+    "filter1Encoding": "",
+    "filter2": "",
+    "filter2Encoding": "",
+    "mainQueryData": (await main(variable, db, vizType)),
+    "timeSeriesQueryData": timeSeriesData,
+  }
+  combDatas.push(combData)
+  // loop through filters (fill all filter1 only)
+  for (let x = 0; x < 4; x++) {
+    let combDataOne = {
+      ...combData
+    }
+    let value1: string = filters[x]
+    combDataOne["filter1"] = value1
+    for (var element1 of filtersEncoding[value1]) {
+      let combDataTwo = {
+        ...combDataOne
+      }
+      combDataTwo["filter1Encoding"] = element1["filter-encoding"]
+      combDataTwo["mainQueryData"] = (await main(variable, db, vizType, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+      if (timeSeries) {
+        combDataTwo["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataTwo["filter1"], combDataTwo["filter1Encoding"]))
+      }
+      combDatas.push(combDataTwo) // f1 = filter, f2 = null
+      // loop through filters (fill both filter1 and filter2)
+      for (let j = x + 1; j < 4; j++) {
+        let combDataThree = {
+          ...combDataTwo
+        }
+        let value2: string = filters[j]
+        combDataThree["filter2"] = value2
+        for (var element2 of filtersEncoding[value2]) {
+          let combDataFour = {
+            ...combDataThree
+          }
+          combDataFour["filter2Encoding"] = element2["filter-encoding"]
+          combDataFour["mainQueryData"] = (await main(variable, db, vizType, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+          if (timeSeries) {
+            combDataFour["timeSeriesQueryData"] = (await timeSeriesMain(variable, db, combDataFour["filter1"], combDataFour["filter1Encoding"], combDataFour["filter2"], combDataFour["filter2Encoding"]))
+          }
+          combDatas.push(combDataFour) // f1 = filt, f2 = filt
+        }
+      }
+    }
+  }
+  console.log("cache data computed  for: ", variable)
+  await db.collection('new-weighted-cache').insertMany(combDatas)
+}
+
+
+/**96 total variables 
+ * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
+ * total entries: 83 combinations * 96 variable = 
+ */
+async function aggregateDataForCachingAllVariables(db: Db) {
+  var variables: string[] = await getUniqueVariables(db);
+  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
+  variables = variables.concat(columnVariables)
+
+  var allThreadsFinished = false
+  while(!allThreadsFinished) { //run the threads until caching is completed regardless of R14 and R15 errors
+    // Check if new-weighted-cache is created. If it is created, get the done variables. If it is not, that means none of the variables are processed 
+    var variablesDone = (await db.listCollections().toArray()).map(c => c.name).includes('new-weighted-cache') ? await db.collection('new-weighted-cache').distinct('Variable') : [];
+    var variablesLeft = variables.filter(x => !variablesDone.includes(x));
+    console.log("number of variables left: ", variablesLeft.length)
+    try {
+      await aggregateDataForCachingThreads(db, variablesLeft).then( () => allThreadsFinished = true)
+    } catch (e) {
+      console.log("error in aggregating data for caching all variables: ", e)
+    }
+  }
 
   try {
     await db.collection('weighted-cache').drop()
@@ -825,7 +845,7 @@ module.exports = () => {
     python.on('close', async (code: any) => {
       console.log(`childt process close all stdio with code ${code}`);
       res.status(200)
-      await combinationalDatas(dbo.getDb())
+      await aggregateDataForCachingAllVariables(dbo.getDb())
     })
   });
 

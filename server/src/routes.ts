@@ -635,26 +635,26 @@ async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
   const secondQuarter = variables.slice(variables.length/4, variables.length/2)
   const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
   const fourthQuarter = variables.slice(3 * variables.length/4)
-  // assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
+  assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
   
-  const firstHalf = variables.slice(0, variables.length)
-  const secondHalf = variables.slice(variables.length)
+  // const firstHalf = variables.slice(0, variables.length)
+  // const secondHalf = variables.slice(variables.length)
 
-  await Promise.all(firstHalf.map(async (variable) => {
+  await Promise.all(firstQuarter.map(async (variable) => {
     await aggregateDataForCachingVariable(db, variable)
   }));
 
-  await Promise.all(secondHalf.map(async (variable) => {
+  await Promise.all(secondQuarter.map(async (variable) => {
     await aggregateDataForCachingVariable(db, variable)
   }));
 
-  // await Promise.all(thirdQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }));
+  await Promise.all(thirdQuarter.map(async (variable) => {
+    await aggregateDataForCachingVariable(db, variable)
+  }));
 
-  // await Promise.all(fourthQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }))
+  await Promise.all(fourthQuarter.map(async (variable) => {
+    await aggregateDataForCachingVariable(db, variable)
+  }))
 }
 
 async function aggregateDataForCachingVariable(db: Db, variable: string){
@@ -720,25 +720,27 @@ async function aggregateDataForCachingVariable(db: Db, variable: string){
 
 /**96 total variables 
  * GENDER: 2; FLC: 2; REGION6: 6; currstat: 4
- * total entries: 83 combinations * 96 variable = 
+ * total entries: 83 combinations * 98 variable = 
  */
 async function aggregateDataForCachingAllVariables(db: Db) {
   var variables: string[] = await getUniqueVariables(db);
   const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
   variables = variables.concat(columnVariables)
 
-  var allThreadsFinished = false
-  while(!allThreadsFinished) { //run the threads until caching is completed regardless of R14 and R15 errors
-    // Check if new-weighted-cache is created. If it is created, get the done variables. If it is not, that means none of the variables are processed 
-    var variablesDone = (await db.listCollections().toArray()).map(c => c.name).includes('new-weighted-cache') ? await db.collection('new-weighted-cache').distinct('Variable') : [];
-    var variablesLeft = variables.filter(x => !variablesDone.includes(x));
-    console.log("number of variables left: ", variablesLeft.length)
-    try {
-      await aggregateDataForCachingThreads(db, variablesLeft).then( () => allThreadsFinished = true)
-    } catch (e) {
-      console.log("error in aggregating data for caching all variables: ", e)
-    }
-  }
+  // var allThreadsFinished = false
+  // while(!allThreadsFinished) { //run the threads until caching is completed regardless of R14 and R15 errors
+  //   // Check if new-weighted-cache is created. If it is created, get the done variables. If it is not, that means none of the variables are processed 
+  //   var variablesDone = (await db.listCollections().toArray()).map(c => c.name).includes('new-weighted-cache') ? await db.collection('new-weighted-cache').distinct('Variable') : [];
+  //   var variablesLeft = variables.filter(x => !variablesDone.includes(x));
+  //   console.log("number of variables left: ", variablesLeft.length)
+  //   try {
+  //     await aggregateDataForCachingThreads(db, variablesLeft).then( () => allThreadsFinished = true)
+  //   } catch (e) {
+  //     console.log("error in aggregating data for caching all variables: ", e)
+  //   }
+  // }
+
+  await aggregateDataForCachingThreads(db, variables)
 
   try {
     await db.collection('weighted-cache').drop()

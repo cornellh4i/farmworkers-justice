@@ -509,7 +509,6 @@ async function getUniqueVariables(db: Db) {
   // await variablesInfo.forEach(variableInfo => {
   //   uniqueVariables.push(variableInfo.Variable)
   // });
-  console.log("uniqueVariables: ", uniqueVariables)
   return uniqueVariables;
 }
 
@@ -631,30 +630,34 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 
 async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
   // splits variables into quarters to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
-  const firstQuarter = variables.slice(0, variables.length/4)
-  const secondQuarter = variables.slice(variables.length/4, variables.length/2)
-  const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
-  const fourthQuarter = variables.slice(3 * variables.length/4)
-  assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
+  // const firstQuarter = variables.slice(0, variables.length/4)
+  // const secondQuarter = variables.slice(variables.length/4, variables.length/2)
+  // const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
+  // const fourthQuarter = variables.slice(3 * variables.length/4)
+  // assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
   
-  // const firstHalf = variables.slice(0, variables.length)
-  // const secondHalf = variables.slice(variables.length)
+  // await Promise.all(firstQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }));
 
-  await Promise.all(firstQuarter.map(async (variable) => {
-    await aggregateDataForCachingVariable(db, variable)
-  }));
+  // await Promise.all(secondQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }));
 
-  await Promise.all(secondQuarter.map(async (variable) => {
-    await aggregateDataForCachingVariable(db, variable)
-  }));
+  // await Promise.all(thirdQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }));
 
-  await Promise.all(thirdQuarter.map(async (variable) => {
-    await aggregateDataForCachingVariable(db, variable)
-  }));
+  // await Promise.all(fourthQuarter.map(async (variable) => {
+  //   await aggregateDataForCachingVariable(db, variable)
+  // }))
 
-  await Promise.all(fourthQuarter.map(async (variable) => {
-    await aggregateDataForCachingVariable(db, variable)
-  }))
+  for (let i = 0; i < variables.length; i += 10) {
+    const endSliceRange = (i + 10 <= variables.length)? i + 10 : variables.length
+    await Promise.all(variables.slice(i, endSliceRange).map(async (variable) => {
+      await aggregateDataForCachingVariable(db, variable)
+    }))
+  }
 }
 
 async function aggregateDataForCachingVariable(db: Db, variable: string){
@@ -740,7 +743,19 @@ async function aggregateDataForCachingAllVariables(db: Db) {
   //   }
   // }
 
-  await aggregateDataForCachingThreads(db, variables)
+  const cron = require('node-cron');
+  const pingTask = cron.schedule('*/20 * * * *', () => { // this runs every 20 minutes to prevent heroku dyno from sleeping
+    console.log('running a task every 20 minutes'); 
+    fetch(`/`)
+      .then(res => console.log(`response-ok: ${res.ok}, status: ${res.status}`))
+      .catch(err => console.log(err))
+  }, {
+    scheduled: true,
+  });
+
+  await aggregateDataForCachingThreads(db, variables).then(() => {
+    pingTask.stop()
+  })
 
   try {
     await db.collection('weighted-cache').drop()

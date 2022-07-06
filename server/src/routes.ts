@@ -743,19 +743,7 @@ async function aggregateDataForCachingAllVariables(db: Db) {
   //   }
   // }
 
-  const cron = require('node-cron');
-  const pingTask = cron.schedule('*/20 * * * *', () => { // this runs every 20 minutes to prevent heroku dyno from sleeping
-    console.log('running a task every 20 minutes'); 
-    fetch(`/`)
-      .then(res => console.log(`response-ok: ${res.ok}, status: ${res.status}`))
-      .catch(err => console.log(err))
-  }, {
-    scheduled: true,
-  });
-
-  await aggregateDataForCachingThreads(db, variables).then(() => {
-    pingTask.stop()
-  })
+  await aggregateDataForCachingThreads(db, variables)
 
   try {
     await db.collection('weighted-cache').drop()

@@ -18,7 +18,7 @@ function App() {
         fn: () => fetch(`/`)
           .then(res => console.log(`response-ok: ${res.ok}, status: ${res.status}`))
           .catch(err => console.log(err)),
-        config: '* * * * *' // this runs every 20 minutes to prevent heroku dyno from sleeping
+        config: '*/20 * * * *' // this runs every 20 minutes to prevent heroku dyno from sleeping
       }
     ],
     []

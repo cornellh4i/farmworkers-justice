@@ -282,7 +282,6 @@ async function aggregateDonutChart(arr: [number, any, number][], variable: strin
       totalCounts += weight
     }
   });
-
   output.forEach((val, description) => {
     output.set(description, Math.round(val / totalCounts * 100) / 100);
   })
@@ -629,29 +628,7 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 // }
 
 async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
-  // splits variables into quarters to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
-  // const firstQuarter = variables.slice(0, variables.length/4)
-  // const secondQuarter = variables.slice(variables.length/4, variables.length/2)
-  // const thirdQuarter = variables.slice(variables.length/2, 3 * variables.length/4)
-  // const fourthQuarter = variables.slice(3 * variables.length/4)
-  // assert (firstQuarter.length + secondQuarter.length + thirdQuarter.length + fourthQuarter.length === variables.length)
-  
-  // await Promise.all(firstQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }));
-
-  // await Promise.all(secondQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }));
-
-  // await Promise.all(thirdQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }));
-
-  // await Promise.all(fourthQuarter.map(async (variable) => {
-  //   await aggregateDataForCachingVariable(db, variable)
-  // }))
-
+  // splits variables into groups to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
   for (let i = 0; i < variables.length; i += 10) {
     const endSliceRange = (i + 10 <= variables.length)? i + 10 : variables.length
     await Promise.all(variables.slice(i, endSliceRange).map(async (variable) => {
@@ -718,6 +695,7 @@ async function aggregateDataForCachingVariable(db: Db, variable: string){
   }
   console.log("cache data computed  for: ", variable)
   await db.collection('new-weighted-cache').insertMany(combDatas)
+  return combDatas
 }
 
 
@@ -761,20 +739,31 @@ module.exports = () => {
   const router = Express.Router();
 
   /**** Routes ****/
-  router.get('/ping', async (req: Express.Request, res: Express.Response) => {
+  
+  /** Helper api to fix data discrepancy for a variable */
+  router.get('/fixDataDiscrepancy', async (req: Express.Request, res: Express.Response) => {
+    const dbo = require("./db/conn");
+    const db = dbo.getDb()
+    await db.collection('weighted-cache').deleteMany({variable: "MIGRANT"})
+    const combDatas = await aggregateDataForCachingVariable(db, "MIGRANT")
+    await db.collection('weighted-cache').insertMany(combDatas)
     res.json({ success: true });
   })
 
   router.get('/test', async (req: Express.Request, res: Express.Response) => {
     // notifyDataUploadSuccess()
+    const dbo = require("./db/conn");
+    const db = dbo.getDb()
+    main("HHPARENT", db, VizType.Donut)
     res.json({ success: true });
   })
 
+  /** One time use route to copy aggregate data in weighted-cache to a separate backup collection backup-weighted-cache */
   router.get('/backupData', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const db = dbo.getDb()
     const allData = await db.collection("weighted-cache").find({}).toArray()
-    db.collection("backup-weighted-cache").insertMany(allData)
+    await db.collection("backup-weighted-cache").insertMany(allData)
     res.json({ success: true });
   })
 

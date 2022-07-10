@@ -629,11 +629,14 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
 
 async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
   // splits variables into groups to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
-  for (let i = 0; i < variables.length; i += 10) {
-    const endSliceRange = (i + 10 <= variables.length)? i + 10 : variables.length
-    await Promise.all(variables.slice(i, endSliceRange).map(async (variable) => {
-      await aggregateDataForCachingVariable(db, variable)
-    }))
+  // for (let i = 0; i < variables.length; i += 10) {
+  //   const endSliceRange = (i + 10 <= variables.length)? i + 10 : variables.length
+  //   await Promise.all(variables.slice(i, endSliceRange).map(async (variable) => {
+  //     await aggregateDataForCachingVariable(db, variable)
+  //   }))
+  // }
+  for (let i = 0; i < variables.length; i ++) {
+    await aggregateDataForCachingVariable(db, variables[i])
   }
 }
 

@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import './donutChart.scss';
 
 interface DonutChartProps {
-  data: any,
+  data: Map<string, number>
   index: number
 }
 
@@ -17,15 +17,12 @@ function DonutChart(props: DonutChartProps) {
   const [descriptions, setDescription] = useState<string[]>([])
   var colors: d3.ScaleOrdinal<string, string, never> =  d3.scaleOrdinal(d3.schemeCategory10);
 
-  // TODO: FIX GRAPH DOESNT SHOW UP WHEN DROPDOWN SWITCHES WHEN IT IS NOT COLLAPSED 
   useEffect(() => {
     colors = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // get list of data from the values
     var donutData: number[] = []
     var donutDescription: string[] = []
-    for (let key in props.data) {
-      let value = props.data[key]
+    for (let [key, value] of Object.entries(props.data)) {
       donutData.push(value)
       donutDescription.push(key)
     }
@@ -34,13 +31,13 @@ function DonutChart(props: DonutChartProps) {
     const arrSum = donutData.reduce((a,b) => a + b, 0)
     
     function update() {    
-      //creating the pie layout
+      // screating the pie layout
       var createPie = d3
         .pie()
         .value(d => d.valueOf())
         .sort(null);
 
-      //determining size of arcs
+      // determining size of arcs
       const createArc: d3.Arc<any, any> = d3
         .arc()
         .innerRadius(innerRadius - 50)
@@ -49,13 +46,11 @@ function DonutChart(props: DonutChartProps) {
       var path = d3.select(`#donutChart${props.index}`)
       .datum(donutData).selectAll("path")
       .data(createPie)
-      // .append("path")
         .attr("class","piechart")
         .attr("fill", function(d,i){ return colors(i.toString()); })
         .attr("d", createArc);
-      // .each(function(d){ this._current = d; })
 
-      // enter data and draw pie chart
+        // enter data and draw pie chart
       path
       .enter()
       .append("path")
@@ -63,7 +58,6 @@ function DonutChart(props: DonutChartProps) {
         .attr("class","piechart")
         .attr("fill", function(d,i){ return colors(i.toString()); })
         .attr("d", createArc);
-      // .each(function(d){ this._current = d; })
 
       d3.select(`#donutChart${props.index}`)
         .datum(donutData).selectAll("path")

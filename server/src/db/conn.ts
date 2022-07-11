@@ -5,7 +5,6 @@ import { cursorTo } from "readline";
 
 const { MongoClient } = require("mongodb");
 
-// NEED TO FIX
 const ATLAS_URI  = process.env.ATLAS_URI;
 const client = new MongoClient(ATLAS_URI, {
   useNewUrlParser: true,

@@ -30,11 +30,6 @@ function FilterPanel(props: FilterPanelProps) {
   const [flc, setFlc] = useState('');
   const [region6, setRegion6] = useState('');
 
-
-  // filter1 and filter2 states are in the form of [filter value, filter name]
-  // const [filter1, setFilter1] = useState<null | string[]>(null);
-  // const [filter2, setFilter2] = useState<null | string[]>(null);
-
   function handleFilterChange(filterName: string, event: { target: { value: string; } }) {
     if (filterName === FilterEnum.GENDER) {
       setGender(event.target.value);

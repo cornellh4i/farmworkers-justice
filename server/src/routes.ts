@@ -13,9 +13,6 @@ enum VizType {
 const timeSeriesEncodings = require('./local-json/timeSeriesEncodings.json')
 const columnChartGroupings = require('./local-json/columnChartGrouping.json')
 
-const LATEST_ODD_YEAR = 2017;
-const LATEST_EVEN_YEAR = 2018;
-
 
 interface binProp {
   "start": null | number,
@@ -24,17 +21,12 @@ interface binProp {
   "end-encoding": null | number
 }
 
-interface histogramProp {
-  variableEncoding: string;
-  data: number[],
-  index: number
-}
-
 interface histogramBinRangesProp {
   "variable-encoding": string,
   "variable-description": string
   "bin-ranges": Array<binProp>
 }
+
 interface timeSeriesRangeProp {
   encoding: number,
   start: null | number,
@@ -71,6 +63,8 @@ interface columnChartGroupingProp {
  */
 async function queryVal(variable: string, db: Db, latestYearsQuery: boolean, filter_key1?: string, filter_value1?: number, filter_key2?: string, filter_value2?: number) {
   var query;
+  const LATEST_ODD_YEAR = parseInt(process.env.LATEST_ODD_YEAR!);
+  const LATEST_EVEN_YEAR = parseInt(process.env.LATEST_EVEN_YEAR!);
   if (typeof filter_key2 !== 'undefined' && typeof filter_key1 !== 'undefined') {
     if (latestYearsQuery) {
       query = { $and: [{ [filter_key1]: filter_value1 }, { [filter_key2]: filter_value2 }, { $or: [{ "FY": LATEST_EVEN_YEAR }, { "FY": LATEST_ODD_YEAR }] }] }
@@ -407,7 +401,7 @@ function aggregateColumnChart(arr: Array<[string, [number, number, number][]]>) 
     if (counterYes + counterNo === 0) {
       return 0
     } else {
-      return Number(((counterYes / (counterYes + counterNo)) * 100).toFixed(2)); //TODO: RUN CACHE AGAIN FOR COLUMN CHART
+      return Number(((counterYes / (counterYes + counterNo)) * 100).toFixed(2));
     }
   }
   return output;
@@ -747,8 +741,8 @@ module.exports = () => {
   router.get('/fixDataDiscrepancy', async (req: Express.Request, res: Express.Response) => {
     const dbo = require("./db/conn");
     const db = dbo.getDb()
-    await db.collection('weighted-cache').deleteMany({variable: "MIGRANT"})
-    const combDatas = await aggregateDataForCachingVariable(db, "MIGRANT")
+    await db.collection('weighted-cache').deleteMany({variable: "currstat"})
+    const combDatas = await aggregateDataForCachingVariable(db, "currstat")
     await db.collection('weighted-cache').insertMany(combDatas)
     res.json({ success: true });
   })

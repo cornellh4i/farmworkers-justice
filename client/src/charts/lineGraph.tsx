@@ -9,6 +9,8 @@ interface LineGraphProp {
   index: number;
 }
 
+const LATEST_EVEN_YEAR = process.env.REACT_APP_LATEST_EVEN_YEAR 
+
 const toExclude: string[] = ["B11", "G01", "G03", "FWRDays", "NUMFEMPL"];
 
 function findMinY(data: any) {
@@ -25,7 +27,6 @@ function LineGraph(props: LineGraphProp) {
 
   useEffect(() => {
     const variableDescription = props.variableDescription;
-    // const svg = d3.select(svgRef.current)
     var svg = d3.select(`#linegraph${props.index}`)
       .attr('width', w)
       .attr('height', h + 50)
@@ -78,7 +79,7 @@ function LineGraph(props: LineGraphProp) {
       x.domain((data.length !== 0) ?
         [data[0].year, data[Object.keys(data).length - 1].year + 1]
         :
-        [2007, 2018]) //[2007, 2018] is a temp placeholder before props is updated
+        [2007, LATEST_EVEN_YEAR]) //[2007, LATEST_EVEN_YEAR] is a temp placeholder before props is updated
 
       svg.selectAll(".xAxis").transition()
         .duration(1000)
@@ -101,7 +102,7 @@ function LineGraph(props: LineGraphProp) {
         .merge(u)
         .transition()
         .attr('d', d3.line()
-          .x((d, i) => { return x(data[i].year + 1) })  //TODO: THIS IS A TEMPORARY FIX: NOT TOO SURE WHY NEED THE +1 TO ALIGN LINE
+          .x((d, i) => { return x(data[i].year + 1) })
           .y((d, i) => { return y(data[i].value) })
           .curve(d3.curveLinear))
         .attr('fill', 'none')

@@ -21,7 +21,6 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 		event.preventDefault()		
 		setFileUploadMsg("Uploading file...")
 		try {
-			// TODO: CHECK FILE NAMES
 			const formData = new FormData();
 			formData.append("name", selectedFile!.name)
 			formData.append("selectedFile", selectedFile!);
@@ -59,11 +58,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 
 		try {
 			const response = await fetch(`${API_URL}/updateData`);
-			// if (response.status === 200) {
-			setDataUploadMsg("The visualization data is updating... This might take a few hours.")
-			// } else {
-			// 	setDataUploadMsg("There is an error in updating the data.")
-			// }
+			setDataUploadMsg("The visualization data is updating... This might take a couple days.")
 		} catch(error) {
 			console.log(error);
 		}

@@ -7,15 +7,15 @@ type rowProp = {
 }
 
 type tableProp = {
-    data: { [key: string]: number }
+    data: { [key: string]: number },
+    variableDescription: string
 }
 
 function Table(props: tableProp) {
     let entries: rowProp[] = [];
     const columns: TableColumn<rowProp>[] = [
         {
-            name: "Category",
-            //do we want to hard code titles?
+            name: props.variableDescription,
             selector: row => row.response_description
         },
         {

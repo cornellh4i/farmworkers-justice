@@ -69,13 +69,13 @@ function Dropdown(props: DropdownProp) {
       try {
         response = await fetch(url);
         output = await response.json();
-        console.log("fetched data for variable ", props.variable, " : ", output.data)
+        console.log("fetched output: ", output.data, "for variable: ", props.variable)
         if (output.vizType === "histogram") {
           setVisualizationComponent(<Histogram key={props.index.toString()} index={props.index} variableEncoding={props.variable} data={output.data} />)
         } else if (output.vizType === "donut") {
           setVisualizationComponent(<Donut key={props.index.toString()} index={props.index} data={output.data} />)
         } else if (output.vizType === "table") {
-          setVisualizationComponent(<DataTable key={props.index.toString()} data={output.data} />)
+          setVisualizationComponent(<DataTable key={props.index.toString()} variableDescription={props.variableDescription} data={output.data} />)
         } else if (output.vizType === "data") {
           setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
         } else if (output.vizType === "column") {
@@ -84,7 +84,6 @@ function Dropdown(props: DropdownProp) {
           console.log("visualization type not covered ")
         }
         if (typeof output.timeSeriesData != 'undefined') {
-          console.log("fetched timeseries data for variable ", props.variable, " : ", output.timeSeriesData)
           setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable} />)
         } else {
           setTimeSeriesComponent(<></>)

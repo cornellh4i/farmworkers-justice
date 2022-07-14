@@ -28,6 +28,8 @@ interface FetchedDataProps {
   data: any,
   vizType: string,
   timeSeriesData: { year: number, value: number }[]
+  LATEST_EVEN_YEAR: string
+  LATEST_ODD_YEAR:  string
 }
 
 interface FilterEncodingProp {
@@ -77,14 +79,14 @@ function Dropdown(props: DropdownProp) {
         } else if (output.vizType === "table") {
           setVisualizationComponent(<DataTable key={props.index.toString()} variableDescription={props.variableDescription} data={output.data} />)
         } else if (output.vizType === "data") {
-          setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} />)
+          setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} LATEST_ODD_YEAR={output.LATEST_EVEN_YEAR} LATEST_EVEN_YEAR={output.LATEST_EVEN_YEAR}/>)
         } else if (output.vizType === "column") {
           setVisualizationComponent(<ColumnChart key={props.index.toString()} data={output.data} />)
         } else {
           console.log("visualization type not covered ")
         }
         if (typeof output.timeSeriesData != 'undefined') {
-          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable} />)
+          setTimeSeriesComponent(<LineGraph key={props.index.toString()} index={props.index} data={output.timeSeriesData} variableDescription={props.variableDescription} variableEncoding={props.variable} LATEST_EVEN_YEAR={parseInt(output.LATEST_EVEN_YEAR)}/>)
         } else {
           setTimeSeriesComponent(<></>)
         }

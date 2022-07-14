@@ -848,7 +848,7 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType: string = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData, LATEST_EVEN_YEAR: process.env.LATEST_EVEN_YEAR, LATEST_ODD_YEAR: process.env.LATEST_ODD_YEAR});
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)
       res.send({ status: false })
@@ -863,7 +863,7 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData, LATEST_EVEN_YEAR: process.env.LATEST_EVEN_YEAR, LATEST_ODD_YEAR: process.env.LATEST_ODD_YEAR });
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)
       res.send({ status: false })
@@ -884,7 +884,7 @@ module.exports = () => {
       const output = cache["mainQueryData"]
       const vizType = cache["vizType"]
       const timeSeriesData = cache["timeSeriesQueryData"] === null ? undefined : cache["timeSeriesQueryData"]
-      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData });
+      res.json({ data: output, vizType: vizType, timeSeriesData: timeSeriesData, LATEST_EVEN_YEAR: process.env.LATEST_EVEN_YEAR, LATEST_ODD_YEAR: process.env.LATEST_ODD_YEAR });
     } catch {
       console.log("Variable doesn't exist in cache: ", req.params.variable)
       res.send({ status: false })

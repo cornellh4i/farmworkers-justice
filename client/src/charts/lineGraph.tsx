@@ -7,9 +7,9 @@ interface LineGraphProp {
   variableDescription: string;
   variableEncoding: string;
   index: number;
+  LATEST_EVEN_YEAR: number
 }
 
-const LATEST_EVEN_YEAR = process.env.REACT_APP_LATEST_EVEN_YEAR 
 
 const toExclude: string[] = ["B11", "G01", "G03", "FWRDays", "NUMFEMPL"];
 
@@ -79,7 +79,7 @@ function LineGraph(props: LineGraphProp) {
       x.domain((data.length !== 0) ?
         [data[0].year, data[Object.keys(data).length - 1].year + 1]
         :
-        [2007, LATEST_EVEN_YEAR]) //[2007, LATEST_EVEN_YEAR] is a temp placeholder before props is updated
+        [props.LATEST_EVEN_YEAR - 10 + 1, props.LATEST_EVEN_YEAR]) //[2007, props.LATEST_EVEN_YEAR] is a temp placeholder before props is updated
 
       svg.selectAll(".xAxis").transition()
         .duration(1000)

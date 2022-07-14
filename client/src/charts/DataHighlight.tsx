@@ -1,27 +1,23 @@
 import './DataHighlight.scss'
 
-const LATEST_ODD_YEAR = process.env.REACT_APP_LATEST_ODD_YEAR;
-const LATEST_EVEN_YEAR = process.env.REACT_APP_LATEST_EVEN_YEAR;
 const API_URL = process.env.REACT_APP_API;
 
-console.log("LATEST_EVEN_YEAR ", LATEST_EVEN_YEAR)
-console.log("API_URL: ", API_URL)
-
-
 interface DataHighlightDataProps {
-    percentage: number,
+    percentage: number
     description: string
 }
 
 interface DataHighlightProps {
     data: DataHighlightDataProps
+    LATEST_ODD_YEAR: string
+    LATEST_EVEN_YEAR: string
 }
 
 function DataHighlight (props: DataHighlightProps) {
     return (
         <div className='data-highlight-container'> 
             <span className='percentage'>{props.data.percentage}% </span> 
-            <span>answered {props.data.description} in {LATEST_ODD_YEAR} - {LATEST_EVEN_YEAR}</span>
+            <span>answered {props.data.description} in {props.LATEST_ODD_YEAR} - {props.LATEST_EVEN_YEAR}</span>
         </div>
     )
 }

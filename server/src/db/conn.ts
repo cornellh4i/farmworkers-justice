@@ -1,7 +1,5 @@
-import e from "express";
 import { Db, MongoClient as MC, MongoError } from "mongodb";
 import { Callback } from "mongoose";
-import { cursorTo } from "readline";
 
 const { MongoClient } = require("mongodb");
 

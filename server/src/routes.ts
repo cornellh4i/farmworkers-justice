@@ -1,4 +1,3 @@
-import { assert } from "console";
 import Express from "express";
 import { Db } from "mongodb";
 

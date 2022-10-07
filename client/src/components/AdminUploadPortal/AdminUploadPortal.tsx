@@ -30,10 +30,10 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 			});
 			const result = await response.json();
 			if (result.status) {
-				if (selectedFile!.name === "NAWS_A2E191.csv"){
+				if (selectedFile!.name === "NAWS_A2E.csv"){
 					setFirstFileUploadMsg(result.message + ": " + selectedFile!.name)
 					setFileUploadMsg("")
-				} else if (selectedFile!.name === "NAWS_F2Y191.csv") {
+				} else if (selectedFile!.name === "NAWS_F2Y.csv") {
 					setSecondFileUploadMsg(result.message + ": " + selectedFile!.name)
 					setFileUploadMsg("")
 				} else {
@@ -58,7 +58,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 
 		try {
 			const response = await fetch(`${API_URL}/updateData`);
-			setDataUploadMsg("The visualization data is updating... This might take a couple days.")
+			setDataUploadMsg("The visualization data is updating... This might take a couple hours.")
 		} catch(error) {
 			console.log(error);
 		}
@@ -72,7 +72,7 @@ function AdminUploadPortal(props: AdminUploadPortalProps) {
 
 	return (
 		<div className="upload">
-			<p>Please upload "NAWS_A2E191.csv" and then "NAWS_F2Y191.csv"</p>
+			<p>Please upload "NAWS_A2E.csv" and then "NAWS_F2Y.csv"</p>
 			<form onSubmit = {handleSubmit}>
 				<input type="file" onChange={handleFileSelect} accept=".csv" />
 				<input type="submit" value="Upload" />

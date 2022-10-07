@@ -701,7 +701,7 @@ async function aggregateDataForCachingVariable(db: Db, variable: string){
  */
 async function aggregateDataForCachingAllVariables(db: Db) {
   var variables: string[] = await getUniqueVariables(db);
-  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"] 
+  const columnVariables = ["B21x", "G04x", "NH0x", "NQ10x"]
   variables = variables.concat(columnVariables)
 
   // var allThreadsFinished = false

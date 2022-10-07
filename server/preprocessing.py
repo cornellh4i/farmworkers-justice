@@ -60,8 +60,8 @@ def readNewData():
     """
     Reads new data and concatenates into a single csv file
     """
-    df1 = pd.read_csv("./src/db/data/NAWS_A2E191.csv")
-    df2 = pd.read_csv("./src/db/data/NAWS_F2Y191.csv")
+    df1 = pd.read_csv("./src/db/data/NAWS_A2E.csv")
+    df2 = pd.read_csv("./src/db/data/NAWS_F2Y.csv")
     df3 = df1.merge(df2)
     df3.to_csv("./src/db/combined.csv")
 
@@ -82,5 +82,5 @@ def sendToMongo(df):
     print("finished writing to mongodb")
 
 
-if (os.path.exists("./src/db/data/NAWS_A2E191.csv") and os.path.exists("./src/db/data/NAWS_F2Y191.csv")):
+if (os.path.exists("./src/db/data/NAWS_A2E.csv") and os.path.exists("./src/db/data/NAWS_F2Y.csv")):
     preprocessing()

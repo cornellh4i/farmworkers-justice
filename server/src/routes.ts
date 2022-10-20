@@ -580,46 +580,6 @@ async function main(variable: string, db: Db, vizType: string, filterKey1?: stri
   return output;
 }
 
-// async function notifyDataUploadSuccess() {
-//   const sendmail = require('sendmail')();
-
-//   sendmail({
-//       from: 'miyukigoay@gmail.com',
-//       to: 'wg237@cornell.edu, miyukigoay@gmail.com',
-//       subject: 'test sendmail',
-//       html: 'Mail of test sendmail ',
-//     }, function(err, reply) {
-//       console.log(err && err.stack);
-//       console.dir(reply);
-//   });
-//   var nodemailer = require('nodemailer');
-//   // create reusable transporter object using the default SMTP transport
-//   const transporter = nodemailer.createTransport({
-//     port: 465,               // true for 465, false for other ports
-//     host: "smtp.gmail.com",
-//       auth: {
-//         // user: 'farmworkers.justice2022@gmail.com',
-//         // pass: 'password',
-//         user: "miyukigoay@gmail.com",
-//         pass: "beHAPPY8998"
-//     },
-//     secure: true,
-//   });
-//   const mailData = {
-//     from: 'miyukigoay@gmail.com', 
-//     to: 'wg237@cornell.edu, miyukigoay@gmail.com',
-//     subject: 'NAWS data updated!',
-//     text: 'Data to the NAWS visualization app has been successfully updated! Check it out now!',
-//   };
-//   transporter.sendMail(mailData, function(error, info){
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
-// }
-
 async function aggregateDataForCachingThreads(db: Db, variables: string[]) {
   // splits variables into groups to process because MongoDB Atlas has a 500 connection limit for M0 cluster and Heroku has a 550M memory quota
   // for (let i = 0; i < variables.length; i += 10) {

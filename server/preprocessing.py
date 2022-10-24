@@ -3,9 +3,6 @@ import pandas as pd
 from pymongo import MongoClient
 import os
 
-latestFY = 2018
-earliestFY = (latestFY + 1) - 10
-
 def preprocessing():
     """
     Returns the preprocessed dataframe
@@ -43,8 +40,10 @@ def preprocessing():
     # Reassign df to the proper dataframe
     df = dropped_df
 
-    
-    df = df[(df['FY'] >= earliestFY) & (df['FY'] <= latestFY)]
+    LATEST_EVEN_YEAR = int(sys.argv[3])
+    earliestFY = LATEST_EVEN_YEAR + 1 - 10
+
+    df = df[(df['FY'] >= earliestFY) & (df['FY'] <= LATEST_EVEN_YEAR)]
 
     for (columnName, columnData) in df.iteritems():
        if columnData.dtype != "object":

@@ -14,6 +14,7 @@ interface DataHighlightProps {
 }
 
 function DataHighlight (props: DataHighlightProps) {
+    console.log(props.LATEST_ODD_YEAR)
     return (
         <div className='data-highlight-container'> 
             <span className='percentage'>{props.data.percentage}% </span> 

@@ -79,7 +79,7 @@ function Dropdown(props: DropdownProp) {
         } else if (output.vizType === "table") {
           setVisualizationComponent(<DataTable key={props.index.toString()} variableDescription={props.variableDescription} data={output.data} />)
         } else if (output.vizType === "data") {
-          setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} LATEST_ODD_YEAR={output.LATEST_EVEN_YEAR} LATEST_EVEN_YEAR={output.LATEST_EVEN_YEAR}/>)
+          setVisualizationComponent(<DataHighlight key={props.index.toString()} data={output.data} LATEST_ODD_YEAR={output.LATEST_ODD_YEAR} LATEST_EVEN_YEAR={output.LATEST_EVEN_YEAR}/>)
         } else if (output.vizType === "column") {
           setVisualizationComponent(<ColumnChart key={props.index.toString()} data={output.data} />)
         } else {

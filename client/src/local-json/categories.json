@@ -112,7 +112,7 @@
                     "variable-description": "Do you speak ..."
                 },
                 {
-                    "variable-encoding": "B24",
+                    "variable-encoding": "B24x",
                     "variable-description": "In what language are you most comfortable conversing?"
                 }
             ]
